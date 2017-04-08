@@ -18,14 +18,8 @@
 package Accuracy;
 
 import Utils.Distribution.ComparableDistribution;
-import Utils.Log;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +42,17 @@ public class DepthMask
      */
     public DepthMask(int[][][] depths, int number, int minDepth, int maskTo)
     {
-        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo));
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL);
+    }
+    
+    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method)
+    {
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method);
+    }
+    
+    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution)
+    {
+        this(depths,number,minDepth,maskToDistribution,Method.ALL);
     }
     
     /**
@@ -58,32 +62,78 @@ public class DepthMask
      * @param minDepth Only mask genotypes with more than this number of reads
      * @param maskToDistribution Mask to this distribution of read depths
      */
-    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution)
+    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method)
     {
         ComparableDistribution<Integer> maskTo = maskToDistribution.limitTo(0, minDepth);
         r = new Random();
-        list = new ArrayList<>();
+        list = new ArrayList<>(number);
         
-        ArrayList<SingleGenotypePosition> fullList = new ArrayList<>();
-        for (int i = 0; i < depths.length; i++)
+        ArrayList<SingleGenotypePosition>  selectedList = new ArrayList<>(number);
+        
+        switch (method)
         {
-            for (int j = 0; j < depths[0].length; j++)
-            {
-                if (reads(depths[i][j]) > minDepth)
+            case ALL:        
+                ArrayList<SingleGenotypePosition> fullList = new ArrayList<>();
+                for (int i = 0; i < depths.length; i++)
                 {
-                    fullList.add(new SingleGenotypePosition(i,j));
+                    for (int j = 0; j < depths[0].length; j++)
+                    {
+                        if (reads(depths[i][j]) > minDepth)
+                        {
+                            fullList.add(new SingleGenotypePosition(i,j));
+                        }
+                    }
                 }
-            }
+
+                int flSize = fullList.size();
+                for (int n = 0; n < number; n++)
+                {
+                    selectedList.add(fullList.get(r.nextInt(flSize)));
+                }
+                break;
+            case BYSNP:
+                while (selectedList.size() < number)
+                {
+                    int snp = r.nextInt(depths[0].length);
+                    ArrayList<SingleGenotypePosition> snpList = new ArrayList<>();
+                    for (int i = 0; i < depths.length; i++)
+                    {
+                        if (reads(depths[i][snp]) > minDepth)
+                        {
+                            snpList.add(new SingleGenotypePosition(i,snp));
+                        }
+                    }
+                    
+                    if (snpList.size() > 0)
+                    {
+                        selectedList.add(snpList.get(r.nextInt(snpList.size())));
+                    }
+                }
+                break;
+            case BYSAMPLE:
+                while (selectedList.size() < number)
+                {
+                    int sample = r.nextInt(depths.length);
+                    ArrayList<SingleGenotypePosition> sampleList = new ArrayList<>();
+                    for (int i = 0; i < depths[0].length; i++)
+                    {
+                        if (reads(depths[sample][i]) > minDepth)
+                        {
+                            sampleList.add(new SingleGenotypePosition(sample,i));
+                        }
+                    }
+                    
+                    if (sampleList.size() > 0)
+                    {
+                        selectedList.add(sampleList.get(r.nextInt(sampleList.size())));
+                    }
+                }
+                break;
         }
         
-        ///CREATE ANOTHER VERSION OF THIS?  FIRST SELECT SNP RANDOMLY THEN SAMPLE
-        // FOR REVIERWER ONE COMMENT 4?  We had an argument for not doing this
-        // but I can't remember it! (look up responses for LinkImpute?)
-
-        int flSize = fullList.size();
-        for (int n = 0; n < number; n++)
+        
+        for (SingleGenotypePosition random: selectedList)
         {
-            SingleGenotypePosition random = fullList.get(r.nextInt(flSize));
             int i = random.getSample();
             int j = random.getSNP();
             
@@ -158,4 +208,11 @@ public class DepthMask
     private int[][][] depths;
     private Random r;
     private List<SingleGenotypeMasked> list;
+    
+    public enum Method
+    {
+        ALL,
+        BYSNP,
+        BYSAMPLE
+    }
 }

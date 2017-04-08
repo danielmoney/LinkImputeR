@@ -17,6 +17,7 @@
 
 package Accuracy;
 
+import Accuracy.DepthMask.Method;
 import Utils.Distribution.ComparableDistribution;
 import Utils.Distribution.ComparableDistributionCollector;
 import java.util.Arrays;

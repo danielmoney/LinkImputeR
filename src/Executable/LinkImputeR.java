@@ -281,13 +281,9 @@ public class LinkImputeR
                 //COMBINE
                 List<SingleGenotypeCall> correctCalls = p2c.call(caller.call(getOriginalReads(mask.maskedList())));            
                 Combiner combiner = c.getCombiner(calledProb, imputedProb, maskedReads, correctCalls);
-                List<SingleGenotypeProbability> combinedProb = combiner.combine(calledProb, imputedProb, maskedReads);
-                List<SingleGenotypeCall> combinedGeno = p2c.call(combinedProb);
 
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS
-                
-                /// NEED TO USE SEPERATE MASKED SITES HERE
                 
                 DepthMask testMask = dmf.getDepthMask(readCounts);
                 List<SingleGenotypeReads> testMaskedReads = getMaskedReads(testMask.maskedList());

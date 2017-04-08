@@ -288,10 +288,26 @@ public class LinkImputeR
                 //STATS
                 
                 /// NEED TO USE SEPERATE MASKED SITES HERE
-                List<SingleGenotypeCall> correct = correctCalls;
-                AccuracyStats stats = AccuracyCalculator.accuracyStats(correct, combinedGeno, mask.maskedList());
-                AccuracyStats cstats = AccuracyCalculator.accuracyStats(correct, calledGeno, mask.maskedList());
-                AccuracyStats istats = AccuracyCalculator.accuracyStats(correct, imputedGeno, mask.maskedList());
+                
+                DepthMask testMask = dmf.getDepthMask(readCounts);
+                List<SingleGenotypeReads> testMaskedReads = getMaskedReads(testMask.maskedList());
+                
+                List<SingleGenotypeProbability> testCalledProb = 
+                    caller.call(testMaskedReads);
+                List<SingleGenotypeCall> testCalledGeno = p2c.call(testCalledProb);
+                
+                List<SingleGenotypeProbability> testImputedProb = 
+                    imputer.impute(origProb,readCounts,testCalledProb,testMask.maskedList());
+                List<SingleGenotypeCall> testImputedGeno = p2c.call(testImputedProb);
+                
+                List<SingleGenotypeCall> testCorrectCalls = p2c.call(caller.call(getOriginalReads(testMask.maskedList())));            
+                List<SingleGenotypeProbability> testCombinedProb = combiner.combine(testCalledProb, testImputedProb, maskedReads);
+                List<SingleGenotypeCall> testCombinedGeno = p2c.call(testCombinedProb);
+                
+                List<SingleGenotypeCall> testCorrect = testCorrectCalls;
+                AccuracyStats stats = AccuracyCalculator.accuracyStats(testCorrect, testCombinedGeno, testMask.maskedList());
+                AccuracyStats cstats = AccuracyCalculator.accuracyStats(testCorrect, testCalledGeno, testMask.maskedList());
+                AccuracyStats istats = AccuracyCalculator.accuracyStats(testCorrect, testImputedGeno, testMask.maskedList());
                 c.getPrintStats().writeStats(stats, cstats, istats);
                 writeSum(sum,c,vcf,stats,cstats,istats,partial);
                 writeTable(table,c,vcf,stats,cstats,istats,partial);

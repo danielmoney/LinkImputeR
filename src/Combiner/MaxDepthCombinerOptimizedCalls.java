@@ -18,6 +18,7 @@
 package Combiner;
 
 import Accuracy.AccuracyCalculator;
+import Accuracy.AccuracyCalculator.AccuracyMethod;
 import Utils.Optimize.MultipleTest;
 import Utils.Optimize.SingleDoubleValue;
 import Utils.ProbToCall;
@@ -43,6 +44,8 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     public MaxDepthCombinerOptimizedCalls(int maxDepth)
     {
         this.maxDepth = maxDepth;
+        this.method = AccuracyMethod.Accuracy;
+        ///HERE
     }
 
     /**
@@ -52,6 +55,8 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     public MaxDepthCombinerOptimizedCalls(HierarchicalConfiguration<ImmutableNode> params)
     {
         maxDepth = params.getInt("maxdepth");
+        this.method = AccuracyMethod.Accuracy;
+        ///HERE
     }
     
     public MaxDepthCombiner getOptimized(List<SingleGenotypeProbability> called,
@@ -59,7 +64,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             List<SingleGenotypeReads> reads,
             List<SingleGenotypeCall> correct) throws Exception
     {
-        Opt sco = new Opt(called,imputed,reads,correct,maxDepth);
+        Opt sco = new Opt(called,imputed,reads,correct,maxDepth,method);
         
         MultipleTest mt = new MultipleTest(0.01);
         double w = mt.optimize(sco, 0.0, 1.0);
@@ -79,7 +84,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
         return config;
     }
 
-    
+    private AccuracyMethod method;
     private int maxDepth;
     
     private class Opt implements SingleDoubleValue
@@ -87,7 +92,8 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
         public Opt(List<SingleGenotypeProbability> called,
                 List<SingleGenotypeProbability> imputed,
                 List<SingleGenotypeReads> reads, 
-                List<SingleGenotypeCall> correct, int maxDepth)
+                List<SingleGenotypeCall> correct, int maxDepth,
+                AccuracyMethod method)
         {
             this.called = called;
             this.imputed = imputed;
@@ -96,7 +102,9 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             
             this.maxDepth = maxDepth;
             
-            this.p2c = new ProbToCall();            
+            this.p2c = new ProbToCall();
+
+            this.method = method;
         }
 
         public double value(double param)
@@ -104,10 +112,17 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             MaxDepthCombiner combiner = new MaxDepthCombiner(param,maxDepth);
             List<SingleGenotypeProbability> resultsProb = combiner.combine(called,imputed,reads);
             List<SingleGenotypeCall> resultsCall = p2c.call(resultsProb);
-            double a = AccuracyCalculator.accuracy(correct,resultsCall);
-            return a;
+            switch (method)
+            {
+                case Correlation:
+                    return AccuracyCalculator.correlation(correct,resultsCall);
+                case Accuracy:
+                default:
+                    return AccuracyCalculator.accuracy(correct,resultsCall);
+            }
         }    
     
+        private AccuracyMethod method;
         private int maxDepth;
         private ProbToCall p2c;
         private List<SingleGenotypeCall> correct;

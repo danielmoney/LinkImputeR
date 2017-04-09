@@ -166,6 +166,39 @@ public class PrintStats
                 }
                 prettyWriter.println();
             }
+            
+            prettyWriter.println();
+            prettyWriter.println();
+            prettyWriter.println();
+            
+            //TOTAL
+            prettyWriter.print("Overall corrrelation: " + dformat(stats.correlation()) + "\t(" + iformat(stats.total()) + ")");
+            if (partial)
+            {
+                prettyWriter.print("\t\t[" + dformat(cstats.correlation()) + "/" + dformat(istats.correlation()) + "]");
+            }
+            prettyWriter.println();
+            prettyWriter.println();
+            
+            //BY DEPTH
+            prettyWriter.println("By depth");
+            for (int i = 0; i <= maxDepth; i++)
+            {
+                prettyWriter.print(i + "\t" + dformat(stats.depthCorrelation(i)) + "\t(" + iformat(stats.depthTotal(i)) + ")");
+                if (partial)
+                {
+                    if (i == 0)
+                    {
+                        prettyWriter.print("\t\t[-.----/" + dformat(istats.depthCorrelation(i)) + "]");
+                    }
+                    else
+                    {
+                        prettyWriter.print("\t\t[" + dformat(cstats.depthCorrelation(i)) + "/" + dformat(istats.depthCorrelation(i)) + "]");
+                    }
+                }
+                prettyWriter.println();
+            }
+            prettyWriter.println();
 
             prettyWriter.close();
         }
@@ -177,7 +210,7 @@ public class PrintStats
                     new FileWriter(depth)));
             for (int i = 0; i <= maxDepth; i++)
             {
-                depthWriter.println(i + "\t" + stats.depthAccuracy(i));
+                depthWriter.println(i + "\t" + stats.depthAccuracy(i) + "\t" + stats.depthCorrelation(i));
             }
             depthWriter.close();
         }

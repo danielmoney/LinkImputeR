@@ -18,6 +18,7 @@
 package Imputers;
 
 import Accuracy.AccuracyCalculator;
+import Accuracy.AccuracyCalculator.AccuracyMethod;
 import Utils.Correlation.Correlation;
 import Utils.Correlation.Pearson;
 import Utils.Matrix;
@@ -54,6 +55,8 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
     public KnniLDProbOptimizedCalls(int knownDepth)
     {
         this.knownDepth = knownDepth;
+        this.method = AccuracyMethod.Accuracy;
+        ///HERE
     }
     
     /**
@@ -63,6 +66,8 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
     public KnniLDProbOptimizedCalls(HierarchicalConfiguration<ImmutableNode> params)
     {
         knownDepth = params.getInt("knowndepth");
+        this.method = AccuracyMethod.Accuracy;
+        ///HERE
     }
     
     
@@ -98,7 +103,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
             sim[e.getKey()] = e.getValue();
         }
         
-        Opt opt = new Opt(original,sim,maskedprobs,list,correct);
+        Opt opt = new Opt(original,sim,maskedprobs,list,correct,method);
         
         int[] min = {1,1};
         int[] max = {original.length,100};
@@ -124,6 +129,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
         return config;
     }
     
+    private AccuracyMethod method;
     private final int knownDepth;
     
     private class Opt implements MultipleIntegerValue
@@ -131,7 +137,8 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
         public Opt(byte[][] original, int[][] sim,
                 List<SingleGenotypeProbability> maskedprobs,
                 List<SingleGenotypeMasked> list,
-                List<SingleGenotypeCall> correct)
+                List<SingleGenotypeCall> correct,
+                AccuracyMethod method)
         {
             this.original = original;
             this.sim = sim;
@@ -146,7 +153,14 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
             KnniLDProb knni = new KnniLDProb(params[0],params[1],knownDepth);
             List<SingleGenotypeProbability> resultsProb = knni.impute(original,maskedprobs,list,sim);
             List<SingleGenotypeCall> resultsCall = p2c.call(resultsProb);
-            return AccuracyCalculator.accuracy(correct,resultsCall);
+            switch (method)
+            {
+                case Correlation:
+                    return AccuracyCalculator.correlation(correct,resultsCall);
+                case Accuracy:
+                default:
+                    return AccuracyCalculator.accuracy(correct,resultsCall);
+            }
         }    
         
         private byte[][] original;

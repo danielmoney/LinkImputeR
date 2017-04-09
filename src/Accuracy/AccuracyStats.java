@@ -20,9 +20,6 @@ package Accuracy;
 import java.util.Map;
 import java.util.TreeMap;
 
-///MAKE ABSTRACT?  KEEP CODE HERE FIR CORRECT IMPLEMENTATION, ADD NEW
-// IMPLEMENTATION FOR CORRELATION?
-
 /**
  * Represents accuracy statistics 
  * @author Daniel Money
@@ -41,15 +38,14 @@ public class AccuracyStats
     
     synchronized void add(byte original, byte imputed, int depth)
     {
-        boolean correct = (original == imputed);
-        total.add(correct);
-        byDepth.add(depth, correct);
-        byGeno.add(original,correct);
+        total.add(original,imputed);
+        byDepth.add(depth, original, imputed);
+        byGeno.add(original, original, imputed);
         if (!byDepthGeno.containsKey(depth))
         {
             byDepthGeno.put(depth, new CorrectCountMap());
         }
-        byDepthGeno.get(depth).add(original,correct);
+        byDepthGeno.get(depth).add(original,original,imputed);
         maxDepth = Math.max(depth, maxDepth);
     }
     
@@ -62,6 +58,11 @@ public class AccuracyStats
         return total.getAccuracy();
     }
     
+    public double correlation()
+    {
+        return total.getCorrelation();
+    }
+    
     /**
      * Returns teh accuracy for a certain depth (number of reads)
      * @param depth The depth to return the accuracy for
@@ -72,6 +73,18 @@ public class AccuracyStats
         if (byDepth.has(depth))
         {
             return byDepth.get(depth).getAccuracy();
+        }
+        else
+        {
+            return -1.0;
+        }
+    }
+    
+    public double depthCorrelation(int depth)
+    {
+        if (byDepth.has(depth))
+        {
+            return byDepth.get(depth).getCorrelation();
         }
         else
         {
@@ -260,9 +273,14 @@ public class AccuracyStats
     
     private class CorrectCount
     {
+        public CorrectCount()
+        {
+            counts = new int[3][3];
+        }
+        
         public int getCorrect()
         {
-            return c;
+            return counts[0][0] + counts[1][1] + counts[2][2];
         }
         
         public int getTotal()
@@ -272,20 +290,44 @@ public class AccuracyStats
         
         public double getAccuracy()
         {
-            return (double) c / (double) t;
+            return (double) getCorrect() / (double) t;
         }
         
-        public void add(boolean correct)
+        public double getCorrelation()
+        {
+            int tota = counts[1][0] + counts[1][1] + counts[1][2] +
+                2 * (counts[2][0] + counts[2][1] + counts[2][2]);
+            double meana = (double) tota / (double) t;
+        
+            int totb = counts[0][1] + counts[1][1] + counts[2][1] +
+                2 * (counts[0][2] + counts[1][2] + counts[2][2]);
+            double meanb = (double) totb / (double) t;
+            
+            double xy = 0.0;
+            double xx = 0.0;
+            double yy = 0.0;
+        
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    xy += (double) counts[i][j] * ((double) i - meana) * ((double) j - meanb);
+                    xx += (double) counts[i][j] * ((double) i - meana) * ((double) i - meana);
+                    yy += (double) counts[i][j] * ((double) j - meanb) * ((double) j - meanb);
+                }
+            }
+
+            return (xy * xy) / (xx * yy);
+        }
+        
+        public void add(byte original, byte imputed)
         {
             t++;
-            if (correct)
-            {
-                c++;
-            }
+            counts[original][imputed] ++;
         }
         
-        private int c;
-        private int t;
+        int[][] counts;
+        int t;
     }
     
     private class CorrectCountMap
@@ -295,13 +337,13 @@ public class AccuracyStats
             map = new TreeMap<>();
         }
         
-        public void add(int i, boolean correct)
+        public void add(int i, byte original, byte imputed)
         {
             if (!map.containsKey(i))
             {
                 map.put(i,new CorrectCount());
             }
-            map.get(i).add(correct);
+            map.get(i).add(original, imputed);
         }
         
         public boolean has(int i)

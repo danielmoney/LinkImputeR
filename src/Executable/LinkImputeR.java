@@ -307,6 +307,18 @@ public class LinkImputeR
                 c.getPrintStats().writeStats(stats, cstats, istats);
                 writeSum(sum,c,vcf,stats,cstats,istats,partial);
                 writeTable(table,c,vcf,stats,cstats,istats,partial);
+
+        
+//                List<SingleGenotypeProbability> combinedProb = combiner.combine(calledProb, imputedProb, maskedReads);
+//                List<SingleGenotypeCall> combinedGeno = p2c.call(combinedProb);
+//
+//                List<SingleGenotypeCall> correct = correctCalls;
+//                AccuracyStats stats = AccuracyCalculator.accuracyStats(correct, combinedGeno, mask.maskedList());
+//                AccuracyStats cstats = AccuracyCalculator.accuracyStats(correct, calledGeno, mask.maskedList());
+//                AccuracyStats istats = AccuracyCalculator.accuracyStats(correct, imputedGeno, mask.maskedList());
+//                c.getPrintStats().writeStats(stats, cstats, istats);
+//                writeSum(sum,c,vcf,stats,cstats,istats,partial);
+//                writeTable(table,c,vcf,stats,cstats,istats,partial);
                 
                 //ADD IMPUTE CONFIG
                 outConfig.add(c.getImputeConfig(caller, imputer, combiner));
@@ -646,6 +658,8 @@ public class LinkImputeR
         sum.print("\t");
         sum.print(dforms.format(stats.accuracy()));
         sum.print("\t");
+        sum.print(dforms.format(stats.correlation()));
+        sum.print("\t");
         sum.print(c.getFilterSummary());
         sum.print("\t");
         sum.print(c.getAdditional());
@@ -656,6 +670,12 @@ public class LinkImputeR
             sum.print(dforms.format(cstats.accuracy()));
             sum.print("/");
             sum.print(dforms.format(istats.accuracy()));
+            sum.print("]");
+            
+            sum.print("\t[");
+            sum.print(dforms.format(cstats.correlation()));
+            sum.print("/");
+            sum.print(dforms.format(istats.correlation()));
             sum.print("]");
         }
         
@@ -673,12 +693,20 @@ public class LinkImputeR
         sum.print("\t");
         sum.print(dforms.format(0.0));
         sum.print("\t");
+        sum.print(dforms.format(0.0));
+        sum.print("\t");
         sum.print(c.getFilterSummary());
         sum.print("\t");
         sum.print(c.getAdditional());
         
         if (partial)
         {
+            sum.print("\t[");
+            sum.print(dforms.format(0.0));
+            sum.print("/");
+            sum.print(dforms.format(0.0));
+            sum.print("]");
+            
             sum.print("\t[");
             sum.print(dforms.format(0.0));
             sum.print("/");
@@ -709,6 +737,17 @@ public class LinkImputeR
                 table.print("\t");
                 table.print(dforms.format(istats.accuracy()));
             }
+            
+            table.print("\t");
+            table.print(dforms.format(stats.correlation()));
+
+            if (partial)
+            {
+                table.print("\t");
+                table.print(dforms.format(cstats.correlation()));
+                table.print("\t");
+                table.print(dforms.format(istats.correlation()));
+            }
 
             table.println();
             table.flush();
@@ -717,10 +756,10 @@ public class LinkImputeR
     
     private static void writeSumHeader(PrintWriter sum, boolean partial)
     {
-        sum.print("Name\tSamples\tPositions\tAccuracy\tFilters\tAdditional");
+        sum.print("Name\tSamples\tPositions\tAccuracy\tCorrelation\tFilters\tAdditional");
         if (partial)
         {
-            sum.print("\tPartials");
+            sum.print("\tPartials (Accuracy)\tParials (Correlation)");
         }
         sum.println();
     }

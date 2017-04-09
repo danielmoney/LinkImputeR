@@ -53,6 +53,47 @@ public class AccuracyCalculator
             (correct.get(i).getCall() == compareTo.get(i).getCall()) ? 1.0 : 0.0).average().orElse(0.0);
     }
     
+    public static double correlation(List<SingleGenotypeCall> correct, List<SingleGenotypeCall> compareTo)
+    {
+        if (!SingleGenotypePosition.samePositions(correct, compareTo))
+        {
+            //SHOULD DO SOMETHING PROPER HERE
+            throw new RuntimeException();
+        }
+        
+        int[][] counts = new int[3][3];
+        int c = 0;
+        for (int i = 0; i < correct.size(); i++)
+        {
+            counts[correct.get(i).getCall()][compareTo.get(i).getCall()] ++;
+            c ++;
+        }
+        
+        int tota = counts[1][0] + counts[1][1] + counts[1][2] +
+                2 * (counts[2][0] + counts[2][1] + counts[2][2]);
+        double meana = (double) tota / (double) c;
+        
+        int totb = counts[0][1] + counts[1][1] + counts[2][1] +
+                2 * (counts[0][2] + counts[1][2] + counts[2][2]);
+        double meanb = (double) totb / (double) c;
+        
+        double xy = 0.0;
+        double xx = 0.0;
+        double yy = 0.0;
+        
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                xy += (double) counts[i][j] * ((double) i - meana) * ((double) j - meanb);
+                xx += (double) counts[i][j] * ((double) i - meana) * ((double) i - meana);
+                yy += (double) counts[i][j] * ((double) j - meanb) * ((double) j - meanb);
+            }
+        }
+        
+        return (xy * xy) / (xx * yy);
+    }
+    
     /**
      * Calculates various statistics concerning the genotypes called correctly
      * @param correct The correct egnotypes
@@ -76,5 +117,11 @@ public class AccuracyCalculator
             stats.add(correct.get(i).getCall(), compareTo.get(i).getCall(), depths.get(i).getMaskedDepth()));
         
         return stats;
+    }
+    
+    public enum AccuracyMethod
+    {
+        Accuracy,
+        Correlation
     }
 }

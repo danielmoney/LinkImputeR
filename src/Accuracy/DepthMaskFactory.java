@@ -78,7 +78,7 @@ public class DepthMaskFactory
         ComparableDistribution<Integer> fulldist = Arrays.stream(readCounts).parallel().flatMap(rc -> Arrays.stream(rc).map(r -> r[0] + r[1])).collect(new ComparableDistributionCollector<>());
         ComparableDistribution<Integer> dist = fulldist.limitTo(0, limitDist);
         
-        return new DepthMask(readCounts,number,minDepth,dist);
+        return new DepthMask(readCounts,number,minDepth,dist,method);
     }
     
     /**

@@ -395,7 +395,7 @@ public class LinkImputeR
         Input o = new Input(input, inputfilters, save);        
         xml.add(o.getConfig());
         
-        String sampleMethod = config.getString("Accuracy.samplemethod","all");
+        String sampleMethod = config.getString("Accuracy.maskmethod","all");
         Method sm;
         switch (sampleMethod)
         {

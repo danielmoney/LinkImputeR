@@ -52,11 +52,10 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
      * @param knownDepth The read depth above which imputation is not performed
      * and the called probabilities are used instead
      */
-    public KnniLDProbOptimizedCalls(int knownDepth)
+    public KnniLDProbOptimizedCalls(int knownDepth, AccuracyMethod method)
     {
         this.knownDepth = knownDepth;
-        this.method = AccuracyMethod.Accuracy;
-        ///HERE
+        this.method = method;
     }
     
     /**
@@ -66,8 +65,15 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
     public KnniLDProbOptimizedCalls(HierarchicalConfiguration<ImmutableNode> params)
     {
         knownDepth = params.getInt("knowndepth");
-        this.method = AccuracyMethod.Accuracy;
-        ///HERE
+        switch(params.getString("method","correct").toLowerCase())
+        {
+            case "correct":
+                method = AccuracyMethod.CORRECT;
+                break;
+            case "correlation":
+                method = AccuracyMethod.CORRELATION;
+                break;
+        }
     }
     
     
@@ -121,9 +127,23 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
     {        
         ImmutableNode Iknowndepth = new ImmutableNode.Builder().name("knowndepth").value(knownDepth).create();
         
+        String m;
+        switch (method)
+        {
+            case CORRELATION:
+                m = "correlation";
+                break;
+            default:
+                m = "correct";
+                break;
+        }
+        
+        ImmutableNode Imethod = new ImmutableNode.Builder().name("method").value(m).create();
+        
         ImmutableNode config = new ImmutableNode.Builder().name("imputation")
                 .addAttribute("name", "KnniLDOpt")
                 .addChild(Iknowndepth)
+                .addChild(Imethod)
                 .create();
         
         return config;
@@ -155,9 +175,9 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
             List<SingleGenotypeCall> resultsCall = p2c.call(resultsProb);
             switch (method)
             {
-                case Correlation:
+                case CORRELATION:
                     return AccuracyCalculator.correlation(correct,resultsCall);
-                case Accuracy:
+                case CORRECT:
                 default:
                     return AccuracyCalculator.accuracy(correct,resultsCall);
             }

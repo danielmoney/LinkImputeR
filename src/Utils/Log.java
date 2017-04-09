@@ -125,7 +125,7 @@ public class Log
             case "brief":
                 loglevel = Level.BRIEF;
                 break;
-            case "detai":
+            case "detail":
                 loglevel = Level.DETAIL;
                 break;
             case "debug":

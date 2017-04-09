@@ -121,7 +121,7 @@ public class AccuracyCalculator
     
     public enum AccuracyMethod
     {
-        Accuracy,
-        Correlation
+        CORRECT,
+        CORRELATION
     }
 }

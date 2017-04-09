@@ -18,8 +18,10 @@
 package Executable;
 
 import Accuracy.AccuracyCalculator;
+import Accuracy.AccuracyCalculator.AccuracyMethod;
 import Accuracy.AccuracyStats;
 import Accuracy.DepthMask;
+import Accuracy.DepthMask.Method;
 import Accuracy.DepthMaskFactory;
 import Callers.BinomialCaller;
 import Callers.Caller;
@@ -393,7 +395,7 @@ public class LinkImputeR
         Input o = new Input(input, inputfilters, save);        
         xml.add(o.getConfig());
         
-        DepthMaskFactory dmf = new DepthMaskFactory(10000,30,maxDepth);
+        DepthMaskFactory dmf = new DepthMaskFactory(10000,30,maxDepth,Method.ALL);
         xml.add(dmf.getConfig());
         
         Caller caller = new BinomialCaller(error);
@@ -471,8 +473,8 @@ public class LinkImputeR
                 cases = newcases;
             }
             
-            ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth));
-            CombinerOption combiner = new CombinerOption(new MaxDepthCombinerOptimizedCalls(depth));
+            ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth,AccuracyMethod.CORRECT));
+            CombinerOption combiner = new CombinerOption(new MaxDepthCombinerOptimizedCalls(depth,AccuracyMethod.CORRECT));
 
             for (List<VCFFilter> filters: cases)
             {

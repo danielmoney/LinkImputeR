@@ -41,11 +41,10 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
      * Constructor
      * @param maxDepth The depth above which only called genotype probabilities are used
      */
-    public MaxDepthCombinerOptimizedCalls(int maxDepth)
+    public MaxDepthCombinerOptimizedCalls(int maxDepth, AccuracyMethod method)
     {
         this.maxDepth = maxDepth;
-        this.method = AccuracyMethod.Accuracy;
-        ///HERE
+        this.method = method;
     }
 
     /**
@@ -55,8 +54,15 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     public MaxDepthCombinerOptimizedCalls(HierarchicalConfiguration<ImmutableNode> params)
     {
         maxDepth = params.getInt("maxdepth");
-        this.method = AccuracyMethod.Accuracy;
-        ///HERE
+        switch(params.getString("method","correct").toLowerCase())
+        {
+            case "correct":
+                method = AccuracyMethod.CORRECT;
+                break;
+            case "correlation":
+                method = AccuracyMethod.CORRELATION;
+                break;
+        }
     }
     
     public MaxDepthCombiner getOptimized(List<SingleGenotypeProbability> called,
@@ -76,8 +82,22 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     {        
         ImmutableNode Imaxdepth = new ImmutableNode.Builder().name("maxdepth").value(maxDepth).create();
         
+        String m;
+        switch (method)
+        {
+            case CORRELATION:
+                m = "correlation";
+                break;
+            default:
+                m = "correct";
+                break;
+        }
+        
+        ImmutableNode Imethod = new ImmutableNode.Builder().name("method").value(m).create();
+        
         ImmutableNode config = new ImmutableNode.Builder().name("combiner")
                 .addChild(Imaxdepth)
+                .addChild(Imethod)
                 .addAttribute("name", "MaxDepthOpt")
                 .create();
         
@@ -114,9 +134,9 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             List<SingleGenotypeCall> resultsCall = p2c.call(resultsProb);
             switch (method)
             {
-                case Correlation:
+                case CORRELATION:
                     return AccuracyCalculator.correlation(correct,resultsCall);
-                case Accuracy:
+                case CORRECT:
                 default:
                     return AccuracyCalculator.accuracy(correct,resultsCall);
             }

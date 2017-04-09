@@ -37,11 +37,12 @@ public class DepthMaskFactory
      * @param minDepth Only mask genotypes with a greater read depth than this
      * @param limitDist The distribution to mask the reads to
      */
-    public DepthMaskFactory(int number, int minDepth, int limitDist)
+    public DepthMaskFactory(int number, int minDepth, int limitDist, Method method)
     {
         this.number = number;
         this.minDepth = minDepth;
         this.limitDist = limitDist;
+        this.method = method;
     }
     
     /**
@@ -53,6 +54,18 @@ public class DepthMaskFactory
         this.number = params.getInt("number");
         this.minDepth = params.getInt("mindepth");
         this.limitDist = params.getInt("limitdist");
+        switch(params.getString("method","all").toLowerCase())
+        {
+            case "all":
+                method = Method.ALL;
+                break;
+            case "bysnp":
+                method = Method.BYSNP;
+                break;
+            case "bysample":
+                method = Method.BYSAMPLE;
+                break;
+        }
     }
     
     /**
@@ -78,10 +91,27 @@ public class DepthMaskFactory
         ImmutableNode Imin = new ImmutableNode.Builder().name("mindepth").value(minDepth).create(); 
         ImmutableNode Ilim = new ImmutableNode.Builder().name("limitdist").value(limitDist).create(); 
         
+        String m;
+        switch (method)
+        {
+            case BYSNP:
+                m = "bysnp";
+                break;
+            case BYSAMPLE:
+                m = "bysample";
+                break;
+            default:
+                m = "all";
+                break;
+        }
+        
+        ImmutableNode Imethod = new ImmutableNode.Builder().name("method").value(m).create();
+        
         return new ImmutableNode.Builder().name("mask")                
-                .addChild(Inum).addChild(Imin).addChild(Ilim).create();
+                .addChild(Inum).addChild(Imin).addChild(Ilim).addChild(Imethod).create();
     }
     
+    private Method method;
     private int number;
     private int minDepth;
     private int limitDist;

@@ -378,7 +378,7 @@ public class LinkImputeR
             {
                 //ADD FILTERS
                 case "maf":
-                    inputfilters.add(new MAFFilter(i.getDouble(null),maxDepth,100));
+                    inputfilters.add(new MAFFilter(i.getDouble(null),8,100));
                     break;
                 case "hw":
                     inputfilters.add(new ParalogHWFilter(error/numSnps,i.getDouble(null)));
@@ -446,7 +446,7 @@ public class LinkImputeR
                     switch (i.getRootElementName())
                     {
                         case "maf":
-                            f = new MAFFilter(Double.parseDouble(opt),depth,100);
+                            f = new MAFFilter(Double.parseDouble(opt),8,100);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);

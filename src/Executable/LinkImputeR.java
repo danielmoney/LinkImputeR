@@ -395,8 +395,35 @@ public class LinkImputeR
         Input o = new Input(input, inputfilters, save);        
         xml.add(o.getConfig());
         
-        DepthMaskFactory dmf = new DepthMaskFactory(10000,30,maxDepth,Method.ALL);
+        String sampleMethod = config.getString("Accuracy.samplemethod","all");
+        Method sm;
+        switch (sampleMethod)
+        {
+            case "bysnp":
+                sm = Method.BYSNP;
+                break;
+            case "bysample":
+                sm = Method.BYSAMPLE;
+                break;
+            default:
+                sm = Method.ALL;
+                break;
+        }
+        int numberMasked = config.getInt("Accuracy.numbermasked", 10000);
+        DepthMaskFactory dmf = new DepthMaskFactory(numberMasked,30,maxDepth,sm);
         xml.add(dmf.getConfig());
+        
+        String accuracyMethod = config.getString("Accuracy.accuracymethod","correct");
+        AccuracyMethod am;
+        switch (accuracyMethod)
+        {
+            case "correlation":
+                am = AccuracyMethod.CORRELATION;
+                break;
+            default:
+                am = AccuracyMethod.CORRECT;
+                break;
+        }
         
         Caller caller = new BinomialCaller(error);
         String statsRoot = config.getString("Stats.root");
@@ -473,8 +500,8 @@ public class LinkImputeR
                 cases = newcases;
             }
             
-            ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth,AccuracyMethod.CORRECT));
-            CombinerOption combiner = new CombinerOption(new MaxDepthCombinerOptimizedCalls(depth,AccuracyMethod.CORRECT));
+            ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth,am));
+            CombinerOption combiner = new CombinerOption(new MaxDepthCombinerOptimizedCalls(depth,am));
 
             for (List<VCFFilter> filters: cases)
             {

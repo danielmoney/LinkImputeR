@@ -278,7 +278,7 @@ public class LinkImputeR
                 
                 Log.detail(c.getName() + ": Combining...");
                 
-                DepthMask validateMask = dmf.getDepthMask(readCounts);
+                DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions());
                 List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
                 
                 List<SingleGenotypeProbability> validateCalledProb = 
@@ -295,7 +295,10 @@ public class LinkImputeR
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS
                 
-                DepthMask testMask = dmf.getDepthMask(readCounts);
+                List<SingleGenotypePosition> ignoredPositions = new ArrayList<>();
+                ignoredPositions.addAll(mask.maskedPositions());
+                ignoredPositions.addAll(validateMask.maskedPositions());
+                DepthMask testMask = dmf.getDepthMask(readCounts,ignoredPositions);
                 List<SingleGenotypeReads> testMaskedReads = getMaskedReads(testMask.maskedList());
                 
                 List<SingleGenotypeProbability> testCalledProb = 

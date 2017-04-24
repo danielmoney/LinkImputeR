@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Creates a mask where reads for some genotypes are masked to a given depth
@@ -42,17 +43,17 @@ public class DepthMask
      */
     public DepthMask(int[][][] depths, int number, int minDepth, int maskTo)
     {
-        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL);
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL,new ArrayList<>());
     }
     
     public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method)
     {
-        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method);
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method,new ArrayList<>());
     }
     
     public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution)
     {
-        this(depths,number,minDepth,maskToDistribution,Method.ALL);
+        this(depths,number,minDepth,maskToDistribution,Method.ALL,new ArrayList<>());
     }
     
     /**
@@ -62,7 +63,8 @@ public class DepthMask
      * @param minDepth Only mask genotypes with more than this number of reads
      * @param maskToDistribution Mask to this distribution of read depths
      */
-    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method)
+    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method,
+            List<SingleGenotypePosition> dontUse)
     {
         ComparableDistribution<Integer> maskTo = maskToDistribution.limitTo(0, minDepth);
         r = new Random();
@@ -84,11 +86,15 @@ public class DepthMask
                         }
                     }
                 }
+                fullList.removeAll(dontUse);
 
-                int flSize = fullList.size();
+                //int flSize = fullList.size();
                 for (int n = 0; n < number; n++)
                 {
-                    selectedList.add(fullList.get(r.nextInt(flSize)));
+                    int selected = r.nextInt(fullList.size());
+                    //selectedList.add(fullList.get(r.nextInt(flSize)));
+                    selectedList.add(fullList.get(selected));
+                    fullList.remove(selected);
                 }
                 break;
             case BYSNP:
@@ -103,6 +109,8 @@ public class DepthMask
                             snpList.add(new SingleGenotypePosition(i,snp));
                         }
                     }
+                    snpList.removeAll(dontUse);
+                    snpList.removeAll(selectedList);
                     
                     if (snpList.size() > 0)
                     {
@@ -122,6 +130,8 @@ public class DepthMask
                             sampleList.add(new SingleGenotypePosition(sample,i));
                         }
                     }
+                    sampleList.removeAll(dontUse);
+                    sampleList.removeAll(selectedList);
                     
                     if (sampleList.size() > 0)
                     {
@@ -189,6 +199,11 @@ public class DepthMask
     public List<SingleGenotypeMasked> maskedList()
     {
         return list;
+    }
+    
+    public List<SingleGenotypePosition> maskedPositions()
+    {
+        return list.stream().map(p -> new SingleGenotypePosition(p.getSample(), p.getSNP())).collect(Collectors.toCollection(ArrayList::new));
     }
     
     /**

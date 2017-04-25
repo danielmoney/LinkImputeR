@@ -277,21 +277,21 @@ public class LinkImputeR
 
                 
                 Log.detail(c.getName() + ": Combining...");
-                
-                DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions());
-                List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
-                
-                List<SingleGenotypeProbability> validateCalledProb = 
-                    caller.call(validateMaskedReads);
-                
-                List<SingleGenotypeProbability> validateImputedProb = 
-                    imputer.impute(origProb,readCounts,validateCalledProb,validateMask.maskedList());
+
+                    DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions());
+                    List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
+
+                    List<SingleGenotypeProbability> validateCalledProb = 
+                        caller.call(validateMaskedReads);
+
+                    List<SingleGenotypeProbability> validateImputedProb = 
+                        imputer.impute(origProb,readCounts,validateCalledProb,validateMask.maskedList());
 
 
-                //COMBINE
-                List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
-                Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls);
-
+                    //COMBINE
+                    List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
+                    Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls);
+                    
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS
                 
@@ -310,7 +310,7 @@ public class LinkImputeR
                 List<SingleGenotypeCall> testImputedGeno = p2c.call(testImputedProb);
                 
                 List<SingleGenotypeCall> testCorrectCalls = p2c.call(caller.call(getOriginalReads(testMask.maskedList())));            
-                List<SingleGenotypeProbability> testCombinedProb = combiner.combine(testCalledProb, testImputedProb, maskedReads);
+                List<SingleGenotypeProbability> testCombinedProb = combiner.combine(testCalledProb, testImputedProb, testMaskedReads);
                 List<SingleGenotypeCall> testCombinedGeno = p2c.call(testCombinedProb);
                 
                 List<SingleGenotypeCall> testCorrect = testCorrectCalls;

@@ -53,7 +53,8 @@ public class AccuracyCalculator
             (correct.get(i).getCall() == compareTo.get(i).getCall()) ? 1.0 : 0.0).average().orElse(0.0);
     }
     
-    public static double correlation(List<SingleGenotypeCall> correct, List<SingleGenotypeCall> compareTo)
+    public static double correlation(List<SingleGenotypeCall> correct, List<SingleGenotypeCall> compareTo,
+                                     List<SingleGenotypeMasked> masked)
     {
         if (!SingleGenotypePosition.samePositions(correct, compareTo))
         {

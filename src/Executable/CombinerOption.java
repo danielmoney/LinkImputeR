@@ -23,6 +23,7 @@ import Combiner.MaxDepthCombinerOptimizedCalls;
 import Combiner.OptimizeCombiner;
 import Exceptions.ProgrammerException;
 import Utils.SingleGenotype.SingleGenotypeCall;
+import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import java.util.List;
@@ -93,7 +94,8 @@ public class CombinerOption
             List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
-            List<SingleGenotypeCall> correct) throws Exception
+            List<SingleGenotypeCall> correct,
+            List<SingleGenotypeMasked> masked) throws Exception
     {
         if (combiner != null)
         {
@@ -101,7 +103,7 @@ public class CombinerOption
         }
         else
         {
-            return opt.getOptimized(called, imputed, reads, correct);
+            return opt.getOptimized(called, imputed, reads, correct, masked);
         }
     }
     

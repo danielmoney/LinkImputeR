@@ -18,6 +18,7 @@
 package Combiner;
 
 import Utils.SingleGenotype.SingleGenotypeCall;
+import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import java.util.List;
@@ -44,7 +45,8 @@ public interface OptimizeCombiner<C extends Combiner>
     public C getOptimized(List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
-            List<SingleGenotypeCall> correct) throws Exception;
+            List<SingleGenotypeCall> correct,
+            List<SingleGenotypeMasked> masked) throws Exception;
     
     /**
      * Get the config for the optimizable combiner

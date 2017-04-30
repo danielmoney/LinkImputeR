@@ -176,7 +176,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
             switch (method)
             {
                 case CORRELATION:
-                    return AccuracyCalculator.correlation(correct,resultsCall);
+                    return AccuracyCalculator.correlation(correct,resultsCall,list);
                 case CORRECT:
                 default:
                     return AccuracyCalculator.accuracy(correct,resultsCall);

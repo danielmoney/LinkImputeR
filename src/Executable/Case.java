@@ -155,9 +155,10 @@ public class Case
     public Combiner getCombiner(List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
-            List<SingleGenotypeCall> correct) throws Exception
+            List<SingleGenotypeCall> correct,
+            List<SingleGenotypeMasked> masked) throws Exception
     {
-        return combiner.getCombiner(called, imputed, reads, correct);
+        return combiner.getCombiner(called, imputed, reads, correct, masked);
     }
     
     /**

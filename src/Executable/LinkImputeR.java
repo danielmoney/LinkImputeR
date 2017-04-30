@@ -292,7 +292,7 @@ public class LinkImputeR
 
                     //COMBINE
                     List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
-                    Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls);
+                    Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls, validateMask.maskedList());
                     
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS

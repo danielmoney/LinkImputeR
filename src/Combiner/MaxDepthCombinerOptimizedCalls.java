@@ -23,6 +23,7 @@ import Utils.Optimize.MultipleTest;
 import Utils.Optimize.SingleDoubleValue;
 import Utils.ProbToCall;
 import Utils.SingleGenotype.SingleGenotypeCall;
+import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import java.util.List;
@@ -68,9 +69,10 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     public MaxDepthCombiner getOptimized(List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
-            List<SingleGenotypeCall> correct) throws Exception
+            List<SingleGenotypeCall> correct,
+            List<SingleGenotypeMasked> masked) throws Exception
     {
-        Opt sco = new Opt(called,imputed,reads,correct,maxDepth,method);
+        Opt sco = new Opt(called,imputed,reads,correct,masked,maxDepth,method);
         
         MultipleTest mt = new MultipleTest(0.01);
         double w = mt.optimize(sco, 0.0, 1.0);
@@ -112,13 +114,16 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
         public Opt(List<SingleGenotypeProbability> called,
                 List<SingleGenotypeProbability> imputed,
                 List<SingleGenotypeReads> reads, 
-                List<SingleGenotypeCall> correct, int maxDepth,
+                List<SingleGenotypeCall> correct,
+                List<SingleGenotypeMasked> masked,
+                int maxDepth,
                 AccuracyMethod method)
         {
             this.called = called;
             this.imputed = imputed;
             this.reads = reads;
             this.correct = correct;
+            this.masked = masked;
             
             this.maxDepth = maxDepth;
             
@@ -135,7 +140,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             switch (method)
             {
                 case CORRELATION:
-                    return AccuracyCalculator.correlation(correct,resultsCall);
+                    return AccuracyCalculator.correlation(correct,resultsCall,masked);
                 case CORRECT:
                 default:
                     return AccuracyCalculator.accuracy(correct,resultsCall);
@@ -145,6 +150,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
         private AccuracyMethod method;
         private int maxDepth;
         private ProbToCall p2c;
+        private List<SingleGenotypeMasked> masked;
         private List<SingleGenotypeCall> correct;
         private List<SingleGenotypeProbability> called;
         private List<SingleGenotypeProbability> imputed;

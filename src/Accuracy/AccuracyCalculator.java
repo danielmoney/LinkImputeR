@@ -114,7 +114,8 @@ public class AccuracyCalculator
         AccuracyStats stats = new AccuracyStats();
         
         IntStream.range(0, correct.size()).forEach(i ->
-            stats.add(correct.get(i).getCall(), compareTo.get(i).getCall(), depths.get(i).getMaskedDepth()));
+            stats.add(correct.get(i).getCall(), compareTo.get(i).getCall(), 
+                    depths.get(i).getMaskedDepth(), depths.get(i).getMaf()));
         
         return stats;
     }

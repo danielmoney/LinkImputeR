@@ -147,7 +147,10 @@ public class DepthMask
             int i = random.getSample();
             int j = random.getSNP();
             
-            list.add(new SingleGenotypeMasked(i,j,depths[i][j],mask(depths[i][j],maskTo.sample())));
+            //NEED TO CHANGE THIS!!!!
+            double maf = 0.0;
+            
+            list.add(new SingleGenotypeMasked(i,j,depths[i][j],mask(depths[i][j],maskTo.sample()),maf));
         }
         
         this.depths = depths;

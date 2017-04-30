@@ -17,6 +17,8 @@
 
 package Accuracy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -36,16 +38,16 @@ public class AccuracyStats
         maxDepth = 0;
     }
     
-    synchronized void add(byte original, byte imputed, int depth)
+    synchronized void add(byte original, byte imputed, int depth, double maf)
     {
-        total.add(original,imputed);
-        byDepth.add(depth, original, imputed);
-        byGeno.add(original, original, imputed);
+        total.add(original,imputed,maf);
+        byDepth.add(depth, original, imputed, maf);
+        byGeno.add(original, original, imputed, maf);
         if (!byDepthGeno.containsKey(depth))
         {
             byDepthGeno.put(depth, new CorrectCountMap());
         }
-        byDepthGeno.get(depth).add(original,original,imputed);
+        byDepthGeno.get(depth).add(original,original,imputed,maf);
         maxDepth = Math.max(depth, maxDepth);
     }
     
@@ -276,6 +278,8 @@ public class AccuracyStats
         public CorrectCount()
         {
             counts = new int[3][3];
+            scaledOriginal = new ArrayList<>();
+            scaledImputed = new ArrayList<>();
         }
         
         public int getCorrect()
@@ -295,6 +299,7 @@ public class AccuracyStats
         
         public double getCorrelation()
         {
+            //NEED TO CHANGE THIS!
             int tota = counts[1][0] + counts[1][1] + counts[1][2] +
                 2 * (counts[2][0] + counts[2][1] + counts[2][2]);
             double meana = (double) tota / (double) t;
@@ -320,12 +325,16 @@ public class AccuracyStats
             return (xy * xy) / (xx * yy);
         }
         
-        public void add(byte original, byte imputed)
+        public void add(byte original, byte imputed, double maf)
         {
             t++;
             counts[original][imputed] ++;
+            scaledOriginal.add((double) original - maf);
+            scaledImputed.add((double) imputed - maf);
         }
         
+        List<Double> scaledOriginal;
+        List<Double> scaledImputed;
         int[][] counts;
         int t;
     }
@@ -337,13 +346,13 @@ public class AccuracyStats
             map = new TreeMap<>();
         }
         
-        public void add(int i, byte original, byte imputed)
+        public void add(int i, byte original, byte imputed, double maf)
         {
             if (!map.containsKey(i))
             {
                 map.put(i,new CorrectCount());
             }
-            map.get(i).add(original, imputed);
+            map.get(i).add(original, imputed, maf);
         }
         
         public boolean has(int i)

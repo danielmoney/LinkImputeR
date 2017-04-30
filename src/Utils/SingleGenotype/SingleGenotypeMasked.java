@@ -34,11 +34,12 @@ public class SingleGenotypeMasked extends SingleGenotypePosition
      * @param original The original read counts
      * @param maskedTo The masked read counts
      */
-    public SingleGenotypeMasked(int sample, int snp, int[] original, int[] maskedTo)
+    public SingleGenotypeMasked(int sample, int snp, int[] original, int[] maskedTo, double maf)
     {
         super(sample,snp);
         this.original = original;
         this.maskedTo = maskedTo;
+        this.maf = maf;
     }
     
     /**
@@ -68,6 +69,12 @@ public class SingleGenotypeMasked extends SingleGenotypePosition
         return original;
     }
     
+    public double getMaf()
+    {
+        return maf;
+    }
+    
     private final int[] original;
     private final int[] maskedTo;
+    private final double maf;
 }

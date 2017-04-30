@@ -20,7 +20,9 @@ package Accuracy;
 import Utils.SingleGenotype.SingleGenotypeCall;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -62,36 +64,22 @@ public class AccuracyCalculator
             throw new RuntimeException();
         }
         
-        int[][] counts = new int[3][3];
-        int c = 0;
-        for (int i = 0; i < correct.size(); i++)
-        {
-            counts[correct.get(i).getCall()][compareTo.get(i).getCall()] ++;
-            c ++;
-        }
+        List<Double> scaledOriginal = IntStream.range(0, correct.size())
+                .mapToObj(i -> correct.get(i).getCall() - masked.get(i).getMaf())
+                .collect(Collectors.toCollection(ArrayList::new));
+        List<Double> scaledImputed = IntStream.range(0, compareTo.size())
+                .mapToObj(i -> compareTo.get(i).getCall() - masked.get(i).getMaf())
+                .collect(Collectors.toCollection(ArrayList::new));
         
-        int tota = counts[1][0] + counts[1][1] + counts[1][2] +
-                2 * (counts[2][0] + counts[2][1] + counts[2][2]);
-        double meana = (double) tota / (double) c;
-        
-        int totb = counts[0][1] + counts[1][1] + counts[2][1] +
-                2 * (counts[0][2] + counts[1][2] + counts[2][2]);
-        double meanb = (double) totb / (double) c;
-        
-        double xy = 0.0;
-        double xx = 0.0;
-        double yy = 0.0;
-        
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                xy += (double) counts[i][j] * ((double) i - meana) * ((double) j - meanb);
-                xx += (double) counts[i][j] * ((double) i - meana) * ((double) i - meana);
-                yy += (double) counts[i][j] * ((double) j - meanb) * ((double) j - meanb);
-            }
-        }
-        
+        double meanx = scaledOriginal.stream().mapToDouble(d -> d).summaryStatistics().getAverage();
+        double meany = scaledImputed.stream().mapToDouble(d -> d).summaryStatistics().getAverage();
+
+        double xx = scaledOriginal.stream().mapToDouble(d -> (d - meanx) * (d - meanx)).sum();
+        double yy = scaledImputed.stream().mapToDouble(d -> (d - meany) * (d - meany)).sum();
+        double xy = IntStream.range(0, scaledOriginal.size())
+                .mapToDouble(i -> (scaledOriginal.get(i) - meanx) * (scaledImputed.get(i) - meany))
+                .sum();            
+       
         return (xy * xy) / (xx * yy);
     }
     

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 /**
  * Represents accuracy statistics 
@@ -299,29 +300,15 @@ public class AccuracyStats
         
         public double getCorrelation()
         {
-            //NEED TO CHANGE THIS!
-            int tota = counts[1][0] + counts[1][1] + counts[1][2] +
-                2 * (counts[2][0] + counts[2][1] + counts[2][2]);
-            double meana = (double) tota / (double) t;
-        
-            int totb = counts[0][1] + counts[1][1] + counts[2][1] +
-                2 * (counts[0][2] + counts[1][2] + counts[2][2]);
-            double meanb = (double) totb / (double) t;
+            double meanx = scaledOriginal.stream().mapToDouble(d -> d).summaryStatistics().getAverage();
+            double meany = scaledImputed.stream().mapToDouble(d -> d).summaryStatistics().getAverage();
             
-            double xy = 0.0;
-            double xx = 0.0;
-            double yy = 0.0;
-        
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    xy += (double) counts[i][j] * ((double) i - meana) * ((double) j - meanb);
-                    xx += (double) counts[i][j] * ((double) i - meana) * ((double) i - meana);
-                    yy += (double) counts[i][j] * ((double) j - meanb) * ((double) j - meanb);
-                }
-            }
-
+            double xx = scaledOriginal.stream().mapToDouble(d -> (d - meanx) * (d - meanx)).sum();
+            double yy = scaledImputed.stream().mapToDouble(d -> (d - meany) * (d - meany)).sum();
+            double xy = IntStream.range(0, scaledOriginal.size())
+                    .mapToDouble(i -> (scaledOriginal.get(i) - meanx) * (scaledImputed.get(i) - meany))
+                    .sum();            
+            
             return (xy * xy) / (xx * yy);
         }
         

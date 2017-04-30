@@ -17,6 +17,7 @@
 
 package Accuracy;
 
+import Callers.Caller;
 import Utils.Distribution.ComparableDistribution;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Creates a mask where reads for some genotypes are masked to a given depth
@@ -41,19 +43,19 @@ public class DepthMask
      * @param minDepth Only mask genotypes with more than this reqad depth
      * @param maskTo Mask to read depth
      */
-    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo)
+    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Caller caller)
     {
-        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL,new ArrayList<>());
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL,new ArrayList<>(), caller);
     }
     
-    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method)
+    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method, Caller caller)
     {
-        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method,new ArrayList<>());
+        this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method,new ArrayList<>(), caller);
     }
     
-    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution)
+    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Caller caller)
     {
-        this(depths,number,minDepth,maskToDistribution,Method.ALL,new ArrayList<>());
+        this(depths,number,minDepth,maskToDistribution,Method.ALL,new ArrayList<>(), caller);
     }
     
     /**
@@ -64,7 +66,7 @@ public class DepthMask
      * @param maskToDistribution Mask to this distribution of read depths
      */
     public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method,
-            List<SingleGenotypePosition> dontUse)
+            List<SingleGenotypePosition> dontUse, Caller caller)
     {
         ComparableDistribution<Integer> maskTo = maskToDistribution.limitTo(0, minDepth);
         r = new Random();
@@ -147,13 +149,30 @@ public class DepthMask
             int i = random.getSample();
             int j = random.getSNP();
             
-            //NEED TO CHANGE THIS!!!!
-            double maf = 0.0;
+            double maf = calculateMaf(depths, j, caller);
             
             list.add(new SingleGenotypeMasked(i,j,depths[i][j],mask(depths[i][j],maskTo.sample()),maf));
         }
         
         this.depths = depths;
+    }
+    
+    private double calculateMaf(int[][][] depths, int snp, Caller caller)
+    {
+        double d = IntStream.range(0, depths.length)
+                .filter(i -> (depths[i][snp][0] + depths[i][snp][1]) >= 8)
+                .mapToDouble(i -> getDosage(depths[i][snp],caller,snp,i)).average().orElse(0.0);
+        
+        //Convert average dose to allele freq
+        double m = d / 2.0;
+
+        return Math.min(m,1.0-m);
+    }
+    
+    private double getDosage(int[] r, Caller caller, int snp, int sample)
+    {
+        double[] probs = caller.callSingle(r,snp,sample);
+        return 2.0 * probs[0] + probs[1];
     }
         
     private int[] mask(int[] orig, int maskTo)

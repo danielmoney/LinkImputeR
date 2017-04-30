@@ -18,6 +18,7 @@
 package Accuracy;
 
 import Accuracy.DepthMask.Method;
+import Callers.Caller;
 import Utils.Distribution.ComparableDistribution;
 import Utils.Distribution.ComparableDistributionCollector;
 import Utils.SingleGenotype.SingleGenotypePosition;
@@ -76,17 +77,17 @@ public class DepthMaskFactory
      * @param readCounts The reads to mask
      * @return A depth mask
      */
-    public DepthMask getDepthMask(int[][][] readCounts, List<SingleGenotypePosition> dontUse)
+    public DepthMask getDepthMask(int[][][] readCounts, List<SingleGenotypePosition> dontUse, Caller caller)
     {
         ComparableDistribution<Integer> fulldist = Arrays.stream(readCounts).parallel().flatMap(rc -> Arrays.stream(rc).map(r -> r[0] + r[1])).collect(new ComparableDistributionCollector<>());
         ComparableDistribution<Integer> dist = fulldist.limitTo(0, limitDist);
         
-        return new DepthMask(readCounts,number,minDepth,dist,method,dontUse);
+        return new DepthMask(readCounts,number,minDepth,dist,method,dontUse, caller);
     }
     
-    public DepthMask getDepthMask(int[][][] readCounts)
+    public DepthMask getDepthMask(int[][][] readCounts, Caller caller)
     {
-        return getDepthMask(readCounts, new ArrayList<>());
+        return getDepthMask(readCounts, new ArrayList<>(), caller);
     }
     
     /**

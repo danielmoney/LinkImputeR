@@ -260,15 +260,15 @@ public class LinkImputeR
                 //GET READS
                 int[][][] readCounts = vcf.asArrayTransposed("AD", new DepthMapper());
 
+                Caller caller = c.getCaller();
                 Log.detail(c.getName() + ": Masking...");
                 //MASK
-                DepthMask mask = dmf.getDepthMask(readCounts);
+                DepthMask mask = dmf.getDepthMask(readCounts,caller);
                 List<SingleGenotypeReads> maskedReads = getMaskedReads(mask.maskedList());
 
                 Log.detail(c.getName() + ": Calling...");
                 ProbToCall p2c = new ProbToCall();
                 //CALL            
-                Caller caller = c.getCaller();
                 List<SingleGenotypeProbability> calledProb = 
                     caller.call(maskedReads);
 
@@ -280,19 +280,19 @@ public class LinkImputeR
                 
                 Log.detail(c.getName() + ": Combining...");
 
-                    DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions());
-                    List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
+                DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions(),caller);
+                List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
 
-                    List<SingleGenotypeProbability> validateCalledProb = 
-                        caller.call(validateMaskedReads);
+                List<SingleGenotypeProbability> validateCalledProb = 
+                    caller.call(validateMaskedReads);
 
-                    List<SingleGenotypeProbability> validateImputedProb = 
-                        imputer.impute(origProb,readCounts,validateCalledProb,validateMask.maskedList());
+                List<SingleGenotypeProbability> validateImputedProb = 
+                    imputer.impute(origProb,readCounts,validateCalledProb,validateMask.maskedList());
 
 
-                    //COMBINE
-                    List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
-                    Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls, validateMask.maskedList());
+                //COMBINE
+                List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
+                Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls, validateMask.maskedList());
                     
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS
@@ -300,7 +300,7 @@ public class LinkImputeR
                 List<SingleGenotypePosition> ignoredPositions = new ArrayList<>();
                 ignoredPositions.addAll(mask.maskedPositions());
                 ignoredPositions.addAll(validateMask.maskedPositions());
-                DepthMask testMask = dmf.getDepthMask(readCounts,ignoredPositions);
+                DepthMask testMask = dmf.getDepthMask(readCounts,ignoredPositions,caller);
                 List<SingleGenotypeReads> testMaskedReads = getMaskedReads(testMask.maskedList());
                 
                 List<SingleGenotypeProbability> testCalledProb = 

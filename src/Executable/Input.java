@@ -17,6 +17,8 @@
 
 package Executable;
 
+import VCF.Changers.GenotypeChanger;
+import VCF.Changers.MaxDepthNoReadsChanger;
 import VCF.Filters.BiallelicFilter;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.VCFFilter;
@@ -46,13 +48,14 @@ public class Input
      * with the filters applied rather than read it in from scratch and reapply
      * the filters.
      */
-    public Input(File in, List<PositionFilter> filters, File out)
+    public Input(File in, List<PositionFilter> filters, File out, int maxdepth)
     {
         this.in = in;
         this.filters = new ArrayList<>();
         this.filters.add(new BiallelicFilter());
         this.filters.addAll(filters);
         this.out = out;
+        this.maxdepth = maxdepth;
     }
     
     /**
@@ -72,6 +75,8 @@ public class Input
         
         String prettyString = params.getString("save",null);
         out = (prettyString == null) ? null : new File(prettyString);
+        
+        maxdepth = params.getInt("maxdepth",100);
     }
     
     /**
@@ -82,7 +87,9 @@ public class Input
      */
     public VCF getVCF() throws IOException
     {
-        VCF vcf = new VCF(in,filters);
+        List<GenotypeChanger> changers = new ArrayList<>();
+        changers.add(new MaxDepthNoReadsChanger(maxdepth));
+        VCF vcf = new VCF(in,changers,filters);
         if (out != null)
         {
             vcf.writeFile(out);
@@ -110,7 +117,10 @@ public class Input
         {
             ImmutableNode Iout = new ImmutableNode.Builder().name("save").value(out).create();
             config.addChild(Iout);
-        }        
+        }
+        
+        ImmutableNode Imax = new ImmutableNode.Builder().name("maxdepth").value(maxdepth).create();
+        config.addChild(Imax);
         
         return config.create();
     }
@@ -142,7 +152,7 @@ public class Input
         }
     }
     
-    
+    private int maxdepth;
     private File in;
     private List<PositionFilter> filters;
     private File out;

@@ -39,6 +39,8 @@ import Utils.SingleGenotype.SingleGenotypePosition;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import VCF.ByteToGeno;
+import VCF.Changers.GenotypeChanger;
+import VCF.Changers.MaxDepthNoReadsChanger;
 import VCF.Filters.MAFFilter;
 import VCF.Filters.ParalogHWFilter;
 import VCF.Filters.PositionFilter;
@@ -402,8 +404,9 @@ public class LinkImputeR
         
         String saveString = config.getString("Input.save",null);
         File save = (saveString == null) ? null : new File(saveString);
+        int maxInDepth = config.getInt("Input.maxdepth",100);
         
-        Input o = new Input(input, inputfilters, save);        
+        Input o = new Input(input, inputfilters, save,maxInDepth);        
         xml.add(o.getConfig());
         
         String sampleMethod = config.getString("Accuracy.maskmethod","all");

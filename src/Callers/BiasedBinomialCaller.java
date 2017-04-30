@@ -72,13 +72,9 @@ public class BiasedBinomialCaller extends Caller
         {
             double[] probs = new double[3];
 
-            int reads = d[0] + d[1];
-
-            BinomialDistribution homoDist = new BinomialDistribution(null,reads, 1.0 - error);
-
-            double l0 = homoDist.probability(d[0]);
-            double l1 = (new BinomialDistribution(null,reads,bias)).probability(d[0]);
-            double l2 = homoDist.probability(d[1]);
+            double l0 = Math.pow(1-error,d[0]) * Math.pow(error,d[1]);
+            double l1 = Math.pow(bias,d[0]) * Math.pow(1-bias,d[1]);
+            double l2 = Math.pow(error,d[0]) * Math.pow(1-error,d[1]);
 
             double totall = l0 + l1 + l2;
 

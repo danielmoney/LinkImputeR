@@ -18,8 +18,10 @@
 
 package VCF.Filters;
 
+import Callers.BinomialCaller;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
+import java.util.Arrays;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.configuration2.tree.ImmutableNode.Builder;
@@ -40,12 +42,14 @@ public class MAFFilter extends PositionFilter
      * @param maxDepth A genotype must have less than (or equal) this number of 
      * reads to be used in the MAF calculation
      */
-    public MAFFilter(double maf, int minDepth, int maxDepth)
+    public MAFFilter(double maf, int minDepth, int maxDepth, double error)
     {
         this.maf = maf;
         /* A read depth of zero breaks the filter so set it to one in this case */
         this.minDepth = Math.max(1,minDepth);
         this.maxDepth = maxDepth;
+        this.error = error;
+        caller = new BinomialCaller(error);
     }
 
     /**
@@ -58,16 +62,21 @@ public class MAFFilter extends PositionFilter
         /* A read depth of zero breaks the filter so set it to one in this case */
         this.minDepth = Math.max(1,params.getInt("mindepth"));
         this.maxDepth = params.getInt("maxdepth");
+        this.error = params.getDouble("error");
+        caller = new BinomialCaller(error);
     }
 
     public boolean test(Position p)
     {
         DepthMapper dm = new DepthMapper();
-        double m = p.genotypeStream().map(g -> dm.map(g.getData("AD"))).filter(r ->
+        double d = p.genotypeStream().map(g -> dm.map(g.getData("AD"))).filter(r ->
         {
             int trc = r[0] + r[1];
             return ((trc >= minDepth) && (trc <= maxDepth));
-        }).mapToDouble(r -> ((double) r[1]) / ((double) (r[0] + r[1]))).average().orElse(0.0);
+        }).mapToDouble(r -> getDosage(r)).average().orElse(0.0);
+        
+        //Convert average dose to allele freq
+        double m = d / 2.0;
 
         return (Math.min(m,1.0-m) > maf);
     }
@@ -77,11 +86,13 @@ public class MAFFilter extends PositionFilter
         ImmutableNode Imaf = new Builder().name("maf").value(maf).create();
         ImmutableNode Imindepth = new Builder().name("mindepth").value(minDepth).create();
         ImmutableNode Imaxdepth = new Builder().name("maxdepth").value(maxDepth).create();
+        ImmutableNode Ierror = new Builder().name("error").value(error).create();
         
         ImmutableNode config = new Builder().name("filter")
                 .addChild(Imaf)
                 .addChild(Imindepth)
                 .addChild(Imaxdepth)
+                .addChild(Ierror)
                 .addAttribute("name", "MAF")
                 .create();
         
@@ -92,7 +103,15 @@ public class MAFFilter extends PositionFilter
     {
         return "MAF(" + maf + ")";
     }
+    
+    private double getDosage(int[] r)
+    {
+        double[] probs = caller.callSingle(r);
+        return 2.0 * probs[0] + probs[1];
+    }
 
+    private BinomialCaller caller;
+    private double error;
     private int minDepth;
     private int maxDepth;
     private double maf;

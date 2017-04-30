@@ -65,8 +65,7 @@ public class BiasedBinomialCaller extends Caller
         }
     }
     
-    // Coded as a seperate function for possible future uses but for now private
-    private double[] callSingle(int[] d)
+    public double[] callSingle(int[] d)
     {
         if ((d[0] + d[1]) != 0)
         {

@@ -110,7 +110,7 @@ public class LinkImputeR
                     accuracy(c);
                     break;
                 case "-v":
-                    System.out.println("LinkImputeR version 0.9.2");
+                    System.out.println("LinkImputeR version 1.0");
                     break;
                 case "-h":
                     //NEED TO WRITE HELP!

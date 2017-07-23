@@ -25,19 +25,26 @@ import VCF.Mappers.ByteMapper;
 import VCF.Mappers.DoubleMapper;
 import VCF.Mappers.IntegerMapper;
 import VCF.Mappers.Mapper;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -86,7 +93,14 @@ public class VCF
         BufferedReader in;
         try
         {
-            in = new BufferedReader(new FileReader(f));
+            if (f.getName().endsWith(".gz"))
+            {
+                in = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))));
+            }
+            else
+            {
+                in = new BufferedReader(new FileReader(f));
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -365,7 +379,15 @@ public class VCF
      */
     public void writeFile(File f) throws IOException
     {
-        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+        PrintWriter out;
+        if (f.getName().endsWith(".gz"))
+        {
+            out = new PrintWriter(new OutputStreamWriter(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(f)))));
+        }
+        else
+        {
+            out = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+        }
         metaStream().forEach(m -> out.println(m));
         
         out.print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");

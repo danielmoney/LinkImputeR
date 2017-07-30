@@ -424,7 +424,8 @@ public class LinkImputeR
                 break;
         }
         int numberMasked = config.getInt("Accuracy.numbermasked", 10000);
-        DepthMaskFactory dmf = new DepthMaskFactory(numberMasked,30,maxDepth,sm);
+        int minMaskDepth = config.getInt("Accuracy.mindepth", 30);
+        DepthMaskFactory dmf = new DepthMaskFactory(numberMasked,minMaskDepth,maxDepth,sm);
         xml.add(dmf.getConfig());
         
         String accuracyMethod = config.getString("Accuracy.accuracymethod","correct");

@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +94,7 @@ public class VCF
         BufferedReader in;
         try
         {
-            if (f.getName().endsWith(".gz"))
+            if (isGZipped(f))
             {
                 in = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))));
             }
@@ -590,4 +591,15 @@ public class VCF
         while (!(line = reader.readLine()).matches("^#[^#].*"));
         return (line.split("\t").length - 9);
     }
+    
+    // Can't believe there's not a better way to do this but google suggest not
+    // From https://stackoverflow.com/questions/30507653
+    private static boolean isGZipped(File f) throws IOException
+    {
+        int magic = 0;
+        RandomAccessFile raf = new RandomAccessFile(f, "r");
+        magic = raf.read() & 0xff | ((raf.read() << 8) & 0xff00);
+        raf.close();
+        return magic == GZIPInputStream.GZIP_MAGIC;
+ }
 }

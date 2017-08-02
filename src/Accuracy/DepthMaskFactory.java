@@ -19,6 +19,7 @@ package Accuracy;
 
 import Accuracy.DepthMask.Method;
 import Callers.Caller;
+import Exceptions.NotEnoughMaskableGenotypesException;
 import Utils.Distribution.ComparableDistribution;
 import Utils.Distribution.ComparableDistributionCollector;
 import Utils.SingleGenotype.SingleGenotypePosition;
@@ -77,7 +78,7 @@ public class DepthMaskFactory
      * @param readCounts The reads to mask
      * @return A depth mask
      */
-    public DepthMask getDepthMask(int[][][] readCounts, List<SingleGenotypePosition> dontUse, Caller caller)
+    public DepthMask getDepthMask(int[][][] readCounts, List<SingleGenotypePosition> dontUse, Caller caller)  throws NotEnoughMaskableGenotypesException
     {
         ComparableDistribution<Integer> fulldist = Arrays.stream(readCounts).parallel().flatMap(rc -> Arrays.stream(rc).map(r -> r[0] + r[1])).collect(new ComparableDistributionCollector<>());
         ComparableDistribution<Integer> dist = fulldist.limitTo(0, limitDist);
@@ -85,7 +86,7 @@ public class DepthMaskFactory
         return new DepthMask(readCounts,number,minDepth,dist,method,dontUse, caller);
     }
     
-    public DepthMask getDepthMask(int[][][] readCounts, Caller caller)
+    public DepthMask getDepthMask(int[][][] readCounts, Caller caller)  throws NotEnoughMaskableGenotypesException
     {
         return getDepthMask(readCounts, new ArrayList<>(), caller);
     }

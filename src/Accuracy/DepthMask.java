@@ -18,6 +18,7 @@
 package Accuracy;
 
 import Callers.Caller;
+import Exceptions.NotEnoughMaskableGenotypesException;
 import Utils.Distribution.ComparableDistribution;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
@@ -43,17 +44,17 @@ public class DepthMask
      * @param minDepth Only mask genotypes with more than this reqad depth
      * @param maskTo Mask to read depth
      */
-    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Caller caller)
+    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL,new ArrayList<>(), caller);
     }
     
-    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method, Caller caller)
+    public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method,new ArrayList<>(), caller);
     }
     
-    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Caller caller)
+    public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,maskToDistribution,Method.ALL,new ArrayList<>(), caller);
     }
@@ -66,7 +67,7 @@ public class DepthMask
      * @param maskToDistribution Mask to this distribution of read depths
      */
     public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method,
-            List<SingleGenotypePosition> dontUse, Caller caller)
+            List<SingleGenotypePosition> dontUse, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         ComparableDistribution<Integer> maskTo = maskToDistribution.limitTo(0, minDepth);
         r = new Random();
@@ -89,6 +90,11 @@ public class DepthMask
                     }
                 }
                 fullList.removeAll(dontUse);
+                
+                if (fullList.size() < number)
+                {
+                    throw new NotEnoughMaskableGenotypesException();
+                }
 
                 //int flSize = fullList.size();
                 for (int n = 0; n < number; n++)

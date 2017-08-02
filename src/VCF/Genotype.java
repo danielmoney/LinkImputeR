@@ -114,11 +114,14 @@ public class Genotype
      * @param name The format of the data to be changed (as a string)
      * @param value The new value
      */
-    public void replaceData(String name, String value)
+    public void replaceData(String name, String value) throws VCFNoDataException
     {
         List<String> format = position.getFormat();
         int pos = format.indexOf(name);
-        //ERROR CHECK - POS = -1
+        if (pos == -1)
+        {
+            throw new VCFNoDataException("No data field called " + name);
+        }
         
         String info = geno.getInfo();
         int start = 0;

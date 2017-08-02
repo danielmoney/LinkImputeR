@@ -36,7 +36,7 @@ public abstract class SampleFilter implements VCFFilter
      */
     public abstract boolean test(Sample s) throws VCFNoDataException;
     
-    public void change(VCF vcf)
+    public void change(VCF vcf) throws VCFNoDataException
     {
         vcf.filterSamples(this);
     }

@@ -24,6 +24,7 @@ import Utils.SingleGenotype.SingleGenotypeCall;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
+import VCF.Exceptions.VCFNoDataException;
 import VCF.Filters.VCFFilter;
 import VCF.VCF;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class Case
      * Apply the filters of this case to a VCF
      * @param vcf The VCF
      */
-    public void applyFilters(VCF vcf)
+    public void applyFilters(VCF vcf) throws VCFNoDataException
     {
         vcf.resetVisible();
         for (VCFFilter f: filters)

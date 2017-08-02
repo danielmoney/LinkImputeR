@@ -20,6 +20,7 @@ package VCF.Filters;
 import Utils.Optimize.GoldenSection;
 import Utils.Optimize.SingleDoubleValue;
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
@@ -61,7 +62,7 @@ public class ParalogHWFilter extends PositionFilter
         cs = new ChiSquaredDistribution(1);
     }
     
-    public boolean test(Position p) throws VCFNoDataException
+    public boolean test(Position p) throws VCFNoDataException, VCFUnexpectedDataException
     {
         double maf = maf(p);
         if (maf == 0.0)
@@ -93,7 +94,7 @@ public class ParalogHWFilter extends PositionFilter
         }
     }
 
-    private final double maf(Position p) throws VCFNoDataException
+    private final double maf(Position p) throws VCFNoDataException, VCFUnexpectedDataException
     {
         DepthMapper dm = new DepthMapper();
         
@@ -150,7 +151,7 @@ public class ParalogHWFilter extends PositionFilter
 
     private class HW implements SingleDoubleValue
     {
-        public HW(Position p, double maf, double error) throws VCFNoDataException
+        public HW(Position p, double maf, double error) throws VCFNoDataException, VCFUnexpectedDataException
         {
             DepthMapper dm = new DepthMapper();
             this.maf = maf;

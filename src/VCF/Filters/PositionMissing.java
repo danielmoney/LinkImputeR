@@ -18,6 +18,7 @@
 package VCF.Filters;
 
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
@@ -54,7 +55,7 @@ public class PositionMissing extends PositionFilter
         this.minDepth = params.getInt("mindepth");
     }
     
-    public boolean test(Position p) throws VCFNoDataException
+    public boolean test(Position p) throws VCFNoDataException, VCFUnexpectedDataException
     {
         DepthMapper dm = new DepthMapper();
 

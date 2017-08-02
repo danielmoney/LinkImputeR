@@ -17,6 +17,8 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
+
 /**
  * Maps from a text string to a double
  * @author Daniel Money
@@ -30,5 +32,5 @@ public interface DoubleMapper
      * @param v The string
      * @return The double
      */
-    public double map(String v);
+    public double map(String v) throws VCFUnexpectedDataException;
 }

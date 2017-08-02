@@ -17,6 +17,8 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
+
 /**
  * Maps from string to object
  * @author Daniel Money
@@ -31,7 +33,7 @@ public interface Mapper<M>
      * @param v The String
      * @return The object
      */
-    public M map(String v);
+    public M map(String v) throws VCFUnexpectedDataException;
 
     /**
      * Get an array of the returned type

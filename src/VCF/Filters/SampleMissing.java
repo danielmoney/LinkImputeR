@@ -18,6 +18,7 @@
 package VCF.Filters;
 
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Sample;
@@ -54,7 +55,7 @@ public class SampleMissing extends SampleFilter
         this.minDepth = params.getInt("mindepth");
     }
     
-    public boolean test(Sample s) throws VCFNoDataException
+    public boolean test(Sample s) throws VCFNoDataException, VCFUnexpectedDataException
     {
         DepthMapper dm = new DepthMapper();
 

@@ -17,6 +17,8 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
+
 /**
  * Maps from a text string to an integer
  * @author Daniel Money
@@ -30,5 +32,5 @@ public interface IntegerMapper
      * @param v The string
      * @return The integer
      */
-    public int map(String v);
+    public int map(String v)  throws VCFUnexpectedDataException;
 }

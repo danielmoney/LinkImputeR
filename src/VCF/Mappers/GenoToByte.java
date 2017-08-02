@@ -17,6 +17,7 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
 import java.util.HashMap;
 
 /**
@@ -37,6 +38,11 @@ public class GenoToByte implements ByteMapper
         map.put("1/0", (byte) 1);
         map.put("1/1", (byte) 2);
         map.put("./.", (byte) -1);
+        map.put("0|0", (byte) 0);
+        map.put("0|1", (byte) 1);
+        map.put("1|0", (byte) 1);
+        map.put("1|1", (byte) 2);
+        map.put(".|.", (byte) -1);
     }
 
     /**
@@ -44,9 +50,16 @@ public class GenoToByte implements ByteMapper
      * @param s The string
      * @return Byte representation
      */
-    public byte map(String s)
+    public byte map(String s) throws VCFUnexpectedDataException
     {
-        return map.get(s);
+        try
+        {
+            return map.get(s);
+        }
+        catch (NullPointerException ex)
+        {
+            throw new VCFUnexpectedDataException(s + " is not a valid genotype ");
+        }
     }
 
     private HashMap<String,Byte> map;

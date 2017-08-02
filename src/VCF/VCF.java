@@ -23,6 +23,7 @@ import VCF.Exceptions.VCFDataLineException;
 import VCF.Exceptions.VCFHeaderLineException;
 import VCF.Exceptions.VCFInputException;
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.SampleFilter;
 import VCF.Mappers.ByteMapper;
@@ -64,7 +65,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f) throws 
-            VCFInputException, VCFNoDataException
+            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
     {
         this(f, new ArrayList<>(), new ArrayList<>());
     }
@@ -78,7 +79,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<PositionFilter> filters) throws 
-            VCFInputException, VCFNoDataException
+            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
     {
         this(f, new ArrayList<>(), filters);
     }
@@ -94,7 +95,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
-            VCFInputException, VCFNoDataException
+            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
     {
         BufferedReader in;
         try
@@ -179,7 +180,7 @@ public class VCF
                             }
                         }
                     }
-                    catch (VCFNoDataException ex)
+                    catch (VCFNoDataException | VCFUnexpectedDataException ex)
                     {
                         //Bit of a fudge for now since these will be removed later
                     }
@@ -350,7 +351,7 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The sample filter to be applied.
      */
-    public void filterSamples(SampleFilter filter) throws VCFNoDataException
+    public void filterSamples(SampleFilter filter) throws VCFNoDataException, VCFUnexpectedDataException
     {
         for (int i = 0; i < samples.length; i++)
         {
@@ -364,7 +365,7 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The position filter to be applied.
      */
-    public void filterPositions(PositionFilter filter) throws VCFNoDataException
+    public void filterPositions(PositionFilter filter) throws VCFNoDataException, VCFUnexpectedDataException
     {
         for (int i = 0; i < positions.length; i++)
         {
@@ -458,7 +459,7 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFNoDataException
+    public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFNoDataException, VCFUnexpectedDataException
     {
         V[][] array = mapper.get2DArray(numberPositions());
         
@@ -493,7 +494,7 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFNoDataException
+    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFNoDataException, VCFUnexpectedDataException
     {
         V[][] array = mapper.get2DArray(numberSamples());
         
@@ -598,7 +599,7 @@ public class VCF
 //                .toArray(size -> new byte[size][]);
 //    }
     
-    private byte[] genotypeToByte(Genotype[] genos, String format, ByteMapper mapper) throws VCFNoDataException
+    private byte[] genotypeToByte(Genotype[] genos, String format, ByteMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
     {
         byte[] bytes = new byte[genos.length];
         for (int i = 0; i < bytes.length; i++)

@@ -18,6 +18,7 @@
 package VCF.Filters;
 
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Position;
 import VCF.VCF;
 
@@ -34,9 +35,9 @@ public abstract class PositionFilter implements VCFFilter
      * @param p The position to test
      * @return Whether this position should be filtered out
      */
-    public abstract boolean test(Position p) throws VCFNoDataException;
+    public abstract boolean test(Position p) throws VCFNoDataException, VCFUnexpectedDataException;
     
-    public void change(VCF vcf) throws VCFNoDataException
+    public void change(VCF vcf) throws VCFNoDataException, VCFUnexpectedDataException
     {
         vcf.filterPositions(this);
     }

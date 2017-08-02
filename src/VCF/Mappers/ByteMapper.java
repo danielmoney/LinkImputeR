@@ -17,6 +17,8 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
+
 /**
  * Maps from a text string to a byte
  * @author Daniel Money
@@ -30,5 +32,5 @@ public interface ByteMapper
      * @param v The string
      * @return The byte
      */
-    public byte map(String v);
+    public byte map(String v)  throws VCFUnexpectedDataException;
 }

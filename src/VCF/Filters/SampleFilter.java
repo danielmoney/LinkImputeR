@@ -18,6 +18,7 @@
 package VCF.Filters;
 
 import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Sample;
 import VCF.VCF;
 
@@ -34,9 +35,9 @@ public abstract class SampleFilter implements VCFFilter
      * @param s The sample to test
      * @return Whether this sample should be filtered out
      */
-    public abstract boolean test(Sample s) throws VCFNoDataException;
+    public abstract boolean test(Sample s) throws VCFNoDataException, VCFUnexpectedDataException;
     
-    public void change(VCF vcf) throws VCFNoDataException
+    public void change(VCF vcf) throws VCFNoDataException, VCFUnexpectedDataException
     {
         vcf.filterSamples(this);
     }

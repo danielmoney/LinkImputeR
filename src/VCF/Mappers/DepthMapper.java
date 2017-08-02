@@ -17,6 +17,8 @@
 
 package VCF.Mappers;
 
+import VCF.Exceptions.VCFUnexpectedDataException;
+
 
 /**
  * Maps from a string representing read depths to an integer array of read depths
@@ -31,7 +33,7 @@ public class DepthMapper implements Mapper<int[]>
      * @param s The string
      * @return The read depths
      */
-    public int[] map(String s)
+    public int[] map(String s) throws VCFUnexpectedDataException
     {
         if (s.equals("."))
         {
@@ -42,7 +44,8 @@ public class DepthMapper implements Mapper<int[]>
         
         if (parts.length != 2)
         {
-            //Throw exception
+            throw new VCFUnexpectedDataException(s + " is not a valid value for depth"
+                    + " (LinkImputer currently only works on biallelic SNPs");
         }
         
         int[] result = new int[parts.length];
@@ -55,7 +58,14 @@ public class DepthMapper implements Mapper<int[]>
             }
             else
             {
-                result[i] = Integer.parseInt(parts[i]);
+                try
+                {
+                    result[i] = Integer.parseInt(parts[i]);
+                }
+                catch (NumberFormatException ex)
+                {
+                    throw new VCFUnexpectedDataException(s + " is not a valid value for depths", ex);
+                }
             }
         }
         

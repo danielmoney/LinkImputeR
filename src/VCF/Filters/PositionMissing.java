@@ -17,6 +17,7 @@
 
 package VCF.Filters;
 
+import VCF.Exceptions.VCFNoDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
@@ -53,13 +54,21 @@ public class PositionMissing extends PositionFilter
         this.minDepth = params.getInt("mindepth");
     }
     
-    public boolean test(Position p)
+    public boolean test(Position p) throws VCFNoDataException
     {
         DepthMapper dm = new DepthMapper();
-        double c = p.genotypeStream().filter((Genotype g) -> {
+
+        int c = 0;
+             
+        for (Genotype g: p.genotypeList())
+        {
             int[] d = dm.map(g.getData("AD"));
-            return ((d[0] + d[1]) < minDepth);
-                }).count();
+            if ((d[0] + d[1]) < minDepth)
+            {
+                c++;
+            }
+        }
+
         double per = (double) c / (double) p.samples().length;
         return per < threshold;
     }

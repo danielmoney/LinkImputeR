@@ -17,6 +17,7 @@
 
 package VCF.Changers;
 
+import VCF.Exceptions.VCFNoDataException;
 import VCF.Genotype;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -38,7 +39,7 @@ public class MinDepthMissingChanger implements GenotypeChanger
         this.depth = depth;
     }
     
-    public void change(Genotype g)
+    public void change(Genotype g) throws VCFNoDataException
     {
         int d = NumberUtils.toInt(g.getData("DP"));
         if (d < depth)

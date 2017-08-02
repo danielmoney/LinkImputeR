@@ -17,6 +17,7 @@
 
 package VCF.Filters;
 
+import VCF.Exceptions.VCFNoDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Sample;
@@ -53,13 +54,21 @@ public class SampleMissing extends SampleFilter
         this.minDepth = params.getInt("mindepth");
     }
     
-    public boolean test(Sample s)
+    public boolean test(Sample s) throws VCFNoDataException
     {
         DepthMapper dm = new DepthMapper();
-        double c = s.genotypeStream().filter((Genotype g) -> {
+
+        int c = 0;
+             
+        for (Genotype g: s.genotypeList())
+        {
             int[] d = dm.map(g.getData("AD"));
-            return ((d[0] + d[1]) < minDepth);
-                }).count();
+            if ((d[0] + d[1]) < minDepth)
+            {
+                c++;
+            }
+        }
+
         double per = (double) c / (double) s.positions().length;
         return per < threshold;
     }

@@ -17,8 +17,10 @@
 
 package VCF;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -88,6 +90,19 @@ public class Position
     {
         return IntStream.range(0, samples.length).filter(i -> sVis[i])
                 .mapToObj(i -> new Genotype(genos[i],meta,samples[i]));
+    }
+    
+    public List<Genotype> genotypeList()
+    {
+        ArrayList<Genotype> list = new ArrayList<>();
+        for (int i = 0; i < samples.length; i++)
+        {
+            if (sVis[i])
+            {
+                list.add(new Genotype(genos[i],meta,samples[i]));
+            }
+        }
+        return list;
     }
     
     /**

@@ -19,8 +19,11 @@ package VCF.Filters;
 
 import Utils.Optimize.GoldenSection;
 import Utils.Optimize.SingleDoubleValue;
+import VCF.Exceptions.VCFNoDataException;
+import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
+import java.util.List;
 import java.util.stream.IntStream;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -58,7 +61,7 @@ public class ParalogHWFilter extends PositionFilter
         cs = new ChiSquaredDistribution(1);
     }
     
-    public boolean test(Position p)
+    public boolean test(Position p) throws VCFNoDataException
     {
         double maf = maf(p);
         if (maf == 0.0)
@@ -90,16 +93,35 @@ public class ParalogHWFilter extends PositionFilter
         }
     }
 
-    private final double maf(Position p)
+    private final double maf(Position p) throws VCFNoDataException
     {
         DepthMapper dm = new DepthMapper();
-        double m = p.genotypeStream().map(g -> dm.map(g.getData("AD"))).filter(r ->
+        
+        double t = 0.0;
+        double c = 0.0;
+             
+        for (Genotype g: p.genotypeList())
         {
+            int[] r = dm.map(g.getData("AD"));
             int trc = r[0] + r[1];
-            return ((trc >= 8) && (trc <= 100));
-        }).mapToDouble(r -> ((double) r[1]) / ((double) (r[0] + r[1]))).average().orElse(0.0);
+            if ((trc >= 8) && (trc <= 100))
+            {
+                t += r[1]/ (r[0] + r[1]);
+                c++;
+            }
+        }
+        
+        double d;
+        if (c > 0)
+        {
+            d = t/c;
+        }
+        else
+        {
+            d = 0.0;
+        }
 
-        return m;
+        return d;
     }
     
     public ImmutableNode getConfig()
@@ -128,11 +150,18 @@ public class ParalogHWFilter extends PositionFilter
 
     private class HW implements SingleDoubleValue
     {
-        public HW(Position p, double maf, double error)
+        public HW(Position p, double maf, double error) throws VCFNoDataException
         {
             DepthMapper dm = new DepthMapper();
             this.maf = maf;
-            partials = p.genotypeStream().map(g -> partial(dm.map(g.getData("AD")),error)).toArray(i -> new double[i][]);
+            //partials = p.genotypeStream().map(g -> partial(dm.map(g.getData("AD")),error)).toArray(i -> new double[i][]);
+            
+            List<Genotype> list = p.genotypeList();
+            partials = new double[list.size()][];
+            for (int i = 0; i < list.size(); i++)
+            {
+               partials[i] = partial(dm.map(list.get(i).getData("AD")),error);
+            }
 
         }
 

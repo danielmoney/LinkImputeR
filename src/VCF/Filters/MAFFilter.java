@@ -19,9 +19,10 @@
 package VCF.Filters;
 
 import Callers.BinomialCaller;
+import VCF.Exceptions.VCFNoDataException;
+import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
-import java.util.Arrays;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.configuration2.tree.ImmutableNode.Builder;
@@ -66,14 +67,33 @@ public class MAFFilter extends PositionFilter
         caller = new BinomialCaller(error);
     }
 
-    public boolean test(Position p)
+    public boolean test(Position p) throws VCFNoDataException
     {
         DepthMapper dm = new DepthMapper();
-        double d = p.genotypeStream().map(g -> dm.map(g.getData("AD"))).filter(r ->
+        
+        double t = 0.0;
+        double c = 0.0;
+             
+        for (Genotype g: p.genotypeList())
         {
+            int[] r = dm.map(g.getData("AD"));
             int trc = r[0] + r[1];
-            return ((trc >= minDepth) && (trc <= maxDepth));
-        }).mapToDouble(r -> getDosage(r)).average().orElse(0.0);
+            if ((trc >= minDepth) && (trc <= maxDepth))
+            {
+                t += getDosage(r);
+                c++;
+            }
+        }
+        
+        double d;
+        if (c > 0)
+        {
+            d = t/c;
+        }
+        else
+        {
+            d = 0.0;
+        }
         
         //Convert average dose to allele freq
         double m = d / 2.0;

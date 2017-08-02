@@ -39,8 +39,8 @@ import Utils.SingleGenotype.SingleGenotypePosition;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import VCF.ByteToGeno;
-import VCF.Changers.GenotypeChanger;
-import VCF.Changers.MaxDepthNoReadsChanger;
+import VCF.Exceptions.VCFNoDataException;
+import VCF.Filters.HasDepthFilter;
 import VCF.Filters.MAFFilter;
 import VCF.Filters.ParalogHWFilter;
 import VCF.Filters.PositionFilter;
@@ -383,6 +383,7 @@ public class LinkImputeR
         
         File input = new File(config.getString("Input.filename"));
         List<PositionFilter> inputfilters = new ArrayList<>();
+        inputfilters.add(new HasDepthFilter());
         
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
@@ -633,7 +634,7 @@ public class LinkImputeR
         }
     }
     
-    private static Position makeNewPosition(Position original, byte[] newGeno, double[][] newProbs)
+    private static Position makeNewPosition(Position original, byte[] newGeno, double[][] newProbs) throws VCFNoDataException
     {
         StringBuilder newFormat = new StringBuilder();
         for (String f: original.meta().getFormat())
@@ -673,7 +674,7 @@ public class LinkImputeR
         return new Position(new PositionMeta(pm),genotypes);
     }
     
-    private static String makeNewGenotype(Genotype original, byte newGeno, double[] probs)
+    private static String makeNewGenotype(Genotype original, byte newGeno, double[] probs) throws VCFNoDataException
     {
         //As we don't ever use the original genotype we should probably check it exists first!
         String oldGeno = original.getData("GT");

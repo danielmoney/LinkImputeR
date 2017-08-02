@@ -17,9 +17,8 @@
 
 package VCF;
 
+import VCF.Exceptions.VCFNoDataException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -69,13 +68,17 @@ public class Genotype
      * @param name The format of the data to be retrieved (as a string)
      * @return The data
      */
-    public String getData(String name)
+    public String getData(String name) throws VCFNoDataException
     {
         List<String> format = position.getFormat();
         int pos = format.indexOf(name);
         
         String info = geno.getInfo();
-        //ERROR CHECK - POS = -1
+        if (pos == -1)
+        {
+            throw new VCFNoDataException("No data field called " + name);
+        }
+        
         if (StringUtils.countMatches(info, ':') < pos)
         {
             return ".";

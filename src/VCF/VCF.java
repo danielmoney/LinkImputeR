@@ -19,11 +19,13 @@ package VCF;
 
 import Exceptions.ProgrammerException;
 import VCF.Changers.GenotypeChanger;
+import VCF.Exceptions.VCFDataLineException;
+import VCF.Exceptions.VCFHeaderLineException;
+import VCF.Exceptions.VCFInputException;
+import VCF.Exceptions.VCFNoDataException;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.SampleFilter;
 import VCF.Mappers.ByteMapper;
-import VCF.Mappers.DoubleMapper;
-import VCF.Mappers.IntegerMapper;
 import VCF.Mappers.Mapper;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -61,7 +63,8 @@ public class VCF
      * @param f The VCF file
      * @throws IOException If there is an IO problem
      */
-    public VCF(File f) throws IOException
+    public VCF(File f) throws 
+            VCFInputException, VCFNoDataException
     {
         this(f, new ArrayList<>(), new ArrayList<>());
     }
@@ -74,7 +77,8 @@ public class VCF
      * @param filters The position filters to apply
      * @throws IOException If there is an IO problem
      */
-    public VCF(File f, List<PositionFilter> filters) throws IOException
+    public VCF(File f, List<PositionFilter> filters) throws 
+            VCFInputException, VCFNoDataException
     {
         this(f, new ArrayList<>(), filters);
     }
@@ -89,7 +93,8 @@ public class VCF
      * @param filters The position filters to apply
      * @throws IOException If there is an IO problem
      */
-    public VCF(File f, List<GenotypeChanger> changers, List<PositionFilter> filters) throws IOException
+    public VCF(File f, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
+            VCFInputException, VCFNoDataException
     {
         BufferedReader in;
         try
@@ -105,10 +110,14 @@ public class VCF
         }
         catch (FileNotFoundException e)
         {
-            throw e;
-            //throw exception or just use that one, who knows!
+            throw new VCFInputException("VCF file (" + f.getPath() + ") does not exist", e);
         }
-        
+        catch (IOException e)
+        {
+            throw new VCFInputException("Problem reading VCF file (" + f.getPath() + ")", e);
+        }
+
+        int lineNumber = 0;        
         try
         {
             ArrayList<PositionMeta> positionList = new ArrayList<>();
@@ -117,6 +126,7 @@ public class VCF
             String line;
             while ((line = in.readLine()) != null)
             {
+                lineNumber ++;
                 if (line.startsWith("##"))
                 {
                     meta.add(line);
@@ -124,11 +134,27 @@ public class VCF
                 else if (line.startsWith("#"))
                 {
                     String[] parts = line.split("\t");
-                    samples = Arrays.copyOfRange(parts,9,parts.length);
+                    try
+                    {
+                        samples = Arrays.copyOfRange(parts,9,parts.length);
+                    }
+                    catch (ArrayIndexOutOfBoundsException | IllegalArgumentException ex)
+                    {
+                        throw new VCFHeaderLineException("Not enough fields in header line", lineNumber);
+                    }
                 }
                 else
                 {
                     String[] parts = line.split("\t");
+                    
+                    if (parts.length < samples.length + 9)
+                    {
+                        throw new VCFDataLineException("Not enough fields in data line", lineNumber);
+                    }
+                    if (parts.length > samples.length + 9)
+                    {
+                        throw new VCFDataLineException("Too many fields in data line", lineNumber);
+                    }
                     
                     String[] metaArray = Arrays.copyOfRange(parts, 0, 9);
                     PositionMeta pm = new PositionMeta(metaArray);
@@ -141,9 +167,29 @@ public class VCF
                     
                     Position p = new Position(pm,samples,data);
                     
-                    p.genotypeStream().forEach(g -> changers.stream().forEach(c -> c.change(g)));
+                    // NEED TO PUT EXCEPTIONS IN THE CHANGERS & FILTERS
                     
-                    if (filters.stream().allMatch(filter -> filter.test(p)))
+                    try
+                    {
+                        for (Genotype g: p.genotypeList())
+                        {
+                            for (GenotypeChanger c: changers)
+                            {
+                                c.change(g);
+                            }
+                        }
+                    }
+                    catch (VCFNoDataException ex)
+                    {
+                        //Bit of a fudge for now since these will be removed later
+                    }
+                    
+                    boolean allmatch = true;
+                    for (PositionFilter filter: filters)
+                    {
+                        allmatch = allmatch && filter.test(p);
+                    }
+                    if (allmatch)
                     {
                         positionList.add(pm);
                         genotypeList.add(data);
@@ -161,8 +207,7 @@ public class VCF
         }
         catch (IOException e)
         {
-            //throw exception or just use that one, who knows!
-            throw e;
+            throw new VCFInputException("Porbleming reading VCF",lineNumber,e);
         }
     }
     
@@ -305,9 +350,12 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The sample filter to be applied.
      */
-        public void filterSamples(SampleFilter filter)
+    public void filterSamples(SampleFilter filter) throws VCFNoDataException
     {
-        IntStream.range(0, samples.length).forEach(i -> sVis[i] = sVis[i] && filter.test(singleSample(i)));
+        for (int i = 0; i < samples.length; i++)
+        {
+            sVis[i] = sVis[i] && filter.test(singleSample(i));
+        }
     }
     
     /**
@@ -316,9 +364,12 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The position filter to be applied.
      */
-    public void filterPositions(PositionFilter filter)
+    public void filterPositions(PositionFilter filter) throws VCFNoDataException
     {
-        IntStream.range(0, positions.length).forEach(i -> pVis[i] = pVis[i] && filter.test(singlePosition(i)));
+        for (int i = 0; i < positions.length; i++)
+        {
+            pVis[i] = pVis[i] && filter.test(singlePosition(i));
+        }
     }
     
     /**
@@ -407,11 +458,31 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArray(String format,Mapper<V> mapper)
+    public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFNoDataException
     {
-        return positionStream().map(p -> 
-                p.genotypeStream().map(g -> mapper.map(g.getData(format))).toArray(size -> mapper.getArray(size)))
-                .toArray(size -> mapper.get2DArray(size));
+        V[][] array = mapper.get2DArray(numberPositions());
+        
+        int cp = 0;
+        for (int i = 0; i < genotypes.length; i++)
+        {
+            if (pVis[i])
+            {
+                int cs = 0;
+                V[] a = mapper.getArray(numberSamples());
+                for (int j = 0; j < genotypes[i].length; j++)
+                {
+                    if (sVis[i])
+                    {
+                        a[cs] = mapper.map(new Genotype(genotypes[i][j],positions[i],samples[j]).getData(format));
+                        cs++;
+                    }
+                }
+                array[cp] = a;
+                cp++;
+            }
+        }
+        
+        return array;
     }
     
     /**
@@ -422,11 +493,31 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper)
+    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFNoDataException
     {
-        return sampleStream().map(s ->
-                s.genotypeStream().map(g -> mapper.map(g.getData(format))).toArray(size -> mapper.getArray(size))).
-                toArray(size -> mapper.get2DArray(size));
+        V[][] array = mapper.get2DArray(numberSamples());
+        
+        int cs = 0;
+        for (int i = 0; i < genotypes[0].length; i++)
+        {
+            if (sVis[i])
+            {
+                int cp = 0;
+                V[] a = mapper.getArray(numberPositions());
+                for (int j = 0; j < genotypes.length; j++)
+                {
+                    if (pVis[j])
+                    {
+                        a[cp] = mapper.map(new Genotype(genotypes[j][i],positions[j],samples[i]).getData(format));
+                        cp++;
+                    }
+                }
+                array[cs] = a;
+                cs++;
+            }
+        }
+        
+        return array;
     }
 
     /**
@@ -435,12 +526,12 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-    public int[][] asIntegerArray(String format,IntegerMapper mapper)
-    {
-        return positionStream().map(p -> 
-                p.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray())
-                .toArray(size -> new int[size][]);
-    }
+//    public int[][] asIntegerArray(String format,IntegerMapper mapper)
+//    {
+//        return positionStream().map(p -> 
+//                p.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray())
+//                .toArray(size -> new int[size][]);
+//    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed integer array
@@ -448,12 +539,12 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper)
-    {
-        return sampleStream().map(s ->
-                s.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray()).
-                toArray(size -> new int[size][]);
-    }
+//    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper)
+//    {
+//        return sampleStream().map(s ->
+//                s.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray()).
+//                toArray(size -> new int[size][]);
+//    }
     
     /**
      * Gets data from the genotypes in the VCF as a double array
@@ -461,12 +552,12 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-    public double[][] asDoubleArray(String format,DoubleMapper mapper)
-    {
-        return positionStream().map(p -> 
-                p.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray())
-                .toArray(size -> new double[size][]);
-    }
+//    public double[][] asDoubleArray(String format,DoubleMapper mapper)
+//    {
+//        return positionStream().map(p -> 
+//                p.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray())
+//                .toArray(size -> new double[size][]);
+//    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed double array
@@ -474,12 +565,12 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper)
-    {
-        return sampleStream().map(s ->
-                s.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray()).
-                toArray(size -> new double[size][]);
-    }
+//    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper)
+//    {
+//        return sampleStream().map(s ->
+//                s.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray()).
+//                toArray(size -> new double[size][]);
+//    }
     
     /**
      * Gets data from the genotypes in the VCF as a byte array
@@ -487,12 +578,12 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-    public byte[][] asByteArray(String format,ByteMapper mapper)
-    {
-        return positionStream().map(p -> 
-                genotypeToByte(p.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
-                .toArray(size -> new byte[size][]);
-    }
+//    public byte[][] asByteArray(String format,ByteMapper mapper)
+//    {
+//        return positionStream().map(p -> 
+//                genotypeToByte(p.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
+//                .toArray(size -> new byte[size][]);
+//    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed byte array
@@ -500,14 +591,14 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)
-    {
-        return sampleStream().map(s -> 
-                genotypeToByte(s.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
-                .toArray(size -> new byte[size][]);
-    }
+//    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)
+//    {
+//        return sampleStream().map(s -> 
+//                genotypeToByte(s.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
+//                .toArray(size -> new byte[size][]);
+//    }
     
-    private byte[] genotypeToByte(Genotype[] genos, String format, ByteMapper mapper)
+    private byte[] genotypeToByte(Genotype[] genos, String format, ByteMapper mapper) throws VCFNoDataException
     {
         byte[] bytes = new byte[genos.length];
         for (int i = 0; i < bytes.length; i++)

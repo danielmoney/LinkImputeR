@@ -17,6 +17,8 @@
 
 package VCF;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -61,6 +63,19 @@ public class Sample
     {
         return IntStream.range(0, positions.length).filter(i -> pVis[i])
                 .mapToObj(i -> new Genotype(genos[i],positions[i],sample));
+    }
+    
+    public List<Genotype> genotypeList()
+    {
+        List<Genotype> list = new ArrayList<>();
+        for (int i = 0; i < positions.length; i++)
+        {
+            if (pVis[i])
+            {
+                list.add(new Genotype(genos[i],positions[i],sample));
+            }
+        }
+        return list;
     }
     
     String sample;

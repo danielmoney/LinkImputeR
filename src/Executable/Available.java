@@ -22,6 +22,7 @@ import Callers.BinomialCaller;
 import Callers.Caller;
 import Exceptions.ProgrammerException;
 import VCF.Filters.BiallelicFilter;
+import VCF.Filters.HasDepthFilter;
 import VCF.Filters.MAFFilter;
 import VCF.Filters.ParalogHWFilter;
 import VCF.Filters.PositionFilter;
@@ -87,6 +88,7 @@ class Available
         pf.add("ParalogHW",ParalogHWFilter::new);
         pf.add("PositionMissing",PositionMissing::new);
         pf.add("BiallelicGap",BiallelicFilter::new);
+        pf.add("HasDepth",HasDepthFilter::new);
         
         // Sample Filters
         sf.add("SampleMissing",SampleMissing::new);

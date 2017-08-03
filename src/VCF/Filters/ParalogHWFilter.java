@@ -72,26 +72,15 @@ public class ParalogHWFilter extends PositionFilter
         HW hw = new HW(p,maf,error);
         GoldenSection gs = new GoldenSection(0.0001,Double.MAX_VALUE);
 
-        try
-        {
-            double min = Math.max(-maf*maf, -(1-maf)*(1-maf));
-            double max = maf*(1-maf);
-            double optd = gs.optimize(hw, min, max);
-            double l0 = hw.value(0.0);
-            double l1 = hw.value(optd);
-            double test = 2 * (l1 - l0);
-            double pr = 1.0 - cs.cumulativeProbability(test);
-            boolean t = (pr > significance);
-            //if (optd > 0.249)
-            //{
-            //    System.out.println(t + "\t" + optd + "\t" + min + "\t" + max + "\t" + maf + "\t" + l0 + "\t" + l1 + "\t" + test + "\t" + pr);
-            //}
-            return t;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+        double min = Math.max(-maf*maf, -(1-maf)*(1-maf));
+        double max = maf*(1-maf);
+        double optd = gs.optimize(hw, min, max);
+        double l0 = hw.value(0.0);
+        double l1 = hw.value(optd);
+        double test = 2 * (l1 - l0);
+        double pr = 1.0 - cs.cumulativeProbability(test);
+        boolean t = (pr > significance);
+        return t;
     }
 
     private final double maf(Position p) throws VCFNoDataException, VCFUnexpectedDataException

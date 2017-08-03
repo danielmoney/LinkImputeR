@@ -31,5 +31,5 @@ public interface SingleDoubleValue
      * @return The value of the function
      * @throws Exception If something goes wrong!
      */
-    public double value(double v) throws Exception;
+    public double value(double v);
 }

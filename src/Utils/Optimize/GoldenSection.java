@@ -44,7 +44,7 @@ public class GoldenSection
      * @return Optimized input
      * @throws Exception If something goes wrong!
      */
-    public double optimize(SingleDoubleValue v, double min, double max) throws Exception
+    public double optimize(SingleDoubleValue v, double min, double max)
     {
         double a = min;
         double b = max;

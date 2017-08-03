@@ -9,7 +9,7 @@ package VCF.Exceptions;
  *
  * @author daniel
  */
-public class VCFUnexpectedDataException extends Exception
+public class VCFUnexpectedDataException extends VCFDataException
 {
 
     /**

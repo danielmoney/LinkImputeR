@@ -9,25 +9,30 @@ package VCF.Exceptions;
  *
  * @author daniel
  */
-public class VCFNoDataException extends VCFDataException
+public class VCFDataException extends Exception
 {
 
     /**
-     * Creates a new instance of <code>VCFNoDataException</code> without detail
+     * Creates a new instance of <code>VCFDataException</code> without detail
      * message.
      */
-    public VCFNoDataException()
+    public VCFDataException()
     {
     }
 
     /**
-     * Constructs an instance of <code>VCFNoDataException</code> with the
+     * Constructs an instance of <code>VCFDataException</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public VCFNoDataException(String msg)
+    public VCFDataException(String msg)
     {
         super(msg);
+    }
+    
+    public VCFDataException(String msg, Throwable e)
+    {
+        super(msg, e);
     }
 }

@@ -27,6 +27,8 @@ import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.SampleFilter;
 import VCF.Mappers.ByteMapper;
+import VCF.Mappers.DoubleMapper;
+import VCF.Mappers.IntegerMapper;
 import VCF.Mappers.Mapper;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -527,12 +529,32 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-//    public int[][] asIntegerArray(String format,IntegerMapper mapper)
-//    {
-//        return positionStream().map(p -> 
-//                p.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray())
-//                .toArray(size -> new int[size][]);
-//    }
+    public int[][] asIntegerArray(String format,IntegerMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    {
+        int[][] array = new int[numberPositions()][];
+        
+        int cp = 0;
+        for (int i = 0; i < genotypes.length; i++)
+        {
+            if (pVis[i])
+            {
+                int cs = 0;
+                int[] a = new int[numberSamples()];
+                for (int j = 0; j < genotypes[i].length; j++)
+                {
+                    if (sVis[i])
+                    {
+                        a[cs] = mapper.map(new Genotype(genotypes[i][j],positions[i],samples[j]).getData(format));
+                        cs++;
+                    }
+                }
+                array[cp] = a;
+                cp++;
+            }
+        }
+        
+        return array;
+    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed integer array
@@ -540,12 +562,32 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-//    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper)
-//    {
-//        return sampleStream().map(s ->
-//                s.genotypeStream().mapToInt(g -> mapper.map(g.getData(format))).toArray()).
-//                toArray(size -> new int[size][]);
-//    }
+    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    {
+        int[][] array = new int[numberSamples()][];
+        
+        int cs = 0;
+        for (int i = 0; i < genotypes[0].length; i++)
+        {
+            if (sVis[i])
+            {
+                int cp = 0;
+                int[] a = new int[numberPositions()];
+                for (int j = 0; j < genotypes.length; j++)
+                {
+                    if (pVis[j])
+                    {
+                        a[cp] = mapper.map(new Genotype(genotypes[j][i],positions[j],samples[i]).getData(format));
+                        cp++;
+                    }
+                }
+                array[cs] = a;
+                cs++;
+            }
+        }
+        
+        return array;
+    }
     
     /**
      * Gets data from the genotypes in the VCF as a double array
@@ -553,12 +595,32 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-//    public double[][] asDoubleArray(String format,DoubleMapper mapper)
-//    {
-//        return positionStream().map(p -> 
-//                p.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray())
-//                .toArray(size -> new double[size][]);
-//    }
+    public double[][] asDoubleArray(String format,DoubleMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    {
+        double[][] array = new double[numberPositions()][];
+        
+        int cp = 0;
+        for (int i = 0; i < genotypes.length; i++)
+        {
+            if (pVis[i])
+            {
+                int cs = 0;
+                double[] a = new double[numberSamples()];
+                for (int j = 0; j < genotypes[i].length; j++)
+                {
+                    if (sVis[i])
+                    {
+                        a[cs] = mapper.map(new Genotype(genotypes[i][j],positions[i],samples[j]).getData(format));
+                        cs++;
+                    }
+                }
+                array[cp] = a;
+                cp++;
+            }
+        }
+        
+        return array;
+    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed double array
@@ -566,12 +628,32 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-//    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper)
-//    {
-//        return sampleStream().map(s ->
-//                s.genotypeStream().mapToDouble(g -> mapper.map(g.getData(format))).toArray()).
-//                toArray(size -> new double[size][]);
-//    }
+    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    {
+        double[][] array = new double[numberSamples()][];
+        
+        int cs = 0;
+        for (int i = 0; i < genotypes[0].length; i++)
+        {
+            if (sVis[i])
+            {
+                int cp = 0;
+                double[] a = new double[numberPositions()];
+                for (int j = 0; j < genotypes.length; j++)
+                {
+                    if (pVis[j])
+                    {
+                        a[cp] = mapper.map(new Genotype(genotypes[j][i],positions[j],samples[i]).getData(format));
+                        cp++;
+                    }
+                }
+                array[cs] = a;
+                cs++;
+            }
+        }
+        
+        return array;
+    }
     
     /**
      * Gets data from the genotypes in the VCF as a byte array
@@ -579,12 +661,32 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-//    public byte[][] asByteArray(String format,ByteMapper mapper)
-//    {
-//        return positionStream().map(p -> 
-//                genotypeToByte(p.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
-//                .toArray(size -> new byte[size][]);
-//    }
+    public byte[][] asByteArray(String format,ByteMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    {
+        byte[][] array = new byte[numberPositions()][];
+        
+        int cp = 0;
+        for (int i = 0; i < genotypes.length; i++)
+        {
+            if (pVis[i])
+            {
+                int cs = 0;
+                byte[] a = new byte[numberSamples()];
+                for (int j = 0; j < genotypes[i].length; j++)
+                {
+                    if (sVis[i])
+                    {
+                        a[cs] = mapper.map(new Genotype(genotypes[i][j],positions[i],samples[j]).getData(format));
+                        cs++;
+                    }
+                }
+                array[cp] = a;
+                cp++;
+            }
+        }
+        
+        return array;
+    }
     
     /**
      * Gets data from the genotypes in the VCF as a transposed byte array
@@ -592,21 +694,31 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-//    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)
-//    {
-//        return sampleStream().map(s -> 
-//                genotypeToByte(s.genotypeStream().toArray(size -> new Genotype[size]),format,mapper))
-//                .toArray(size -> new byte[size][]);
-//    }
-    
-    private byte[] genotypeToByte(Genotype[] genos, String format, ByteMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)  throws VCFNoDataException, VCFUnexpectedDataException
     {
-        byte[] bytes = new byte[genos.length];
-        for (int i = 0; i < bytes.length; i++)
+        byte[][] array = new byte[numberSamples()][];
+        
+        int cs = 0;
+        for (int i = 0; i < genotypes[0].length; i++)
         {
-            bytes[i] = mapper.map(genos[i].getData(format));
+            if (sVis[i])
+            {
+                int cp = 0;
+                byte[] a = new byte[numberPositions()];
+                for (int j = 0; j < genotypes.length; j++)
+                {
+                    if (pVis[j])
+                    {
+                        a[cp] = mapper.map(new Genotype(genotypes[j][i],positions[j],samples[i]).getData(format));
+                        cp++;
+                    }
+                }
+                array[cs] = a;
+                cs++;
+            }
         }
-        return bytes;
+        
+        return array;
     }
     
     /**

@@ -19,6 +19,7 @@ package VCF;
 
 import Exceptions.ProgrammerException;
 import VCF.Changers.GenotypeChanger;
+import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFDataLineException;
 import VCF.Exceptions.VCFHeaderLineException;
 import VCF.Exceptions.VCFInputException;
@@ -67,7 +68,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f) throws 
-            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
+            VCFInputException, VCFDataException
     {
         this(f, new ArrayList<>(), new ArrayList<>());
     }
@@ -81,7 +82,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<PositionFilter> filters) throws 
-            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
+            VCFInputException, VCFDataException
     {
         this(f, new ArrayList<>(), filters);
     }
@@ -97,7 +98,7 @@ public class VCF
      * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
-            VCFInputException, VCFNoDataException, VCFUnexpectedDataException
+            VCFInputException, VCFDataException
     {
         BufferedReader in;
         try
@@ -182,7 +183,7 @@ public class VCF
                             }
                         }
                     }
-                    catch (VCFNoDataException | VCFUnexpectedDataException ex)
+                    catch (VCFDataException ex)
                     {
                         //Bit of a fudge for now since these will be removed later
                     }
@@ -353,7 +354,7 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The sample filter to be applied.
      */
-    public void filterSamples(SampleFilter filter) throws VCFNoDataException, VCFUnexpectedDataException
+    public void filterSamples(SampleFilter filter) throws VCFDataException
     {
         for (int i = 0; i < samples.length; i++)
         {
@@ -367,7 +368,7 @@ public class VCF
      * applying different filters to the same VCF much easier.
      * @param filter The position filter to be applied.
      */
-    public void filterPositions(PositionFilter filter) throws VCFNoDataException, VCFUnexpectedDataException
+    public void filterPositions(PositionFilter filter) throws VCFDataException
     {
         for (int i = 0; i < positions.length; i++)
         {
@@ -461,7 +462,7 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFDataException
     {
         V[][] array = mapper.get2DArray(numberPositions());
         
@@ -496,7 +497,7 @@ public class VCF
      * required type
      * @return The array
      */
-    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFDataException
     {
         V[][] array = mapper.get2DArray(numberSamples());
         
@@ -529,7 +530,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-    public int[][] asIntegerArray(String format,IntegerMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public int[][] asIntegerArray(String format,IntegerMapper mapper) throws VCFDataException
     {
         int[][] array = new int[numberPositions()][];
         
@@ -562,7 +563,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
      */
-    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper) throws VCFDataException
     {
         int[][] array = new int[numberSamples()][];
         
@@ -595,7 +596,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-    public double[][] asDoubleArray(String format,DoubleMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public double[][] asDoubleArray(String format,DoubleMapper mapper) throws VCFDataException
     {
         double[][] array = new double[numberPositions()][];
         
@@ -628,7 +629,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
      */
-    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper) throws VCFDataException
     {
         double[][] array = new double[numberSamples()][];
         
@@ -661,7 +662,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-    public byte[][] asByteArray(String format,ByteMapper mapper) throws VCFNoDataException, VCFUnexpectedDataException
+    public byte[][] asByteArray(String format,ByteMapper mapper) throws VCFDataException
     {
         byte[][] array = new byte[numberPositions()][];
         
@@ -694,7 +695,7 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
      */
-    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)  throws VCFNoDataException, VCFUnexpectedDataException
+    public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)  throws VCFDataException
     {
         byte[][] array = new byte[numberSamples()][];
         

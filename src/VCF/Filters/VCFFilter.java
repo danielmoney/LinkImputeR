@@ -17,8 +17,7 @@
 
 package VCF.Filters;
 
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
+import VCF.Exceptions.VCFDataException;
 import VCF.VCF;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
@@ -33,7 +32,7 @@ public interface VCFFilter
      * Apply this filter to a VCF
      * @param vcf The VCF
      */
-    public void change(VCF vcf) throws VCFNoDataException, VCFUnexpectedDataException;
+    public void change(VCF vcf) throws VCFDataException;
     
     /**
      * Gets a string summary of this filter

@@ -19,9 +19,8 @@ package Executable;
 
 import VCF.Changers.GenotypeChanger;
 import VCF.Changers.MaxDepthNoReadsChanger;
+import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFInputException;
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Filters.BiallelicFilter;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.VCFFilter;
@@ -88,7 +87,7 @@ public class Input
      * @throws IOException If there is a problem writing out the immediate
      * output file (see constructor)
      */
-    public VCF getVCF() throws VCFInputException, VCFNoDataException, VCFUnexpectedDataException, IOException
+    public VCF getVCF() throws VCFInputException, VCFDataException, IOException
     {
         List<GenotypeChanger> changers = new ArrayList<>();
         changers.add(new MaxDepthNoReadsChanger(maxdepth));

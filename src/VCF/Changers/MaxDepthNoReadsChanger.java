@@ -17,10 +17,9 @@
 
 package VCF.Changers;
 
-import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
-import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Changes the genotype (the GT field) of genotype to unknown (./.) if the
@@ -40,7 +39,7 @@ public class MaxDepthNoReadsChanger implements GenotypeChanger
         this.depth = depth;
     }
     
-    public void change(Genotype g) throws VCFNoDataException, VCFUnexpectedDataException
+    public void change(Genotype g) throws VCFDataException
     {
         String data = g.getData("DP");
         try

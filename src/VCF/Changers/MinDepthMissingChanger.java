@@ -17,7 +17,7 @@
 
 package VCF.Changers;
 
-import VCF.Exceptions.VCFNoDataException;
+import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
 
@@ -39,7 +39,7 @@ public class MinDepthMissingChanger implements GenotypeChanger
         this.depth = depth;
     }
     
-    public void change(Genotype g) throws VCFNoDataException, VCFUnexpectedDataException
+    public void change(Genotype g) throws VCFDataException
     {
         String data = g.getData("DP");
         try

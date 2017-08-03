@@ -17,8 +17,7 @@
 
 package VCF.Changers;
 
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
+import VCF.Exceptions.VCFDataException;
 import VCF.Genotype;
 
 /**
@@ -33,5 +32,5 @@ public interface GenotypeChanger
      * Change the given genotype
      * @param g The genotype to change
      */
-    public void change(Genotype g) throws VCFNoDataException, VCFUnexpectedDataException;
+    public void change(Genotype g) throws VCFDataException;
 }

@@ -27,6 +27,7 @@ import Callers.BinomialCaller;
 import Callers.Caller;
 import Combiner.Combiner;
 import Combiner.MaxDepthCombinerOptimizedCalls;
+import Exceptions.INIException;
 import Exceptions.ProgrammerException;
 import Imputers.Imputer;
 import Imputers.KnniLDProbOptimizedCalls;
@@ -39,6 +40,7 @@ import Utils.SingleGenotype.SingleGenotypePosition;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import VCF.ByteToGeno;
+import VCF.Exceptions.VCFInputException;
 import VCF.Exceptions.VCFNoDataException;
 import VCF.Filters.HasDepthFilter;
 import VCF.Filters.MAFFilter;
@@ -57,7 +59,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.ex.ConversionException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -362,24 +364,62 @@ public class LinkImputeR
         Log.brief("All done\t("+time+")");
     }
     
-    private static XMLConfiguration convert(File ini) throws ConfigurationException, IOException
+    private static XMLConfiguration convert(File ini) throws INIException, VCFInputException
     {
         FileBasedConfigurationBuilder<INIConfiguration> inibuilder = 
             new FileBasedConfigurationBuilder<>(INIConfiguration.class)
             .configure(new Parameters().fileBased().setFile(ini));
         
-        INIConfiguration config = inibuilder.getConfiguration();
+        INIConfiguration config;
+        try
+        {
+            config = inibuilder.getConfiguration();
+        }
+        catch (ConfigurationException ex)
+        {
+            throw new INIException("Theres a problem reading the ini file");
+        }
         
         List<ImmutableNode> xml = new ArrayList<>();
         
         xml.add(new ImmutableNode.Builder().name("mode").value("accuracy").create());        
         
-        //int depth = config.getInt("Global.depth");
         String[] sdepths = config.getString("Global.depth").split(",");
-        int[] depths = Arrays.stream(sdepths).mapToInt(s -> Integer.parseInt(s)).toArray();
+        int depths[] = new int[sdepths.length];
+        for (int i = 0; i < sdepths.length; i++)
+        {
+            try
+            {
+                depths[i] = Integer.parseInt(sdepths[i]);
+            }
+            catch (NumberFormatException ex)
+            {
+                throw new INIException("Values for the depth option must be integers");
+            }
+            
+            if (depths[i] <= 0)
+            {
+                throw new INIException("Values for the depth option must be positive");
+            }
+                    
+        }
+        
         int maxDepth = NumberUtils.max(depths);
         int minDepth = NumberUtils.min(depths);
-        double error = config.getDouble("Global.error",0.01);
+        double error;
+        try
+        {
+            error = config.getDouble("Global.error",0.01);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Values for the error option must be a number");
+        }
+        
+        if ((error <= 0.0) || (error > 1.0))
+        {
+            throw new INIException("Values for error must be between 0 and 1");
+        }
         
         File input = new File(config.getString("Input.filename"));
         List<PositionFilter> inputfilters = new ArrayList<>();
@@ -388,24 +428,72 @@ public class LinkImputeR
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
         {
-            switch (i.getRootElementName())
-            {
-                //ADD FILTERS
-                case "maf":
-                    inputfilters.add(new MAFFilter(i.getDouble(null),8,100,error));
-                    break;
-                case "hw":
-                    inputfilters.add(new ParalogHWFilter(error/numSnps,i.getDouble(null)));
-                    break;
-                case "positionmissing":
-                    inputfilters.add(new PositionMissing(i.getDouble(null),minDepth));
-                    break;
-            }
+                switch (i.getRootElementName())
+                {
+                    //ADD FILTERS
+                    case "maf":
+                        double maf;
+                        try
+                        {
+                            maf = i.getDouble(null);
+                        }
+                        catch (ConversionException ex)
+                        {
+                            throw new INIException("Parameter for the MAF Filter must be a number");
+                        }
+                        if ((maf <= 0) | (maf >= 0.5))
+                        {
+                            throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
+                        }
+                        inputfilters.add(new MAFFilter(maf,8,100,error));
+                        break;
+                    case "hw":
+                        double sig;
+                        try
+                        {
+                            sig = i.getDouble(null);
+                        }
+                        catch (ConversionException ex)
+                        {
+                            throw new INIException("Parameter for the HW Filter must be a number");
+                        }
+                        if ((sig <= 0) | (sig >= 1.0))
+                        {
+                            throw new INIException("Parameter for the HWS filter must be between 0 and 1");
+                        }
+                        inputfilters.add(new ParalogHWFilter(sig/numSnps,error));
+                        break;
+                    case "positionmissing":
+                        double missing;
+                        try
+                        {
+                            missing = i.getDouble(null);
+                        }
+                        catch (ConversionException ex)
+                        {
+                            throw new INIException("Parameter for the Position Missing filter must be a number");
+                        }
+                        if ((missing <= 0) | (missing >= 1.0))
+                        {
+                            throw new INIException("Parameter for the Position Missing filter must be between 0 and 1");
+                        }
+                        inputfilters.add(new PositionMissing(i.getDouble(null),minDepth));
+                        break;
+                }
         }
         
         String saveString = config.getString("Input.save",null);
         File save = (saveString == null) ? null : new File(saveString);
-        int maxInDepth = config.getInt("Input.maxdepth",100);
+        
+        int maxInDepth;
+        try
+        {
+            maxInDepth = config.getInt("Input.maxdepth",100);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Parameter values for the maxdepth option must be an integer.");
+        }
         
         Input o = new Input(input, inputfilters, save,maxInDepth);        
         xml.add(o.getConfig());
@@ -420,12 +508,30 @@ public class LinkImputeR
             case "bysample":
                 sm = Method.BYSAMPLE;
                 break;
-            default:
+            case "all":
                 sm = Method.ALL;
                 break;
+            default:
+                throw new INIException("maskmethod must be either \"bysnp\", \"bysample\" or \"all\".");
         }
-        int numberMasked = config.getInt("Accuracy.numbermasked", 10000);
-        int minMaskDepth = config.getInt("Accuracy.mindepth", 30);
+        int numberMasked;
+        try
+        {
+            numberMasked = config.getInt("Accuracy.numbermasked", 10000);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Parameter values for the numbermasked option must be an integer.");
+        }
+        int minMaskDepth;
+        try
+        {
+            minMaskDepth = config.getInt("Accuracy.mindepth", 30);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Parameter values for the maxdepth option must be an integer");
+        }
         DepthMaskFactory dmf = new DepthMaskFactory(numberMasked,minMaskDepth,maxDepth,sm);
         xml.add(dmf.getConfig());
         
@@ -436,14 +542,24 @@ public class LinkImputeR
             case "correlation":
                 am = AccuracyMethod.CORRELATION;
                 break;
-            default:
+            case "correct":
                 am = AccuracyMethod.CORRECT;
                 break;
+            default:
+                throw new INIException("accuractymethod must be either \"correlation\" or \"correct\".");
         }
         
         Caller caller = new BinomialCaller(error);
         String statsRoot = config.getString("Stats.root");
-        boolean partial = config.getBoolean("Stats.partial",false);
+        boolean partial;
+        try
+        {
+            partial = config.getBoolean("Stats.partial",false);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Stats partial must be convertible to a boolean.  Try \"yes\" or \"no\".");
+        }
         
         int casenum = 1;
         
@@ -462,7 +578,20 @@ public class LinkImputeR
                     switch (i.getRootElementName())
                     {
                         case "maf":
-                            f = new MAFFilter(Double.parseDouble(opt),8,100,error);
+                            double maf;
+                            try
+                            {
+                                maf = Double.parseDouble(opt);
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                throw new INIException("Parameter for the MAF Filter must be a number");
+                            }
+                            if ((maf <= 0) | (maf >= 0.5))
+                            {
+                                throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
+                            }
+                            f = new MAFFilter(maf,8,100,error);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);
@@ -471,8 +600,22 @@ public class LinkImputeR
                             }
                             break;
                         case "missing":
-                            VCFFilter fp = new PositionMissing(Double.parseDouble(opt),depth);
-                            VCFFilter fs = new SampleMissing(Double.parseDouble(opt),depth);
+                            double missing;
+                            try
+                            {
+                                missing = Double.parseDouble(opt);
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                throw new INIException("Parameter for the Missing filter must be a number");
+                            }
+                            if ((missing <= 0) | (missing >= 1.0))
+                            {
+                                throw new INIException("Parameter for the Missing filter must be between 0 and 1");
+                            }
+                            
+                            VCFFilter fp = new PositionMissing(missing,depth);
+                            VCFFilter fs = new SampleMissing(missing,depth);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);
@@ -482,7 +625,20 @@ public class LinkImputeR
                             }
                             break;
                         case "samplemissing":
-                            f = new SampleMissing(Double.parseDouble(opt),depth);
+                            double smissing;
+                            try
+                            {
+                                smissing = Double.parseDouble(opt);
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                throw new INIException("Parameter for the Missing filter must be a number");
+                            }
+                            if ((smissing <= 0) | (smissing >= 1.0))
+                            {
+                                throw new INIException("Parameter for the Missing filter must be between 0 and 1");
+                            }
+                            f = new SampleMissing(smissing,depth);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);
@@ -491,7 +647,20 @@ public class LinkImputeR
                             }
                             break;
                         case "positionmissing":
-                            f = new PositionMissing(Double.parseDouble(opt),depth);
+                            double pmissing;
+                            try
+                            {
+                                pmissing = Double.parseDouble(opt);
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                throw new INIException("Parameter for the Missing filter must be a number");
+                            }
+                            if ((pmissing <= 0) | (pmissing >= 1.0))
+                            {
+                                throw new INIException("Parameter for the Missing filter must be between 0 and 1");
+                            }
+                            f = new PositionMissing(pmissing,depth);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);
@@ -528,7 +697,7 @@ public class LinkImputeR
                 File depthStats = null;
                 File dgStats = null;
 
-                switch (config.getString("Stats.level"))
+                switch (config.getString("Stats.level", "sum"))
                 {
                     case "sum":
                         break;
@@ -539,7 +708,9 @@ public class LinkImputeR
                         prettyStats = new File(statsRoot + "pretty_" + casenum + ".dat");
                         genoStats = new File(statsRoot + "geno_" + casenum + ".dat");
                         depthStats = new File(statsRoot + "depth_" + casenum + ".dat");
-                        dgStats = new File(statsRoot + "dg_" + casenum + ".dat");                   
+                        dgStats = new File(statsRoot + "dg_" + casenum + ".dat");    
+                    default:
+                        throw new INIException("Stats level must be either \"sum\", \"pretty\" or \"table\".");
                 }
 
                 PrintStats print = new PrintStats(prettyStats,genoStats,depthStats,dgStats,partial);
@@ -588,9 +759,11 @@ public class LinkImputeR
             case "debug":
                 level = Log.Level.DEBUG;
                 break;
-            default:
+            case "critical":
                 level = Log.Level.CRITICAL;
                 break;
+            default:
+                throw new INIException("log level must be either \"critical\", \"brief\", \"details\" or \"debug\".");
         }
 
         xml.add(Log.getConfig(level,log));
@@ -609,7 +782,7 @@ public class LinkImputeR
             throw new ProgrammerException(ex);
         }
         
-        c.setRootElementName("linkimputepro");
+        c.setRootElementName("linkimputer");
         
         c.addNodes(null, xml);
         

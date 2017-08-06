@@ -766,20 +766,40 @@ public class VCF
      * @return The number of positions
      * @throws IOException If there is an IO problem
      */
-    public static int numberPositionsFromFile(File f) throws IOException
+    public static int numberPositionsFromFile(File f) throws VCFInputException
     {
-        BufferedReader reader = new BufferedReader(new FileReader(f));
-        int lines = 0;
-        String line;
-        while ((line = reader.readLine()) != null)
+        BufferedReader in;
+        try
         {
-            if (!line.startsWith("#"))
+            if (isGZipped(f))
             {
-                lines++;
+                in = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))));
             }
+            else
+            {
+                in = new BufferedReader(new FileReader(f));
+            }
+            
+            int lines = 0;
+            String line;
+            while ((line = in.readLine()) != null)
+            {
+                if (!line.startsWith("#"))
+                {
+                    lines++;
+                }
+            }
+            in.close();
+            return lines;
         }
-        reader.close();
-        return lines;
+        catch (FileNotFoundException e)
+        {
+            throw new VCFInputException("VCF file (" + f.getPath() + ") does not exist", e);
+        }
+        catch (IOException e)
+        {
+            throw new VCFInputException("Problem reading VCF file (" + f.getPath() + ")", e);
+        }
     }
 
     /**

@@ -3,36 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package VCF.Exceptions;
+package Exceptions;
 
 /**
  *
  * @author daniel
  */
-public class VCFDataException extends VCFException
+public class AlgorithmException extends Exception
 {
 
     /**
-     * Creates a new instance of <code>VCFDataException</code> without detail
+     * Creates a new instance of <code>AlgorithmException</code> without detail
      * message.
      */
-    public VCFDataException()
+    public AlgorithmException()
     {
     }
 
     /**
-     * Constructs an instance of <code>VCFDataException</code> with the
+     * Constructs an instance of <code>AlgorithmException</code> with the
      * specified detail message.
      *
      * @param msg the detail message.
      */
-    public VCFDataException(String msg)
+    public AlgorithmException(String msg)
     {
         super(msg);
-    }
-    
-    public VCFDataException(String msg, Throwable e)
-    {
-        super(msg, e);
     }
 }

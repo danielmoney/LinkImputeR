@@ -17,6 +17,7 @@
 
 package Utils;
 
+import Exceptions.OutputException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -97,7 +98,7 @@ public class Log
      * @param params Configuration
      * @throws IOException If there's a problem setting up the logger
      */
-    public static void initialise(HierarchicalConfiguration<ImmutableNode> params) throws IOException
+    public static void initialise(HierarchicalConfiguration<ImmutableNode> params) throws OutputException
     {
         String ls = params.getString("file",null);
 
@@ -112,7 +113,14 @@ public class Log
         
         if (ls != null)
         {
-            pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(ls))));
+            try
+            {
+                pw = new PrintWriter(new BufferedWriter(new FileWriter(new File(ls))));
+            }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing log file");
+            }
         }
         else
         {

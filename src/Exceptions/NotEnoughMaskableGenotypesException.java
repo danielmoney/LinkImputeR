@@ -9,7 +9,7 @@ package Exceptions;
  *
  * @author daniel
  */
-public class NotEnoughMaskableGenotypesException extends Exception
+public class NotEnoughMaskableGenotypesException extends AlgorithmException
 {
 
     /**

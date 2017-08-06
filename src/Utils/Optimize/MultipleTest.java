@@ -43,7 +43,7 @@ public class MultipleTest
      * @return Optimized input
      * @throws Exception If something goes wrong!
      */
-    public double optimize(SingleDoubleValue v, double min, double max) throws Exception
+    public double optimize(SingleDoubleValue v, double min, double max)
     {
         double bestd = Double.NaN;
         double bestval = -Double.MAX_VALUE;

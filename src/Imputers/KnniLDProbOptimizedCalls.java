@@ -77,7 +77,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
     }
     
     
-    public KnniLDProb getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, List<SingleGenotypeMasked> list) throws Exception
+    public KnniLDProb getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, List<SingleGenotypeMasked> list)
     {
         ProbToCallMinDepth p2c = new ProbToCallMinDepth(knownDepth);
         

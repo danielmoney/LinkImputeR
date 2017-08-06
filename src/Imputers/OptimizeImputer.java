@@ -39,7 +39,7 @@ public interface OptimizeImputer<I extends Imputer>
      * @return An optmized imputer
      * @throws Exception If there is a problem
      */
-    public I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list) throws Exception;
+    public I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list);
 
  
     /**

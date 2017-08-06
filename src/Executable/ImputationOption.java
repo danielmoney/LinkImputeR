@@ -90,7 +90,7 @@ public class ImputationOption
     public Imputer getImputer(
             double[][][] original, int[][][] readCounts,
             List<SingleGenotypeProbability> maskedprobs,
-            List<SingleGenotypeMasked> list) throws Exception
+            List<SingleGenotypeMasked> list)
     {
         if (imputer != null)
         {

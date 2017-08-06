@@ -18,6 +18,7 @@
 package Executable;
 
 import Accuracy.AccuracyStats;
+import Exceptions.OutputException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -97,149 +98,177 @@ public class PrintStats
      * @param istats Accuracy stats for imputed
      * @throws IOException If there is an IO problem
      */
-    public void writeStats(AccuracyStats stats, AccuracyStats cstats, AccuracyStats istats) throws IOException
+    public void writeStats(AccuracyStats stats, AccuracyStats cstats, AccuracyStats istats) throws OutputException
     {
         int maxDepth = stats.getMaxDepth();
         
         if (pretty != null)
         {
-            PrintWriter prettyWriter = new PrintWriter(new BufferedWriter(
-                    new FileWriter(pretty)));
+            try
+            {
+                PrintWriter prettyWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(pretty)));
 
-            //TOTAL
-            prettyWriter.print("Overall accuracy: " + dformat(stats.accuracy()) + "\t(" + iformat(stats.total()) + ")");
-            if (partial)
-            {
-                prettyWriter.print("\t\t[" + dformat(cstats.accuracy()) + "/" + dformat(istats.accuracy()) + "]");
-            }
-            prettyWriter.println();
-            prettyWriter.println();
-            
-            //BY DEPTH
-            prettyWriter.println("By depth");
-            for (int i = 0; i <= maxDepth; i++)
-            {
-                prettyWriter.print(i + "\t" + dformat(stats.depthAccuracy(i)) + "\t(" + iformat(stats.depthTotal(i)) + ")");
+                //TOTAL
+                prettyWriter.print("Overall accuracy: " + dformat(stats.accuracy()) + "\t(" + iformat(stats.total()) + ")");
                 if (partial)
                 {
-                    prettyWriter.print("\t\t[" + dformat(cstats.depthAccuracy(i)) + "/" + dformat(istats.depthAccuracy(i)) + "]");
+                    prettyWriter.print("\t\t[" + dformat(cstats.accuracy()) + "/" + dformat(istats.accuracy()) + "]");
                 }
                 prettyWriter.println();
-            }
-            prettyWriter.println();
-            
-            //BY GENOTYPE
-            prettyWriter.println("By genotype");
-            for (byte i = 0; i < 3; i++)
-            {
-                prettyWriter.print(i + "\t" + dformat(stats.genoAccuracy(i)) + "\t(" + iformat(stats.genoTotal(i)) + ")");
-                if (partial)
-                {
-                    prettyWriter.print("\t\t[" + dformat(cstats.genoAccuracy(i)) + "/" + dformat(istats.genoAccuracy(i)) + "]");
-                }
                 prettyWriter.println();
-            }
-            prettyWriter.println();
-            
-            //BY DEPTH AND GENOTYPE
-            prettyWriter.println("By depth and genotype");
-            prettyWriter.println("\t0\t\t1\t\t2");
-            for (int i = 0; i <= maxDepth; i++)
-            {
-                prettyWriter.print(i + "\t" +
-                        dformat(stats.depthGenoAccuracy(i, (byte) 0)) + "\t" +
-                        dformat(stats.depthGenoAccuracy(i, (byte) 1)) + "\t" +
-                        dformat(stats.depthGenoAccuracy(i, (byte) 2)) + "\t(" +
-                        iformat(stats.depthGenoTotal(i, (byte) 0)) + "\t" +
-                        iformat(stats.depthGenoTotal(i, (byte) 1)) + "\t" +
-                        iformat(stats.depthGenoTotal(i, (byte) 2)) + ")");
-                
-                if (partial)
-                {
-                    prettyWriter.print("\t\t[" +
-                            dformat(cstats.depthGenoAccuracy(i, (byte) 0)) + "/" + 
-                            dformat(istats.depthGenoAccuracy(i, (byte) 0)) + "\t" +
-                            dformat(cstats.depthGenoAccuracy(i, (byte) 1)) + "/" + 
-                            dformat(istats.depthGenoAccuracy(i, (byte) 1)) + "\t" +
-                            dformat(cstats.depthGenoAccuracy(i, (byte) 2)) + "/" +
-                            dformat(istats.depthGenoAccuracy(i, (byte) 2)) + "]");
-                }
-                prettyWriter.println();
-            }
-            
-            prettyWriter.println();
-            prettyWriter.println();
-            prettyWriter.println();
-            
-            //TOTAL
-            prettyWriter.print("Overall corrrelation: " + dformat(stats.correlation()) + "\t(" + iformat(stats.total()) + ")");
-            if (partial)
-            {
-                prettyWriter.print("\t\t[" + dformat(cstats.correlation()) + "/" + dformat(istats.correlation()) + "]");
-            }
-            prettyWriter.println();
-            prettyWriter.println();
-            
-            //BY DEPTH
-            prettyWriter.println("By depth");
-            for (int i = 0; i <= maxDepth; i++)
-            {
-                prettyWriter.print(i + "\t" + dformat(stats.depthCorrelation(i)) + "\t(" + iformat(stats.depthTotal(i)) + ")");
-                if (partial)
-                {
-                    if (i == 0)
-                    {
-                        prettyWriter.print("\t\t[-.----/" + dformat(istats.depthCorrelation(i)) + "]");
-                    }
-                    else
-                    {
-                        prettyWriter.print("\t\t[" + dformat(cstats.depthCorrelation(i)) + "/" + dformat(istats.depthCorrelation(i)) + "]");
-                    }
-                }
-                prettyWriter.println();
-            }
-            prettyWriter.println();
 
-            prettyWriter.close();
+                //BY DEPTH
+                prettyWriter.println("By depth");
+                for (int i = 0; i <= maxDepth; i++)
+                {
+                    prettyWriter.print(i + "\t" + dformat(stats.depthAccuracy(i)) + "\t(" + iformat(stats.depthTotal(i)) + ")");
+                    if (partial)
+                    {
+                        prettyWriter.print("\t\t[" + dformat(cstats.depthAccuracy(i)) + "/" + dformat(istats.depthAccuracy(i)) + "]");
+                    }
+                    prettyWriter.println();
+                }
+                prettyWriter.println();
+
+                //BY GENOTYPE
+                prettyWriter.println("By genotype");
+                for (byte i = 0; i < 3; i++)
+                {
+                    prettyWriter.print(i + "\t" + dformat(stats.genoAccuracy(i)) + "\t(" + iformat(stats.genoTotal(i)) + ")");
+                    if (partial)
+                    {
+                        prettyWriter.print("\t\t[" + dformat(cstats.genoAccuracy(i)) + "/" + dformat(istats.genoAccuracy(i)) + "]");
+                    }
+                    prettyWriter.println();
+                }
+                prettyWriter.println();
+
+                //BY DEPTH AND GENOTYPE
+                prettyWriter.println("By depth and genotype");
+                prettyWriter.println("\t0\t\t1\t\t2");
+                for (int i = 0; i <= maxDepth; i++)
+                {
+                    prettyWriter.print(i + "\t" +
+                            dformat(stats.depthGenoAccuracy(i, (byte) 0)) + "\t" +
+                            dformat(stats.depthGenoAccuracy(i, (byte) 1)) + "\t" +
+                            dformat(stats.depthGenoAccuracy(i, (byte) 2)) + "\t(" +
+                            iformat(stats.depthGenoTotal(i, (byte) 0)) + "\t" +
+                            iformat(stats.depthGenoTotal(i, (byte) 1)) + "\t" +
+                            iformat(stats.depthGenoTotal(i, (byte) 2)) + ")");
+
+                    if (partial)
+                    {
+                        prettyWriter.print("\t\t[" +
+                                dformat(cstats.depthGenoAccuracy(i, (byte) 0)) + "/" + 
+                                dformat(istats.depthGenoAccuracy(i, (byte) 0)) + "\t" +
+                                dformat(cstats.depthGenoAccuracy(i, (byte) 1)) + "/" + 
+                                dformat(istats.depthGenoAccuracy(i, (byte) 1)) + "\t" +
+                                dformat(cstats.depthGenoAccuracy(i, (byte) 2)) + "/" +
+                                dformat(istats.depthGenoAccuracy(i, (byte) 2)) + "]");
+                    }
+                    prettyWriter.println();
+                }
+
+                prettyWriter.println();
+                prettyWriter.println();
+                prettyWriter.println();
+
+                //TOTAL
+                prettyWriter.print("Overall corrrelation: " + dformat(stats.correlation()) + "\t(" + iformat(stats.total()) + ")");
+                if (partial)
+                {
+                    prettyWriter.print("\t\t[" + dformat(cstats.correlation()) + "/" + dformat(istats.correlation()) + "]");
+                }
+                prettyWriter.println();
+                prettyWriter.println();
+
+                //BY DEPTH
+                prettyWriter.println("By depth");
+                for (int i = 0; i <= maxDepth; i++)
+                {
+                    prettyWriter.print(i + "\t" + dformat(stats.depthCorrelation(i)) + "\t(" + iformat(stats.depthTotal(i)) + ")");
+                    if (partial)
+                    {
+                        if (i == 0)
+                        {
+                            prettyWriter.print("\t\t[-.----/" + dformat(istats.depthCorrelation(i)) + "]");
+                        }
+                        else
+                        {
+                            prettyWriter.print("\t\t[" + dformat(cstats.depthCorrelation(i)) + "/" + dformat(istats.depthCorrelation(i)) + "]");
+                        }
+                    }
+                    prettyWriter.println();
+                }
+                prettyWriter.println();
+
+                prettyWriter.close();
+            }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing pretty stats", ex);
+            }
         }
         
         //BY DEPTH
         if (depth != null)
         {
-            PrintWriter depthWriter = new PrintWriter(new BufferedWriter(
-                    new FileWriter(depth)));
-            for (int i = 0; i <= maxDepth; i++)
+            try
             {
-                depthWriter.println(i + "\t" + stats.depthAccuracy(i) + "\t" + stats.depthCorrelation(i));
+                PrintWriter depthWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(depth)));
+                for (int i = 0; i <= maxDepth; i++)
+                {
+                    depthWriter.println(i + "\t" + stats.depthAccuracy(i) + "\t" + stats.depthCorrelation(i));
+                }
+                depthWriter.close();
+                        }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing depth stats", ex);
             }
-            depthWriter.close();
         }
         
         //BY GENOTYPE
         if (geno != null)
         {
-            PrintWriter genoWriter = new PrintWriter(new BufferedWriter(
-                    new FileWriter(geno)));
-            for (byte i = 0; i < 3; i++)
+            try
             {
-                genoWriter.println(i + "\t" + stats.genoAccuracy(i));
+                PrintWriter genoWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(geno)));
+                for (byte i = 0; i < 3; i++)
+                {
+                    genoWriter.println(i + "\t" + stats.genoAccuracy(i));
+                }
+                genoWriter.close();
             }
-            genoWriter.close();
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing genotype stats", ex);
+            }
         }
         
         //BY DEPTH AND GENOTYPE
         if (depthGeno != null)
         {
-            PrintWriter depthGenoWriter = new PrintWriter(new BufferedWriter(
-                    new FileWriter(depthGeno)));
-            for (int i = 0; i <= maxDepth; i++)
+            try
             {
-                depthGenoWriter.println(i + "\t" +
-                        stats.depthGenoAccuracy(i, (byte) 0) + "\t" +
-                        stats.depthGenoAccuracy(i, (byte) 1) + "\t" +
-                        stats.depthGenoAccuracy(i, (byte) 2));
+                PrintWriter depthGenoWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(depthGeno)));
+                for (int i = 0; i <= maxDepth; i++)
+                {
+                    depthGenoWriter.println(i + "\t" +
+                            stats.depthGenoAccuracy(i, (byte) 0) + "\t" +
+                            stats.depthGenoAccuracy(i, (byte) 1) + "\t" +
+                            stats.depthGenoAccuracy(i, (byte) 2));
+                }
+                depthGenoWriter.close();
             }
-            depthGenoWriter.close();
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing depth/genotype stats", ex);
+            }
         }
     }
     

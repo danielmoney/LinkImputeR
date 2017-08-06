@@ -95,7 +95,7 @@ public class CombinerOption
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
             List<SingleGenotypeCall> correct,
-            List<SingleGenotypeMasked> masked) throws Exception
+            List<SingleGenotypeMasked> masked)
     {
         if (combiner != null)
         {

@@ -46,7 +46,7 @@ public interface OptimizeCombiner<C extends Combiner>
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
             List<SingleGenotypeCall> correct,
-            List<SingleGenotypeMasked> masked) throws Exception;
+            List<SingleGenotypeMasked> masked);
     
     /**
      * Get the config for the optimizable combiner

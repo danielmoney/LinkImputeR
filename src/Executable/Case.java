@@ -128,7 +128,7 @@ public class Case
      * @throws Exception If there is a problem
      */
     public Imputer getImputer(double[][][] original, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, 
-            List<SingleGenotypeMasked> list) throws Exception
+            List<SingleGenotypeMasked> list)
     {
         return imputer.getImputer(original, readCounts, maskedprobs, list);
     }
@@ -157,7 +157,7 @@ public class Case
             List<SingleGenotypeProbability> imputed,
             List<SingleGenotypeReads> reads,
             List<SingleGenotypeCall> correct,
-            List<SingleGenotypeMasked> masked) throws Exception
+            List<SingleGenotypeMasked> masked)
     {
         return combiner.getCombiner(called, imputed, reads, correct, masked);
     }

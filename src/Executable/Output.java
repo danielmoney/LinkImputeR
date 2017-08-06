@@ -17,6 +17,7 @@
 
 package Executable;
 
+import Exceptions.OutputException;
 import Exceptions.ProgrammerException;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -77,10 +78,17 @@ public class Output
      * @return The writer
      * @throws IOException If there is an IO problem
      */
-    public PrintWriter getSummaryWriter() throws IOException
+    public PrintWriter getSummaryWriter() throws OutputException
     {
-        return new PrintWriter(new BufferedWriter(
-                    new FileWriter(summary)));
+        try
+        {
+            return new PrintWriter(new BufferedWriter(
+                        new FileWriter(summary)));
+        }
+        catch (IOException ex)
+        {
+            throw new OutputException("Problem writing summary file");
+        }
     }
 
     /**
@@ -88,12 +96,19 @@ public class Output
      * @return The writer
      * @throws IOException If there is an IO problem
      */
-    public PrintWriter getTableWriter() throws IOException
+    public PrintWriter getTableWriter() throws OutputException
     {
         if (table != null)
         {
-            return new PrintWriter(new BufferedWriter(
-                    new FileWriter(table)));
+            try
+            {
+                return new PrintWriter(new BufferedWriter(
+                        new FileWriter(table)));
+            }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing table file");
+            }
         }
         else
         {
@@ -116,7 +131,7 @@ public class Output
      * @param config The configuration to write
      * @throws IOException If there is an IO problem
      */
-    public void writeControl(List<ImmutableNode> config) throws IOException
+    public void writeControl(List<ImmutableNode> config) throws OutputException
     {
         BasicConfigurationBuilder<ExtendedXMLConfiguration> builder = 
                 new BasicConfigurationBuilder<>(ExtendedXMLConfiguration.class)
@@ -146,7 +161,7 @@ public class Output
             if (ex.getCause() instanceof IOException)
             {
                 IOException tex = (IOException) ex.getCause();
-                throw tex;
+                throw new OutputException("Problem writing imputation control file", tex);
             }
             throw new ProgrammerException(ex);
         }        

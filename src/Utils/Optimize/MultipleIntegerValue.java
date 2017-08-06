@@ -31,5 +31,5 @@ public interface MultipleIntegerValue
      * @return The value of the function
      * @throws Exception If something goes wrong!
      */
-    public double value(int[] v) throws Exception;
+    public double value(int[] v);
 }

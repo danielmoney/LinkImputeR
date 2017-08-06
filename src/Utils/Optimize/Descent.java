@@ -36,7 +36,7 @@ public class Descent
      * @return Optimized inputs
      * @throws Exception If something goes wrong!
      */
-    public int[] optimize(MultipleIntegerValue v, int[] initial, int[] min, int[] max) throws Exception
+    public int[] optimize(MultipleIntegerValue v, int[] initial, int[] min, int[] max)
     {
         int[] current = Arrays.copyOf(initial, initial.length);
         int step = 8;

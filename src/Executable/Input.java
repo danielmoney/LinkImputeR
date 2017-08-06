@@ -17,11 +17,12 @@
 
 package Executable;
 
+import Exceptions.OutputException;
 import VCF.Changers.GenotypeChanger;
 import VCF.Changers.MaxDepthNoReadsChanger;
-import VCF.Exceptions.VCFDataException;
-import VCF.Exceptions.VCFInputException;
+import VCF.Exceptions.VCFException;
 import VCF.Filters.BiallelicFilter;
+import VCF.Filters.HasDepthFilter;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.VCFFilter;
 import VCF.VCF;
@@ -87,14 +88,23 @@ public class Input
      * @throws IOException If there is a problem writing out the immediate
      * output file (see constructor)
      */
-    public VCF getVCF() throws VCFInputException, VCFDataException, IOException
+    public VCF getVCF() throws VCFException, OutputException
     {
         List<GenotypeChanger> changers = new ArrayList<>();
         changers.add(new MaxDepthNoReadsChanger(maxdepth));
-        VCF vcf = new VCF(in,changers,filters);
+        List<PositionFilter> prefilters = new ArrayList<>();
+        prefilters.add(new HasDepthFilter());
+        VCF vcf = new VCF(in,prefilters,changers,filters);
         if (out != null)
         {
-            vcf.writeFile(out);
+            try
+            {
+                vcf.writeFile(out);
+            }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing filtered VCF", ex);
+            }
         }
         return vcf;
     }

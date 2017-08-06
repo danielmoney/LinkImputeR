@@ -31,18 +31,8 @@ public class VCFHeaderLineException extends VCFInputException
         super(msg);
     }
     
-    public VCFHeaderLineException(String msg, int lineNumber)
-    {
-        super(msg, lineNumber);
-    }
-    
     public VCFHeaderLineException(String msg, Throwable cause)
     {
         super(msg, cause);
-    }
-    
-    public VCFHeaderLineException(String msg, int lineNumber, Throwable cause)
-    {
-        super(msg, lineNumber, cause);
     }
 }

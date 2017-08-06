@@ -70,7 +70,7 @@ public class VCF
     public VCF(File f) throws 
             VCFInputException, VCFDataException
     {
-        this(f, new ArrayList<>(), new ArrayList<>());
+        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
     
     /**
@@ -84,7 +84,7 @@ public class VCF
     public VCF(File f, List<PositionFilter> filters) throws 
             VCFInputException, VCFDataException
     {
-        this(f, new ArrayList<>(), filters);
+        this(f, new ArrayList<>(), new ArrayList<>(), filters);
     }
     
     /**
@@ -97,7 +97,7 @@ public class VCF
      * @param filters The position filters to apply
      * @throws IOException If there is an IO problem
      */
-    public VCF(File f, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
+    public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
             VCFInputException, VCFDataException
     {
         BufferedReader in;
@@ -144,7 +144,7 @@ public class VCF
                     }
                     catch (ArrayIndexOutOfBoundsException | IllegalArgumentException ex)
                     {
-                        throw new VCFHeaderLineException("Not enough fields in header line", lineNumber);
+                        throw new VCFHeaderLineException("Not enough fields in header line (line number " + lineNumber + ")");
                     }
                 }
                 else
@@ -153,11 +153,11 @@ public class VCF
                     
                     if (parts.length < samples.length + 9)
                     {
-                        throw new VCFDataLineException("Not enough fields in data line", lineNumber);
+                        throw new VCFDataLineException("Not enough fields in data line (line number " + lineNumber + ")");
                     }
                     if (parts.length > samples.length + 9)
                     {
-                        throw new VCFDataLineException("Too many fields in data line", lineNumber);
+                        throw new VCFDataLineException("Too many fields in data line (line number " + lineNumber + ")");
                     }
                     
                     String[] metaArray = Arrays.copyOfRange(parts, 0, 9);
@@ -170,8 +170,6 @@ public class VCF
                     }
                     
                     Position p = new Position(pm,samples,data);
-                    
-                    // NEED TO PUT EXCEPTIONS IN THE CHANGERS & FILTERS
                     
                     try
                     {
@@ -211,7 +209,14 @@ public class VCF
         }
         catch (IOException e)
         {
-            throw new VCFInputException("Porbleming reading VCF",lineNumber,e);
+            if (lineNumber == 0)
+            {
+                throw new VCFInputException("Porbleming reading VCF",lineNumber,e);
+            }
+            else
+            {
+                throw new VCFInputException("Porbleming reading VCF (line number " + lineNumber + ")",e);
+            }
         }
     }
     

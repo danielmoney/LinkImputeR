@@ -27,7 +27,9 @@ import Callers.BinomialCaller;
 import Callers.Caller;
 import Combiner.Combiner;
 import Combiner.MaxDepthCombinerOptimizedCalls;
+import Exceptions.AlgorithmException;
 import Exceptions.INIException;
+import Exceptions.OutputException;
 import Exceptions.ProgrammerException;
 import Imputers.Imputer;
 import Imputers.KnniLDProbOptimizedCalls;
@@ -40,9 +42,9 @@ import Utils.SingleGenotype.SingleGenotypePosition;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import Utils.SingleGenotype.SingleGenotypeReads;
 import VCF.ByteToGeno;
+import VCF.Exceptions.VCFException;
 import VCF.Exceptions.VCFInputException;
 import VCF.Exceptions.VCFNoDataException;
-import VCF.Filters.HasDepthFilter;
 import VCF.Filters.MAFFilter;
 import VCF.Filters.ParalogHWFilter;
 import VCF.Filters.PositionFilter;
@@ -94,60 +96,135 @@ public class LinkImputeR
      */
     public static void main(String[] args) throws Exception
     {
-        if (args.length == 0)
+        try
         {
-            //WRITE HELP!
-        }
-        else
-        {
-            XMLConfiguration c;
-            switch (args[0])
+            if (args.length == 0)
             {
-                case "-c":
-                    c = convert(new File(args[1]));
-                    writeXML(c,new File(args[2]));
-                    break;
-                case "-s":
-                    c = convert(new File(args[1]));
-                    accuracy(c);
-                    break;
-                case "-v":
-                    System.out.println("LinkImputeR version 1.0");
-                    break;
-                case "-h":
-                    //NEED TO WRITE HELP!
-                    break;
-                default:
-                    File xml = new File(args[0]);
-
-                    FileBasedConfigurationBuilder<XMLConfiguration> builder = 
-                        new FileBasedConfigurationBuilder<>(XMLConfiguration.class)
-                        .configure(new Parameters().xml().setFile(xml));
-
-                    XMLConfiguration config = builder.getConfiguration();
-
-                    switch (config.getString("mode"))
-                    {
-                        case "accuracy":
-                            accuracy(config);
-                            break;
-                        case "impute":
-                            if (args.length == 3)
-                            {
-                                impute(config,args[1],new File(args[2]));
-                            }
-                            else
-                            {
-                                impute(config,null,null);
-                            }
-                            break;
-                    }
-                    break;
+                //WRITE HELP!
             }
+            else
+            {
+                XMLConfiguration c;
+                switch (args[0])
+                {
+                    case "-c":
+                        c = convert(new File(args[1]));
+                        writeXML(c,new File(args[2]));
+                        break;
+                    case "-s":
+                        c = convert(new File(args[1]));
+                        accuracy(c);
+                        break;
+                    case "-v":
+                        System.out.println("LinkImputeR version 1.0");
+                        break;
+                    case "-h":
+                        //NEED TO WRITE HELP!
+                        break;
+                    default:
+                        File xml = new File(args[0]);
+
+                        FileBasedConfigurationBuilder<XMLConfiguration> builder = 
+                            new FileBasedConfigurationBuilder<>(XMLConfiguration.class)
+                            .configure(new Parameters().xml().setFile(xml));
+
+                        XMLConfiguration config = builder.getConfiguration();
+
+                        switch (config.getString("mode"))
+                        {
+                            case "accuracy":
+                                accuracy(config);
+                                break;
+                            case "impute":
+                                if (args.length == 3)
+                                {
+                                    impute(config,args[1],new File(args[2]));
+                                }
+                                else
+                                {
+                                    impute(config,null,null);
+                                }
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
+        catch (VCFException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("There's a problem with the VCF file");
+            System.err.println(ex.getMessage());
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;
+        }
+        catch (INIException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("There's a problem with the ini file");
+            System.err.println(ex.getMessage());
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;
+        }
+        catch (OutputException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("There's a problem writing an output file");
+            System.err.println(ex.getMessage());
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;
+        }
+        catch (AlgorithmException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("There's a problem with the algorithms");
+            System.err.println(ex.getMessage());
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;
+        }
+        catch (ProgrammerException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("Well this is embarassing.  This shouldn't have happened.  "
+                    + "Please contact the maintainer if you can not solve the error"
+                    + "from the technical details.");
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;            
+        }
+        catch (Exception ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("Well this is embarassing.  This was not expected to have happened.  "
+                    + "Please contact the maintainer if you can not solve the error"
+                    + "from the technical details.");
+            System.err.println();
+            System.err.println("Note: The maintainer would be interested in knowing "
+                    + "about any XML related messages so he can write nicer error "
+                    + "messages for these problems.");
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;            
         }
     }
     
-    private static void impute(XMLConfiguration config, String casename, File output) throws Exception
+    private static void impute(XMLConfiguration config, String casename, File output) throws VCFException, OutputException
     {
         long start = System.currentTimeMillis();
         Log.initialise(Level.DEBUG);
@@ -217,7 +294,14 @@ public class LinkImputeR
                 newMeta.add("##FORMAT=<ID=IP,Number=3,Type=Float,Description=\"Imputation Probabilities (3 d.p.)\">");
 
                 VCF newVCF = new VCF(newMeta,newPositions);
-                newVCF.writeFile(output);
+                try
+                {
+                    newVCF.writeFile(output);
+                }
+                catch (IOException ex)
+                {
+                    throw new OutputException("Problem writing the imputed VCF");
+                }
                 Log.debug("Output written");
             }
         }
@@ -225,7 +309,7 @@ public class LinkImputeR
         Log.brief("All done\t("+time+")");
     }
     
-    private static void accuracy(XMLConfiguration config) throws Exception
+    private static void accuracy(XMLConfiguration config) throws VCFException, OutputException, AlgorithmException
     {
         Log.initialise(config.configurationAt("log"));
         long start = System.currentTimeMillis();
@@ -323,20 +407,8 @@ public class LinkImputeR
                 AccuracyStats istats = AccuracyCalculator.accuracyStats(testCorrect, testImputedGeno, testMask.maskedList());
                 c.getPrintStats().writeStats(stats, cstats, istats);
                 writeSum(sum,c,vcf,stats,cstats,istats,partial);
-                writeTable(table,c,vcf,stats,cstats,istats,partial);
-
-        
-//                List<SingleGenotypeProbability> combinedProb = combiner.combine(calledProb, imputedProb, maskedReads);
-//                List<SingleGenotypeCall> combinedGeno = p2c.call(combinedProb);
-//
-//                List<SingleGenotypeCall> correct = correctCalls;
-//                AccuracyStats stats = AccuracyCalculator.accuracyStats(correct, combinedGeno, mask.maskedList());
-//                AccuracyStats cstats = AccuracyCalculator.accuracyStats(correct, calledGeno, mask.maskedList());
-//                AccuracyStats istats = AccuracyCalculator.accuracyStats(correct, imputedGeno, mask.maskedList());
-//                c.getPrintStats().writeStats(stats, cstats, istats);
-//                writeSum(sum,c,vcf,stats,cstats,istats,partial);
-//                writeTable(table,c,vcf,stats,cstats,istats,partial);
-                
+                writeTable(table,c,vcf,stats,cstats,istats,partial);        
+          
                 //ADD IMPUTE CONFIG
                 outConfig.add(c.getImputeConfig(caller, imputer, combiner));
 
@@ -423,7 +495,6 @@ public class LinkImputeR
         
         File input = new File(config.getString("Input.filename"));
         List<PositionFilter> inputfilters = new ArrayList<>();
-        inputfilters.add(new HasDepthFilter());
         
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
@@ -708,7 +779,8 @@ public class LinkImputeR
                         prettyStats = new File(statsRoot + "pretty_" + casenum + ".dat");
                         genoStats = new File(statsRoot + "geno_" + casenum + ".dat");
                         depthStats = new File(statsRoot + "depth_" + casenum + ".dat");
-                        dgStats = new File(statsRoot + "dg_" + casenum + ".dat");    
+                        dgStats = new File(statsRoot + "dg_" + casenum + ".dat");
+                        break;
                     default:
                         throw new INIException("Stats level must be either \"sum\", \"pretty\" or \"table\".");
                 }
@@ -789,7 +861,7 @@ public class LinkImputeR
         return c;
     }
     
-    private static void writeXML(XMLConfiguration xml, File output) throws IOException
+    private static void writeXML(XMLConfiguration xml, File output) throws OutputException
     {
         FileHandler handler = new FileHandler(xml);
         try
@@ -801,7 +873,7 @@ public class LinkImputeR
             if (ex.getCause() instanceof IOException)
             {
                 IOException tex = (IOException) ex.getCause();
-                throw tex;
+                throw new OutputException("Problem writing XML file",tex);
             }
             throw new ProgrammerException(ex);
         }

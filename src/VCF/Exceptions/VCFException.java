@@ -9,30 +9,30 @@ package VCF.Exceptions;
  *
  * @author daniel
  */
-public class VCFDataException extends VCFException
+public class VCFException extends Exception
 {
 
     /**
-     * Creates a new instance of <code>VCFDataException</code> without detail
+     * Creates a new instance of <code>VCFException</code> without detail
      * message.
      */
-    public VCFDataException()
+    public VCFException()
     {
     }
 
     /**
-     * Constructs an instance of <code>VCFDataException</code> with the
-     * specified detail message.
+     * Constructs an instance of <code>VCFException</code> with the specified
+     * detail message.
      *
      * @param msg the detail message.
      */
-    public VCFDataException(String msg)
+    public VCFException(String msg)
     {
         super(msg);
     }
     
-    public VCFDataException(String msg, Throwable e)
+    public VCFException(String msg, Throwable cause)
     {
-        super(msg, e);
+        super(msg,cause);
     }
 }

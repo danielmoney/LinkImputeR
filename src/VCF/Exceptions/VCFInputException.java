@@ -9,7 +9,7 @@ package VCF.Exceptions;
  *
  * @author daniel
  */
-public class VCFInputException extends Exception
+public class VCFInputException extends VCFException
 {
 
     /**

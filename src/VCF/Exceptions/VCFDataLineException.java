@@ -31,19 +31,8 @@ public class VCFDataLineException extends VCFInputException
         super(msg);
     }
     
-    public VCFDataLineException(String msg, int lineNumber)
-    {
-        super(msg, lineNumber);
-    }
-    
     public VCFDataLineException(String msg, Throwable cause)
     {
         super(msg, cause);
     } 
-
-    
-    public VCFDataLineException(String msg, int lineNumber, Throwable cause)
-    {
-        super(msg, lineNumber, cause);
-    }    
 }

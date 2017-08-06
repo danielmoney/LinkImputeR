@@ -88,7 +88,6 @@ class Available
         pf.add("ParalogHW",ParalogHWFilter::new);
         pf.add("PositionMissing",PositionMissing::new);
         pf.add("BiallelicGap",BiallelicFilter::new);
-        pf.add("HasDepth",HasDepthFilter::new);
         
         // Sample Filters
         sf.add("SampleMissing",SampleMissing::new);

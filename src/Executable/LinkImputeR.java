@@ -100,7 +100,7 @@ public class LinkImputeR
         {
             if (args.length == 0)
             {
-                //WRITE HELP!
+                help();
             }
             else
             {
@@ -119,7 +119,7 @@ public class LinkImputeR
                         System.out.println("LinkImputeR version 1.1");
                         break;
                     case "-h":
-                        //NEED TO WRITE HELP!
+                        help();
                         break;
                     default:
                         File xml = new File(args[0]);
@@ -1074,6 +1074,48 @@ public class LinkImputeR
         return masked.stream().map(sgm -> 
                 new SingleGenotypeReads(sgm.getSample(), sgm.getSNP(), sgm.getOriginal()))
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+    
+    private static void help()
+    {
+        System.out.println("Using LinkImputer");
+        System.out.println("\tLinkImputeR has several different ways it can be called.");
+        System.out.println("\tThese are outlined below.");
+        System.out.println("\tPlease see the user manual for more details and examples.");
+        System.out.println();
+        System.out.println();
+        System.out.println("Accuracy calculation (simple)");
+        System.out.println("\tjava -jar LinkImputeR.jar -s filename");
+        System.out.println();
+        System.out.println("\twhere:");
+        System.out.println("\t\tfilename is the name of the ini file");
+        System.out.println();
+        System.out.println("Accuracy calculation (advanced)");
+        System.out.println("\tjava -jar LinkImputeR.jar filename");
+        System.out.println();
+        System.out.println("\twhere:");
+        System.out.println("\t\tfilename is the name of the xml file");
+        System.out.println();
+        System.out.println("Accuracy ini to xml conversion");
+        System.out.println("\tjava -jar LinkImputeR.jar -c inifilename xmlfilename");
+        System.out.println();
+        System.out.println("\twhere:");
+        System.out.println("\t\tinifilename is the name of the ini input file");
+        System.out.println("\t\txmlfilename is the name of the xml output file");
+        System.out.println();
+        System.out.println("Imputation");
+        System.out.println("\tjava -jar LinkImputeR.jar xmlfilename case vcffilename");
+        System.out.println();
+        System.out.println("\twhere:");
+        System.out.println("\t\txmlfilename is the name of the xml input file");
+        System.out.println("\t\tcase is the name of the case to be used for imputation");
+        System.out.println("\t\tvcffilename is the name of the vcf output file");
+        System.out.println();
+        System.out.println("Version information");
+        System.out.println("\tjava -jar LinkImputeR.jar -v");
+        System.out.println();
+        System.out.println("Help");
+        System.out.println("\tjava -jar LinkImputeR.jar -h");
     }
     
     private final static DecimalFormat dform = new DecimalFormat("0.000");

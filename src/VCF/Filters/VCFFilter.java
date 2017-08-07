@@ -31,6 +31,8 @@ public interface VCFFilter
     /**
      * Apply this filter to a VCF
      * @param vcf The VCF
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public void change(VCF vcf) throws VCFDataException;
     

@@ -31,6 +31,8 @@ public interface DoubleMapper
      * Map from string to double
      * @param v The string
      * @return The double
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public double map(String v) throws VCFUnexpectedDataException;
 }

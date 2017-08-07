@@ -17,13 +17,23 @@
 
 package Exceptions;
 
+/**
+ * Exception for when there is a problem with a ini file
+ */
 public class INIException extends Exception
 {
 
+    /**
+     * Default constructor
+     */
     public INIException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public INIException(String msg)
     {
         super(msg);

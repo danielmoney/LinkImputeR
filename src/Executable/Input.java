@@ -50,6 +50,8 @@ public class Input
      * in all cases so it can save time in the final imputation step to save a VCF
      * with the filters applied rather than read it in from scratch and reapply
      * the filters.
+     * @param maxdepth The maximum read depth for a genotype.  Genotypes with
+     * a higher read depth are set to have no reads and a missing genotype.
      */
     public Input(File in, List<PositionFilter> filters, File out, int maxdepth)
     {
@@ -85,6 +87,8 @@ public class Input
     /**
      * Get the VCF data
      * @return The VCF data
+     * @throws VCF.Exceptions.VCFException If there is a problem with VCF file
+     * or the data in it.
      * @throws OutputException If there is a problem writing out the immediate
      * output file (see constructor)
      */

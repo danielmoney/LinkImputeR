@@ -17,13 +17,23 @@
 
 package Exceptions;
 
+/**
+ * Exception for when there is a problem with one of the algorithms
+ */
 public class AlgorithmException extends Exception
 {
 
+    /**
+     * Default constructor
+     */
     public AlgorithmException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public AlgorithmException(String msg)
     {
         super(msg);

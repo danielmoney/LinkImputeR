@@ -51,6 +51,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
      * Constructor
      * @param knownDepth The read depth above which imputation is not performed
      * and the called probabilities are used instead
+     * @param method The accuracy method to be used
      */
     public KnniLDProbOptimizedCalls(int knownDepth, AccuracyMethod method)
     {

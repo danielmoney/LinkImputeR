@@ -65,6 +65,10 @@ public class Sample
                 .mapToObj(i -> new Genotype(genos[i],positions[i],sample));
     }
     
+    /**
+     * Get a list of genotypes for this sample
+     * @return List of genotypes
+     */
     public List<Genotype> genotypeList()
     {
         List<Genotype> list = new ArrayList<>();

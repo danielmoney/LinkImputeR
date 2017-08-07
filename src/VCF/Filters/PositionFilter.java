@@ -35,6 +35,8 @@ public abstract class PositionFilter implements VCFFilter
      * Tests whether a position should be filtered out
      * @param p The position to test
      * @return Whether this position should be filtered out
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public abstract boolean test(Position p) throws VCFDataException;
     

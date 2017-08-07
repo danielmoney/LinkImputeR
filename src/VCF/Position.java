@@ -91,7 +91,11 @@ public class Position
         return IntStream.range(0, samples.length).filter(i -> sVis[i])
                 .mapToObj(i -> new Genotype(genos[i],meta,samples[i]));
     }
-    
+
+    /**
+     * Get a list of genotypes for this position
+     * @return List of genotypes
+     */    
     public List<Genotype> genotypeList()
     {
         ArrayList<Genotype> list = new ArrayList<>();

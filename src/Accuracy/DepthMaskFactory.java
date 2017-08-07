@@ -41,6 +41,7 @@ public class DepthMaskFactory
      * @param number The number of genotypes to makes reads from
      * @param minDepth Only mask genotypes with a greater read depth than this
      * @param limitDist The distribution to mask the reads to
+     * @param method The method to be used to select genotypes to be masked
      */
     public DepthMaskFactory(int number, int minDepth, int limitDist, Method method)
     {
@@ -76,7 +77,10 @@ public class DepthMaskFactory
     /**
      * Get a depth mask
      * @param readCounts The reads to mask
+     * @param dontUse A list of genotypes not to mask
+     * @param caller The genotype caller to use
      * @return A depth mask
+     * @throws NotEnoughMaskableGenotypesException If there is not enough maskable genotypes
      */
     public DepthMask getDepthMask(int[][][] readCounts, List<SingleGenotypePosition> dontUse, Caller caller)  throws NotEnoughMaskableGenotypesException
     {
@@ -86,6 +90,13 @@ public class DepthMaskFactory
         return new DepthMask(readCounts,number,minDepth,dist,method,dontUse, caller);
     }
     
+    /**
+     * Get a depth mask
+     * @param readCounts The reads to mask
+     * @param caller The genotype caller to use
+     * @return A depth mask
+     * @throws NotEnoughMaskableGenotypesException If there is not enough maskable genotypes
+     */
     public DepthMask getDepthMask(int[][][] readCounts, Caller caller)  throws NotEnoughMaskableGenotypesException
     {
         return getDepthMask(readCounts, new ArrayList<>(), caller);

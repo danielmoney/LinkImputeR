@@ -61,13 +61,17 @@ public class AccuracyStats
         return total.getAccuracy();
     }
     
+    /**
+     * Returns the overall correlation
+     * @return The overall correlation
+     */
     public double correlation()
     {
         return total.getCorrelation();
     }
     
     /**
-     * Returns teh accuracy for a certain depth (number of reads)
+     * Returns the accuracy for a certain depth (number of reads)
      * @param depth The depth to return the accuracy for
      * @return The accuracy
      */
@@ -82,7 +86,12 @@ public class AccuracyStats
             return -1.0;
         }
     }
-    
+
+    /**
+     * Returns the correlation for a certain depth (number of reads)
+     * @param depth The depth to return the accuracy for
+     * @return The correlation
+     */    
     public double depthCorrelation(int depth)
     {
         if (byDepth.has(depth))

@@ -48,6 +48,13 @@ public class SortByIndexDouble implements Comparator<Integer>
         this.reverse = reverse;
     }
 
+    /**
+     * Overrides the default compare method and instead compares the ith and jth
+     * element of the values array
+     * @param i The index of the first elelment to compare
+     * @param j The index of the second element to compare
+     * @return Standard comparison integer
+     */
     @Override
     public int compare(Integer i, Integer j)
     {

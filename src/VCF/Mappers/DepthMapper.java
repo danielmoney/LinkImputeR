@@ -32,6 +32,8 @@ public class DepthMapper implements Mapper<int[]>
      * Maps from string representing read depths to an integer array of read depths
      * @param s The string
      * @return The read depths
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public int[] map(String s) throws VCFUnexpectedDataException
     {

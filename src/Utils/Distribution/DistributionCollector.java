@@ -39,11 +39,13 @@ public class DistributionCollector<V> implements Collector<V,CountMap<V>,Distrib
 	return EnumSet.of(Characteristics.UNORDERED);
     }
     
+    @Override
     public Function<CountMap<V>,Distribution> finisher()
     {
         return Distribution::new;
     }
     
+    @Override
     public BinaryOperator<CountMap<V>> combiner()
     {
         return (x, y) ->
@@ -53,6 +55,7 @@ public class DistributionCollector<V> implements Collector<V,CountMap<V>,Distrib
             };
     }
     
+    @Override
     public BiConsumer<CountMap<V>,V> accumulator()
     {
         return (c, v) ->
@@ -61,6 +64,7 @@ public class DistributionCollector<V> implements Collector<V,CountMap<V>,Distrib
             };
     }
     
+    @Override
     public Supplier<CountMap<V>> supplier()
     {
         return CountMap<V>::new;

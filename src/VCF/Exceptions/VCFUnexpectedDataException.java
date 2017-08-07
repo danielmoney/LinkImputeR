@@ -17,17 +17,33 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is unexpected data for a given format
+ */
 public class VCFUnexpectedDataException extends VCFDataException
 {
+    /**
+     * Default constructor
+     */    
     public VCFUnexpectedDataException()
     {
     }
-
+    
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFUnexpectedDataException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */    
     public VCFUnexpectedDataException(String msg, Throwable cause)
     {
         super(msg, cause);

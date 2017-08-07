@@ -33,6 +33,8 @@ public abstract class SampleFilter implements VCFFilter
      * Tests whether a sample should be filtered out
      * @param s The sample to test
      * @return Whether this sample should be filtered out
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public abstract boolean test(Sample s) throws VCFDataException;
     

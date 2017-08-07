@@ -98,6 +98,8 @@ public class Case
     /**
      * Apply the filters of this case to a VCF
      * @param vcf The VCF
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public void applyFilters(VCF vcf) throws VCFDataException
     {
@@ -149,6 +151,7 @@ public class Case
      * @param imputed The imputed genotype probabilities
      * @param reads The read counts
      * @param correct The correct genotypes
+     * @param masked A list of maksed genotypes
      * @return The combiner
      */
     public Combiner getCombiner(List<SingleGenotypeProbability> called,

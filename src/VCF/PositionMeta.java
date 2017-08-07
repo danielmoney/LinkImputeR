@@ -200,6 +200,7 @@ public class PositionMeta
         return (pm.position.equals(position) && pm.chrom.equals(chrom));
     }
     
+    @Override
     public int hashCode()
     {
         return position.hashCode();

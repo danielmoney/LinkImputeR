@@ -22,16 +22,23 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- *
- * @author daniel
+ * Filter positions that do not have depth data
  */
 public class HasDepthFilter extends PositionFilter
 {
+
+    /**
+     * Constructor
+     */
     public HasDepthFilter()
     {
         
     }
         
+    /**
+     * Constructor from a config (read in from a XML file)
+     * @param params The config
+     */ 
     public HasDepthFilter(HierarchicalConfiguration<ImmutableNode> params)
     {
         

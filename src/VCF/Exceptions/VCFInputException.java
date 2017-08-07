@@ -17,18 +17,33 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is a problem reading in a VCF
+ */
 public class VCFInputException extends VCFException
 {
-
+    /**
+     * Default constructor
+     */
     public VCFInputException()
     {
     }
-
+    
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFInputException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */    
     public VCFInputException(String msg, Throwable cause)
     {
         super(msg, cause);

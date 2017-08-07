@@ -49,6 +49,8 @@ public class GenoToByte implements ByteMapper
      * Maps from string representing a genotype to a byte representation
      * @param s The string
      * @return Byte representation
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public byte map(String s) throws VCFUnexpectedDataException
     {

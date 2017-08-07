@@ -32,6 +32,8 @@ public interface Mapper<M>
      * Map from string to object
      * @param v The String
      * @return The object
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public M map(String v) throws VCFUnexpectedDataException;
 

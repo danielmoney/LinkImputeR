@@ -35,7 +35,7 @@ public class ProgrammerException extends RuntimeException
     
     /**
      * Constructor that takes another Throwable as the cause of this exception
-     * @param cause
+     * @param cause The cause
      */
     public ProgrammerException(Throwable cause)
     {

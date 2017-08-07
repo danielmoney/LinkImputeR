@@ -33,6 +33,7 @@ public class SingleGenotypeMasked extends SingleGenotypePosition
      * @param snp The snp position
      * @param original The original read counts
      * @param maskedTo The masked read counts
+     * @param maf The minor allele frequency for the position of this genotype
      */
     public SingleGenotypeMasked(int sample, int snp, int[] original, int[] maskedTo, double maf)
     {
@@ -69,6 +70,10 @@ public class SingleGenotypeMasked extends SingleGenotypePosition
         return original;
     }
     
+    /**
+     * Get the minor allele frequency for the position of this genotypes
+     * @return The minor allele frequency
+     */
     public double getMaf()
     {
         return maf;

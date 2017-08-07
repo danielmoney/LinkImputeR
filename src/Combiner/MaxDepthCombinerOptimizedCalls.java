@@ -41,6 +41,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     /**
      * Constructor
      * @param maxDepth The depth above which only called genotype probabilities are used
+     * @param method The accuracy method to be used
      */
     public MaxDepthCombinerOptimizedCalls(int maxDepth, AccuracyMethod method)
     {

@@ -31,6 +31,8 @@ public interface ByteMapper
      * Map from string to byte
      * @param v The string
      * @return The byte
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public byte map(String v)  throws VCFUnexpectedDataException;
 }

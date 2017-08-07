@@ -17,18 +17,33 @@
 
 package Exceptions;
 
+/**
+ * Exception for when there is a problem with creating output
+ */
 public class OutputException extends Exception
 {
-
+    /**
+     * Default constructor
+     */
     public OutputException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public OutputException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */
     public OutputException(String msg, Throwable cause)
     {
         super(msg,cause);

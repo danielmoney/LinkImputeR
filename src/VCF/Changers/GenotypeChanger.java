@@ -31,6 +31,8 @@ public interface GenotypeChanger
     /**
      * Change the given genotype
      * @param g The genotype to change
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public void change(Genotype g) throws VCFDataException;
 }

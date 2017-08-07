@@ -21,10 +21,9 @@ import Exceptions.ProgrammerException;
 import VCF.Changers.GenotypeChanger;
 import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFDataLineException;
+import VCF.Exceptions.VCFException;
 import VCF.Exceptions.VCFHeaderLineException;
 import VCF.Exceptions.VCFInputException;
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.SampleFilter;
 import VCF.Mappers.ByteMapper;
@@ -65,9 +64,10 @@ public class VCF
     /**
      * Constructor from a VCF file
      * @param f The VCF file
+     * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
+     * or the data in it.
      */
-    public VCF(File f) throws 
-            VCFInputException, VCFDataException
+    public VCF(File f) throws VCFException
     {
         this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
@@ -78,9 +78,10 @@ public class VCF
      * reading a large VCF file with many positions that will be filtered
      * @param f The file
      * @param filters The position filters to apply
+     * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
+     * or the data in it.
      */
-    public VCF(File f, List<PositionFilter> filters) throws 
-            VCFInputException, VCFDataException
+    public VCF(File f, List<PositionFilter> filters) throws VCFException
     {
         this(f, new ArrayList<>(), new ArrayList<>(), filters);
     }
@@ -91,11 +92,15 @@ public class VCF
      * contained in the genotype field that will not be used can be discared so
      * saving memory.
      * @param f The file
+     * @param preFilters A list of filters to be applied before any changes are
+     * applied (e.g. to filter out snps without the required data)
      * @param changers List of changers to apply to the genotypes
-     * @param filters The position filters to apply
+     * @param filters The position filters to apply (after the changeers)
+     * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
+     * or the data in it
      */
     public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
-            VCFInputException, VCFDataException
+            VCFException
     {
         BufferedReader in;
         try
@@ -355,6 +360,8 @@ public class VCF
      * not deleted, as they can then be unhidden (see resetVisible) which makes
      * applying different filters to the same VCF much easier.
      * @param filter The sample filter to be applied.
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public void filterSamples(SampleFilter filter) throws VCFDataException
     {
@@ -369,6 +376,8 @@ public class VCF
      * not deleted, as they can then be unhidden (see resetVisible) which makes
      * applying different filters to the same VCF much easier.
      * @param filter The position filter to be applied.
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public void filterPositions(PositionFilter filter) throws VCFDataException
     {
@@ -463,6 +472,8 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to the
      * required type
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public <V> V[][] asArray(String format,Mapper<V> mapper) throws VCFDataException
     {
@@ -498,6 +509,8 @@ public class VCF
      * @param mapper A mapper mapping from the string (in the VCF) to the
      * required type
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public <V> V[][] asArrayTransposed(String format, Mapper<V> mapper) throws VCFDataException
     {
@@ -531,6 +544,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public int[][] asIntegerArray(String format,IntegerMapper mapper) throws VCFDataException
     {
@@ -564,6 +579,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to an integer
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public int[][] asIntegerArrayTransposed(String format, IntegerMapper mapper) throws VCFDataException
     {
@@ -597,6 +614,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public double[][] asDoubleArray(String format,DoubleMapper mapper) throws VCFDataException
     {
@@ -630,6 +649,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to a double
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public double[][] asDoubleArrayTransposed(String format, DoubleMapper mapper) throws VCFDataException
     {
@@ -663,6 +684,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public byte[][] asByteArray(String format,ByteMapper mapper) throws VCFDataException
     {
@@ -696,6 +719,8 @@ public class VCF
      * @param format The format in the genotype data to get the data from
      * @param mapper A mapper mapping from the string (in the VCF) to a byte
      * @return The array
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
     public byte[][] asByteArrayTransposed(String format,ByteMapper mapper)  throws VCFDataException
     {
@@ -766,6 +791,8 @@ public class VCF
      * without reading in any data
      * @param f The VCF file
      * @return The number of positions
+     * @throws VCF.Exceptions.VCFInputException If there is a problem with reading
+     * the VCF
      */
     public static int numberPositionsFromFile(File f) throws VCFInputException
     {

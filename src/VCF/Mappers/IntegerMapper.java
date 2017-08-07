@@ -31,6 +31,8 @@ public interface IntegerMapper
      * Map from string to integer
      * @param v The string
      * @return The integer
+     * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
+     * data in the VCF
      */
     public int map(String v)  throws VCFUnexpectedDataException;
 }

@@ -87,6 +87,7 @@ public class CombinerOption
      * @param imputed The imputed genotype probabilities
      * @param reads The reads
      * @param correct The correct genotypes
+     * @param masked A list of maksed genotypes
      * @return A combiner
      */
     public Combiner getCombiner(

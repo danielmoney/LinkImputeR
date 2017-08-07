@@ -42,6 +42,7 @@ public class MAFFilter extends PositionFilter
      * used in the MAF calculation
      * @param maxDepth A genotype must have less than (or equal) this number of 
      * reads to be used in the MAF calculation
+     * @param error The error rate to be used when calling genotypes
      */
     public MAFFilter(double maf, int minDepth, int maxDepth, double error)
     {

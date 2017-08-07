@@ -17,18 +17,33 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is a problem reading in a data line of a VCF
+ */
 public class VCFDataLineException extends VCFInputException
 {
-
+    /**
+     * Default constructor
+     */
     public VCFDataLineException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFDataLineException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */    
     public VCFDataLineException(String msg, Throwable cause)
     {
         super(msg, cause);

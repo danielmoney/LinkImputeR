@@ -43,17 +43,41 @@ public class DepthMask
      * @param number The number of genotypes to mask
      * @param minDepth Only mask genotypes with more than this reqad depth
      * @param maskTo Mask to read depth
+     * @param caller The genotype caller
+     * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
+     *      enough maskable genotypes
      */
     public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo), Method.ALL,new ArrayList<>(), caller);
     }
     
+    /**
+     * Masks a given number of genotypes to a given depth
+     * @param depths The original read counts
+     * @param number The number of genotypes to mask
+     * @param minDepth Only mask genotypes with more than this reqad depth
+     * @param maskTo Mask to read depth
+     * @param method The method to be used to mask genotypes
+     * @param caller The genotype caller
+     * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
+     *      enough maskable genotypes
+     */
     public DepthMask(int[][][] depths, int number, int minDepth, int maskTo, Method method, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,ComparableDistribution.constantDistribution(maskTo),method,new ArrayList<>(), caller);
     }
     
+    /**
+     * Masks a given number of genotypes to a given depth
+     * @param depths The original read counts
+     * @param number The number of genotypes to mask
+     * @param minDepth Only mask genotypes with more than this reqad depth
+     * @param caller The genotype caller
+     * @param maskToDistribution Mask to this distribution of read depths
+     * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
+     *      enough maskable genotypes
+     */
     public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Caller caller) throws NotEnoughMaskableGenotypesException
     {
         this(depths,number,minDepth,maskToDistribution,Method.ALL,new ArrayList<>(), caller);
@@ -65,6 +89,11 @@ public class DepthMask
      * @param number The number of genotypes to mask
      * @param minDepth Only mask genotypes with more than this number of reads
      * @param maskToDistribution Mask to this distribution of read depths
+     * @param method The method to be used to mask genotypes
+     * @param dontUse A list of genotypes not to use for masking
+     * @param caller The genotype caller
+     * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
+     *      enough maskable genotypes
      */
     public DepthMask(int[][][] depths, int number, int minDepth, ComparableDistribution<Integer> maskToDistribution, Method method,
             List<SingleGenotypePosition> dontUse, Caller caller) throws NotEnoughMaskableGenotypesException
@@ -229,6 +258,10 @@ public class DepthMask
         return list;
     }
     
+    /**
+     * Get a list of masked positions
+     * @return List of positions - one per masked genotype
+     */
     public List<SingleGenotypePosition> maskedPositions()
     {
         return list.stream().map(p -> new SingleGenotypePosition(p.getSample(), p.getSNP())).collect(Collectors.toCollection(ArrayList::new));
@@ -252,10 +285,25 @@ public class DepthMask
     private Random r;
     private List<SingleGenotypeMasked> list;
     
+    /**
+     * Represents the method to be used to select genotypes to be masked
+     */
     public enum Method
     {
+
+        /**
+         * Select from all maskable genotypes at random
+         */
         ALL,
+
+        /**
+         * First select a snp at random then a maskable genotype from that snp
+         */
         BYSNP,
+
+        /**
+         * First select a sample at random then a maskable genotype from that sample
+         */
         BYSAMPLE
     }
 }

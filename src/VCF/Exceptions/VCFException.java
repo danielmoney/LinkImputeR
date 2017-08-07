@@ -17,18 +17,33 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is a problem with the VCF
+ */
 public class VCFException extends Exception
 {
-
+    /**
+     * Default constructor
+     */
     public VCFException()
     {
     }
-
+    
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */    
     public VCFException(String msg, Throwable cause)
     {
         super(msg,cause);

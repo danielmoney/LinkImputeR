@@ -17,13 +17,22 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is no data for a given format
+ */
 public class VCFNoDataException extends VCFDataException
 {
-
+    /**
+     * Default constructor
+     */
     public VCFNoDataException()
     {
     }
-
+    
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFNoDataException(String msg)
     {
         super(msg);

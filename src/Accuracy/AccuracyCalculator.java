@@ -55,6 +55,13 @@ public class AccuracyCalculator
             (correct.get(i).getCall() == compareTo.get(i).getCall()) ? 1.0 : 0.0).average().orElse(0.0);
     }
     
+    /**
+     * Calculates the correlation between correct and imputed genotypes
+     * @param correct The correct genotypes
+     * @param compareTo The genotypes to test
+     * @param masked List of masked genotypes (contains the MAF of each genotype)
+     * @return Percentage accuracy
+     */
     public static double correlation(List<SingleGenotypeCall> correct, List<SingleGenotypeCall> compareTo,
                                      List<SingleGenotypeMasked> masked)
     {
@@ -109,9 +116,20 @@ public class AccuracyCalculator
         return stats;
     }
     
+    /**
+     * Represents the accuracy method to be used for optimization
+     */
     public enum AccuracyMethod
     {
+
+        /**
+         * Use perecent correct
+         */
         CORRECT,
+
+        /**
+         * Use correlation
+         */
         CORRELATION
     }
 }

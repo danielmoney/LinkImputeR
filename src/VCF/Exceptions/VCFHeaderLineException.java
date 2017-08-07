@@ -17,18 +17,33 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is a problem reading in a header line of a VCF
+ */
 public class VCFHeaderLineException extends VCFInputException
 {
-
+    /**
+     * Default constructor
+     */
     public VCFHeaderLineException()
     {
     }
-
+    
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public VCFHeaderLineException(String msg)
     {
         super(msg);
     }
     
+    /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */    
     public VCFHeaderLineException(String msg, Throwable cause)
     {
         super(msg, cause);

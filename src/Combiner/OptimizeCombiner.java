@@ -39,6 +39,7 @@ public interface OptimizeCombiner<C extends Combiner>
      * @param imputed The imputed genotype probabilities
      * @param reads The read depths
      * @param correct The correct genotypes
+     * @param masked A list of masked genotypes
      * @return The optimized combiner
      */
     public C getOptimized(List<SingleGenotypeProbability> called,

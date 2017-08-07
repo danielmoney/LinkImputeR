@@ -17,19 +17,35 @@
 
 package VCF.Exceptions;
 
+/**
+ * Exception for when there is a problem with data in the VCF
+ */
 public class VCFDataException extends VCFException
 {
+    /**
+     * Default constructor
+     */
     public VCFDataException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */    
     public VCFDataException(String msg)
     {
         super(msg);
     }
     
-    public VCFDataException(String msg, Throwable e)
+        /**
+     * Constructor that takes a message and another Throwable as the cause of
+     * this exception.
+     * @param msg The message
+     * @param cause The cause
+     */
+    public VCFDataException(String msg, Throwable cause)
     {
-        super(msg, e);
+        super(msg, cause);
     }
 }

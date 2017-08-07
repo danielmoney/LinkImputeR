@@ -17,13 +17,23 @@
 
 package Exceptions;
 
+/**
+ * Exception for when there are not enough maskable genotypes
+ */
 public class NotEnoughMaskableGenotypesException extends AlgorithmException
 {
 
+    /**
+     * Default constructor
+     */
     public NotEnoughMaskableGenotypesException()
     {
     }
 
+    /**
+     * Constructor that takes a message
+     * @param msg The message
+     */
     public NotEnoughMaskableGenotypesException(String msg)
     {
         super(msg);

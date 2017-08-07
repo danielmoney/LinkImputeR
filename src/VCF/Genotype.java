@@ -67,6 +67,8 @@ public class Genotype
      * not present for this genotype.
      * @param name The format of the data to be retrieved (as a string)
      * @return The data
+     * @throws VCF.Exceptions.VCFNoDataException If there is a no data for the
+     * requested format
      */
     public String getData(String name) throws VCFNoDataException
     {
@@ -113,6 +115,8 @@ public class Genotype
      * Change a particular piece of data associated with the genotype
      * @param name The format of the data to be changed (as a string)
      * @param value The new value
+     * @throws VCF.Exceptions.VCFNoDataException If there is a no data for the
+     * requested format
      */
     public void replaceData(String name, String value) throws VCFNoDataException
     {
@@ -137,6 +141,7 @@ public class Genotype
         geno.setInfo(StringUtils.overlay(info, value, start, end));
     }
     
+    @Override
     public String toString()
     {
         return position.toString() + "\t" + sample + "\t" + geno.getInfo();

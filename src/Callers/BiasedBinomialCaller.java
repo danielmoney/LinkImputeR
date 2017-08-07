@@ -54,17 +54,14 @@ public class BiasedBinomialCaller extends Caller
     
     public double[] callSingle(int[] depths, int i, int j)
     {
-        try
-        {
-            return callSingle(depths);
-        }
-        catch (NotPositiveException e)
-        {
-            System.out.println("Problem with depths at sample " + i +", SNP " + j);
-            throw e;
-        }
+        return callSingle(depths);
     }
     
+    /**
+     * Calls a genotype based on reads
+     * @param d The reads
+     * @return The called genotype
+     */
     public double[] callSingle(int[] d)
     {
         if ((d[0] + d[1]) != 0)

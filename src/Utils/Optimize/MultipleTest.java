@@ -41,7 +41,6 @@ public class MultipleTest
      * @param min The minimum allowed input value
      * @param max The maximum allowed input value
      * @return Optimized input
-     * @throws Exception If something goes wrong!
      */
     public double optimize(SingleDoubleValue v, double min, double max)
     {

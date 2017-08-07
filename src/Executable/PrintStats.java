@@ -96,7 +96,7 @@ public class PrintStats
      * @param stats Accuracy stats for combined
      * @param cstats Accuracy stats for called
      * @param istats Accuracy stats for imputed
-     * @throws IOException If there is an IO problem
+     * @throws OutputException If there is an IO problem
      */
     public void writeStats(AccuracyStats stats, AccuracyStats cstats, AccuracyStats istats) throws OutputException
     {

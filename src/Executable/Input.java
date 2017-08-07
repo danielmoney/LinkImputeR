@@ -85,7 +85,7 @@ public class Input
     /**
      * Get the VCF data
      * @return The VCF data
-     * @throws IOException If there is a problem writing out the immediate
+     * @throws OutputException If there is a problem writing out the immediate
      * output file (see constructor)
      */
     public VCF getVCF() throws VCFException, OutputException

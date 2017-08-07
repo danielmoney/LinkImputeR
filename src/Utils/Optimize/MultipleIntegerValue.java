@@ -29,7 +29,6 @@ public interface MultipleIntegerValue
      * Returns the value of a function
      * @param v The input parameters
      * @return The value of the function
-     * @throws Exception If something goes wrong!
      */
     public double value(int[] v);
 }

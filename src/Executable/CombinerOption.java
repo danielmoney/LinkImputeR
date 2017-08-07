@@ -88,7 +88,6 @@ public class CombinerOption
      * @param reads The reads
      * @param correct The correct genotypes
      * @return A combiner
-     * @throws Exception If there is a problem
      */
     public Combiner getCombiner(
             List<SingleGenotypeProbability> called,

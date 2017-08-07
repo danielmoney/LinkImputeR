@@ -37,7 +37,6 @@ public interface OptimizeImputer<I extends Imputer>
      * @param maskedprob Masked genotype probabilities
      * @param list List of masked sites and their genotype
      * @return An optmized imputer
-     * @throws Exception If there is a problem
      */
     public I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list);
 

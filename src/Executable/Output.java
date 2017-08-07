@@ -76,7 +76,7 @@ public class Output
     /**
      * Gets the writer to write summary information to
      * @return The writer
-     * @throws IOException If there is an IO problem
+     * @throws OutputException If there is an IO problem
      */
     public PrintWriter getSummaryWriter() throws OutputException
     {
@@ -94,7 +94,7 @@ public class Output
     /**
      * Gets the writer to write table information to
      * @return The writer
-     * @throws IOException If there is an IO problem
+     * @throws OutputException If there is an IO problem
      */
     public PrintWriter getTableWriter() throws OutputException
     {
@@ -129,7 +129,7 @@ public class Output
     /**
      * Write the control file (for the final imputation step)
      * @param config The configuration to write
-     * @throws IOException If there is an IO problem
+     * @throws OutputException If there is an IO problem
      */
     public void writeControl(List<ImmutableNode> config) throws OutputException
     {

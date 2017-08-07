@@ -85,7 +85,6 @@ public class ImputationOption
      * @param maskedprobs The masked called genotype probabilities
      * @param list A list of masked positions
      * @return An imputer
-     * @throws Exception If there is a problem
      */
     public Imputer getImputer(
             double[][][] original, int[][][] readCounts,

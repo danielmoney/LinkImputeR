@@ -29,7 +29,6 @@ public interface SingleDoubleValue
      * Returns the value of a function
      * @param v The input parameter
      * @return The value of the function
-     * @throws Exception If something goes wrong!
      */
     public double value(double v);
 }

@@ -40,7 +40,6 @@ public interface OptimizeCombiner<C extends Combiner>
      * @param reads The read depths
      * @param correct The correct genotypes
      * @return The optimized combiner
-     * @throws Exception If something goes wrong!
      */
     public C getOptimized(List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,

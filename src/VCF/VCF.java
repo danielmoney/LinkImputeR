@@ -65,7 +65,6 @@ public class VCF
     /**
      * Constructor from a VCF file
      * @param f The VCF file
-     * @throws IOException If there is an IO problem
      */
     public VCF(File f) throws 
             VCFInputException, VCFDataException
@@ -79,7 +78,6 @@ public class VCF
      * reading a large VCF file with many positions that will be filtered
      * @param f The file
      * @param filters The position filters to apply
-     * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<PositionFilter> filters) throws 
             VCFInputException, VCFDataException
@@ -95,7 +93,6 @@ public class VCF
      * @param f The file
      * @param changers List of changers to apply to the genotypes
      * @param filters The position filters to apply
-     * @throws IOException If there is an IO problem
      */
     public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
             VCFInputException, VCFDataException
@@ -211,7 +208,7 @@ public class VCF
         {
             if (lineNumber == 0)
             {
-                throw new VCFInputException("Porbleming reading VCF",lineNumber,e);
+                throw new VCFInputException("Porbleming reading VCF",e);
             }
             else
             {
@@ -769,7 +766,6 @@ public class VCF
      * without reading in any data
      * @param f The VCF file
      * @return The number of positions
-     * @throws IOException If there is an IO problem
      */
     public static int numberPositionsFromFile(File f) throws VCFInputException
     {

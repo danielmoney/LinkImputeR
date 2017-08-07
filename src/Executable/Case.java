@@ -125,7 +125,6 @@ public class Case
      * @param maskedprobs The masked genotype probabilites
      * @param list List of masked positions
      * @return The imputer
-     * @throws Exception If there is a problem
      */
     public Imputer getImputer(double[][][] original, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, 
             List<SingleGenotypeMasked> list)
@@ -151,7 +150,6 @@ public class Case
      * @param reads The read counts
      * @param correct The correct genotypes
      * @return The combiner
-     * @throws Exception If there is a problem
      */
     public Combiner getCombiner(List<SingleGenotypeProbability> called,
             List<SingleGenotypeProbability> imputed,

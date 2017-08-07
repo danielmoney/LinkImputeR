@@ -96,7 +96,7 @@ public class Log
     /**
      * Initialise from a configuration
      * @param params Configuration
-     * @throws IOException If there's a problem setting up the logger
+     * @throws OutputException If there's a problem setting up the logger
      */
     public static void initialise(HierarchicalConfiguration<ImmutableNode> params) throws OutputException
     {

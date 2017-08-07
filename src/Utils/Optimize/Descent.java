@@ -34,7 +34,6 @@ public class Descent
      * @param min The minimum allowed value for each input
      * @param max The maximum allowed value for each input
      * @return Optimized inputs
-     * @throws Exception If something goes wrong!
      */
     public int[] optimize(MultipleIntegerValue v, int[] initial, int[] min, int[] max)
     {

@@ -53,6 +53,7 @@ import VCF.Filters.SampleMissing;
 import VCF.Filters.VCFFilter;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
+import VCF.Meta;
 import VCF.Position;
 import VCF.PositionMeta;
 import VCF.VCF;
@@ -289,11 +290,11 @@ public class LinkImputeR
                     i++;
                 }
 
-                List<String> newMeta = vcf.metaStream().collect(Collectors.toList());
+                List<String> newMeta = vcf.getMeta().getLinesList();
                 newMeta.add("##FORMAT=<ID=UG,Number=1,Type=String,Description=\"Unimputed Genotype\">");
                 newMeta.add("##FORMAT=<ID=IP,Number=3,Type=Float,Description=\"Imputation Probabilities (3 d.p.)\">");
 
-                VCF newVCF = new VCF(newMeta,newPositions);
+                VCF newVCF = new VCF(new Meta(newMeta),newPositions);
                 try
                 {
                     newVCF.writeFile(output);
@@ -449,7 +450,8 @@ public class LinkImputeR
         }
         catch (ConfigurationException ex)
         {
-            throw new INIException("Theres a problem reading the ini file");
+            throw new INIException("Theres a problem reading the ini file.  "
+                    + "Does it exist? Is it formatted correctly.",ex);
         }
         
         List<ImmutableNode> xml = new ArrayList<>();

@@ -24,6 +24,7 @@ import VCF.Exceptions.VCFDataLineException;
 import VCF.Exceptions.VCFException;
 import VCF.Exceptions.VCFHeaderLineException;
 import VCF.Exceptions.VCFInputException;
+import VCF.Exceptions.VCFMissingFormatException;
 import VCF.Filters.PositionFilter;
 import VCF.Filters.SampleFilter;
 import VCF.Mappers.ByteMapper;
@@ -69,7 +70,7 @@ public class VCF
      */
     public VCF(File f) throws VCFException
     {
-        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
     
     /**
@@ -83,7 +84,7 @@ public class VCF
      */
     public VCF(File f, List<PositionFilter> filters) throws VCFException
     {
-        this(f, new ArrayList<>(), new ArrayList<>(), filters);
+        this(f, new ArrayList<>(), new ArrayList<>(), filters, new ArrayList<>());
     }
     
     /**
@@ -99,7 +100,8 @@ public class VCF
      * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
      * or the data in it
      */
-    public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, List<PositionFilter> filters) throws 
+    public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, 
+                List<PositionFilter> filters, List<String> requiredFormats) throws 
             VCFException
     {
         BufferedReader in;
@@ -128,17 +130,39 @@ public class VCF
         {
             ArrayList<PositionMeta> positionList = new ArrayList<>();
             ArrayList<RawGenotype[]> genotypeList = new ArrayList<>();
-            meta = new ArrayList<>();
+            ArrayList<String> metaLines = new ArrayList<>();
             String line;
             while ((line = in.readLine()) != null)
             {
                 lineNumber ++;
                 if (line.startsWith("##"))
                 {
-                    meta.add(line);
+                    metaLines.add(line);
                 }
                 else if (line.startsWith("#"))
                 {
+                    //Process meta data since we've read it all in
+                    meta = new Meta(metaLines);
+                    boolean allFormats = true;
+                    StringBuilder missingString = new StringBuilder();
+                    for (String format: requiredFormats)
+                    {
+                        if (!meta.hasFormat(format))
+                        {
+                            allFormats = false;
+                            missingString.append(" ");
+                            missingString.append(format);
+                        }
+                    }
+                    if (!allFormats)
+                    {
+                        throw new VCFMissingFormatException(
+                                "The VCF is missing the following required fomats"
+                                + missingString.toString());
+                    }
+                    
+                    
+                    //Now deal with the header line
                     String[] parts = line.split("\t");
                     try
                     {
@@ -228,7 +252,7 @@ public class VCF
      * @param positions The positions for the VCF (which includes information
      * on samples and genotypes).
      */
-    public VCF(List<String> meta, List<Position> positions)
+    public VCF(Meta meta, List<Position> positions)
     {
         this.meta = meta;
         samples = null;
@@ -346,13 +370,9 @@ public class VCF
                 IntStream.range(0, genotypes.length).mapToObj(j -> genotypes[j][i]).toArray(size -> new RawGenotype[size])));
     }
     
-    /**
-     * Returns a stream of the strings that make up the VCF meta data
-     * @return The stream
-     */
-    public Stream<String> metaStream()
+    public Meta getMeta()
     {
-        return meta.stream();
+        return meta;
     }
     
     /**
@@ -455,7 +475,7 @@ public class VCF
         {
             out = new PrintWriter(new BufferedWriter(new FileWriter(f)));
         }
-        metaStream().forEach(m -> out.println(m));
+        meta.getLinesStream().forEach(m -> out.println(m));
         
         out.print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
         Arrays.stream(getSamples()).forEach(s -> out.print("\t" + s));
@@ -779,7 +799,7 @@ public class VCF
         Arrays.fill(sVis, true);        
     }
 
-    private List<String> meta;    
+    private Meta meta;    
     private RawGenotype[][] genotypes;
     private PositionMeta[] positions;
     private String[] samples;

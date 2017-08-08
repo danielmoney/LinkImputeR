@@ -98,7 +98,11 @@ public class Input
         changers.add(new MaxDepthNoReadsChanger(maxdepth));
         List<PositionFilter> prefilters = new ArrayList<>();
         prefilters.add(new HasDepthFilter());
-        VCF vcf = new VCF(in,prefilters,changers,filters);
+        ArrayList<String> requiredFields = new ArrayList<>();
+        requiredFields.add("GT");
+        requiredFields.add("DP");
+        requiredFields.add("AD");
+        VCF vcf = new VCF(in,prefilters,changers,filters,requiredFields);
         if (out != null)
         {
             try

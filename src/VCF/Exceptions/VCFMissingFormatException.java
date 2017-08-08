@@ -15,32 +15,26 @@
  * along with LinkImpute.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Exceptions;
+package VCF.Exceptions;
 
 /**
- * Exception for when there is a problem with a ini file
+ * Exception for when the vcf is missing a required format
  */
-public class INIException extends Exception
+public class VCFMissingFormatException extends VCFDataException
 {
-
     /**
      * Default constructor
      */
-    public INIException()
+    public VCFMissingFormatException()
     {
     }
-
+    
     /**
      * Constructor that takes a message
      * @param msg The message
      */
-    public INIException(String msg)
+    public VCFMissingFormatException(String msg)
     {
         super(msg);
-    }
-    
-    public INIException(String msg, Throwable ex)
-    {
-        super(msg,ex);
     }
 }

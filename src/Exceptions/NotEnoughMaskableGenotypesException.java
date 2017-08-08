@@ -28,14 +28,9 @@ public class NotEnoughMaskableGenotypesException extends AlgorithmException
      */
     public NotEnoughMaskableGenotypesException()
     {
+        super("There's not enough genotypes that are maskable.  Consider"
+                + " decreasing either the number of genotypes to mask or"
+                + " the minimum depth required for masking.");
     }
 
-    /**
-     * Constructor that takes a message
-     * @param msg The message
-     */
-    public NotEnoughMaskableGenotypesException(String msg)
-    {
-        super(msg);
-    }
 }

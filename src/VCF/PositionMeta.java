@@ -17,7 +17,7 @@
 
 package VCF;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +54,12 @@ public class PositionMeta
         //Should probably do something more sensible with this
         info = parts[7];
         
-        format = parts[8].split(":");
+        String[] formats = parts[8].split(":");
+        format = new ArrayList<>();
+        for (String f: formats)
+        {
+            format.add(f);
+        }
     }
     
     /**
@@ -180,7 +185,7 @@ public class PositionMeta
      */
     public List<String> getFormat()
     {
-        return Arrays.asList(format);
+        return format;
     }
     
     /**
@@ -214,5 +219,5 @@ public class PositionMeta
     private String qual;
     private String filter;
     private String info;
-    private String[] format;
+    private ArrayList<String> format;
 }

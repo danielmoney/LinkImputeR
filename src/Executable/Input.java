@@ -20,6 +20,9 @@ package Executable;
 import Exceptions.OutputException;
 import VCF.Changers.GenotypeChanger;
 import VCF.Changers.MaxDepthNoReadsChanger;
+import VCF.Changers.PositionChanger;
+import VCF.Changers.RenameFormatChanger;
+import VCF.Changers.StandardizeCountsFormatChanger;
 import VCF.Exceptions.VCFException;
 import VCF.Filters.BiallelicFilter;
 import VCF.Filters.HasDepthFilter;
@@ -52,8 +55,14 @@ public class Input
      * the filters.
      * @param maxdepth The maximum read depth for a genotype.  Genotypes with
      * a higher read depth are set to have no reads and a missing genotype.
+     * @param readsformat The formats to read read depths from.  If a single
+     * value then assumes the format contains comma seperated data for reference
+     * alt read depths.  If readsformat is itself comma seperated then assumes
+     * the first item is the format containing the reference allele depth, the
+     * second the alt allele depth.  If null defaults to the current VCF standard
+     * (AD).
      */
-    public Input(File in, List<PositionFilter> filters, File out, int maxdepth)
+    public Input(File in, List<PositionFilter> filters, File out, int maxdepth, String readsformat)
     {
         this.in = in;
         this.filters = new ArrayList<>();
@@ -61,6 +70,7 @@ public class Input
         this.filters.addAll(filters);
         this.out = out;
         this.maxdepth = maxdepth;
+        this.readsformat = readsformat;
     }
     
     /**
@@ -81,6 +91,9 @@ public class Input
         String prettyString = params.getString("save",null);
         out = (prettyString == null) ? null : new File(prettyString);
         
+        String readsformatString = params.getString("readsformat",null);
+        readsformat = (readsformatString == null) ? null : readsformatString;
+        
         maxdepth = params.getInt("maxdepth",100);
     }
     
@@ -94,15 +107,54 @@ public class Input
      */
     public VCF getVCF() throws VCFException, OutputException
     {
-        List<GenotypeChanger> changers = new ArrayList<>();
-        changers.add(new MaxDepthNoReadsChanger(maxdepth));
+        List<GenotypeChanger> genotypechangers = new ArrayList<>();
+        genotypechangers.add(new MaxDepthNoReadsChanger(maxdepth));
         List<PositionFilter> prefilters = new ArrayList<>();
         prefilters.add(new HasDepthFilter());
         ArrayList<String> requiredFields = new ArrayList<>();
         requiredFields.add("GT");
         requiredFields.add("DP");
-        requiredFields.add("AD");
-        VCF vcf = new VCF(in,prefilters,changers,filters,requiredFields);
+        if (readsformat == null)
+        {
+            requiredFields.add("AD");
+        }
+        else
+        {
+            for (String rf: readsformat.split(","))
+            {
+                requiredFields.add(rf);
+            }            
+        }
+        ArrayList<PositionChanger> positionchangers = new ArrayList<>();
+        if (readsformat != null)
+        {
+            String[] formats = readsformat.split(",");
+            if (formats.length == 1)
+            {
+                positionchangers.add(new RenameFormatChanger(formats[0],"AD"));
+            }
+            if (formats.length == 2)
+            {
+                positionchangers.add(new StandardizeCountsFormatChanger(formats[0],formats[1]));
+            }
+        }
+        
+        
+        VCF vcf = new VCF(in,prefilters,positionchangers,genotypechangers,
+                filters,requiredFields);
+        if (readsformat != null)
+        {
+            for (String f: readsformat.split(","))
+            {
+                vcf.getMeta().removeFormat(f);
+            }
+            vcf.getMeta().addFormat("AD",
+                    "##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"Allelic"
+                            + " depths for the reference and alternate alleles"
+                            + " in the order listed\">");
+        }
+        
+        
         if (out != null)
         {
             try
@@ -139,6 +191,12 @@ public class Input
             config.addChild(Iout);
         }
         
+        if (readsformat != null)
+        {
+            ImmutableNode Ireadformat = new ImmutableNode.Builder().name("readsformat").value(readsformat).create();
+            config.addChild(Ireadformat);           
+        }
+        
         ImmutableNode Imax = new ImmutableNode.Builder().name("maxdepth").value(maxdepth).create();
         config.addChild(Imax);
         
@@ -146,7 +204,7 @@ public class Input
     }
     
     /**
-     * Get the input config for the final imputation stepl 
+     * Get the input config for the final imputation step
      * @return The config
      */
     public ImmutableNode getImputeConfig()
@@ -176,4 +234,5 @@ public class Input
     private File in;
     private List<PositionFilter> filters;
     private File out;
+    private String readsformat;
 }

@@ -19,6 +19,7 @@ package VCF;
 
 import Exceptions.ProgrammerException;
 import VCF.Changers.GenotypeChanger;
+import VCF.Changers.PositionChanger;
 import VCF.Exceptions.VCFDataException;
 import VCF.Exceptions.VCFDataLineException;
 import VCF.Exceptions.VCFException;
@@ -70,7 +71,8 @@ public class VCF
      */
     public VCF(File f) throws VCFException
     {
-        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+                new ArrayList<>(), new ArrayList<>());
     }
     
     /**
@@ -84,7 +86,8 @@ public class VCF
      */
     public VCF(File f, List<PositionFilter> filters) throws VCFException
     {
-        this(f, new ArrayList<>(), new ArrayList<>(), filters, new ArrayList<>());
+        this(f, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+                filters,  new ArrayList<>());
     }
     
     /**
@@ -95,14 +98,16 @@ public class VCF
      * @param f The file
      * @param preFilters A list of filters to be applied before any changes are
      * applied (e.g. to filter out snps without the required data)
-     * @param changers List of changers to apply to the genotypes
+     * @param positionChangers List of changers to apply to the positions
+     * @param genotypeChangers List of changers to apply to the genotypes
      * @param filters The position filters to apply (after the changeers)
+     * @param requiredFormats A list of formats required to be in the VCF
      * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
      * or the data in it
      */
-    public VCF(File f, List<PositionFilter> preFilters, List<GenotypeChanger> changers, 
-                List<PositionFilter> filters, List<String> requiredFormats) throws 
-            VCFException
+    public VCF(File f, List<PositionFilter> preFilters, List<PositionChanger> positionChangers,
+                List<GenotypeChanger> genotypeChangers, List<PositionFilter> filters, 
+                List<String> requiredFormats) throws VCFException
     {
         BufferedReader in;
         try
@@ -197,20 +202,19 @@ public class VCF
                     
                     Position p = new Position(pm,samples,data);
                     
-                    try
+                    for (PositionChanger c: positionChangers)
                     {
-                        for (Genotype g: p.genotypeList())
+                        c.change(p);
+                    }
+                    
+                    for (Genotype g: p.genotypeList())
+                    {
+                        for (GenotypeChanger c: genotypeChangers)
                         {
-                            for (GenotypeChanger c: changers)
-                            {
-                                c.change(g);
-                            }
+                            c.change(g);
                         }
                     }
-                    catch (VCFDataException ex)
-                    {
-                        //Bit of a fudge for now since these will be removed later
-                    }
+
                     
                     boolean allmatch = true;
                     for (PositionFilter filter: filters)
@@ -370,6 +374,10 @@ public class VCF
                 IntStream.range(0, genotypes.length).mapToObj(j -> genotypes[j][i]).toArray(size -> new RawGenotype[size])));
     }
     
+    /**
+     * Get the meta information for this VCF
+     * @return The meta information
+     */
     public Meta getMeta()
     {
         return meta;

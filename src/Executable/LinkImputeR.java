@@ -117,7 +117,7 @@ public class LinkImputeR
                         accuracy(c);
                         break;
                     case "-v":
-                        System.out.println("LinkImputeR version 1.1");
+                        System.out.println("LinkImputeR version 1.1.1");
                         break;
                     case "-h":
                         help();
@@ -558,6 +558,14 @@ public class LinkImputeR
         String saveString = config.getString("Input.save",null);
         File save = (saveString == null) ? null : new File(saveString);
         
+        String readsformat = config.getString("Input.readsformat",null);
+        if (readsformat.split(",").length > 2)
+        {
+            throw new INIException("readsformat must be either a single format or two"
+                    + "formats comma seperated (LinkImputeR currently only works on"
+                    + "biallelic SNPs)");
+        }
+        
         int maxInDepth;
         try
         {
@@ -568,7 +576,7 @@ public class LinkImputeR
             throw new INIException("Parameter values for the maxdepth option must be an integer.");
         }
         
-        Input o = new Input(input, inputfilters, save,maxInDepth);        
+        Input o = new Input(input, inputfilters, save, maxInDepth, readsformat);        
         xml.add(o.getConfig());
         
         String sampleMethod = config.getString("Accuracy.maskmethod","all");

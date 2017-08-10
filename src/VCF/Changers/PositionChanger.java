@@ -15,36 +15,22 @@
  * along with LinkImpute.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Exceptions;
+package VCF.Changers;
+
+import VCF.Exceptions.VCFDataException;
+import VCF.Position;
 
 /**
- * Exception for when there is a problem with a ini file
+ * Changes a position
  */
-public class INIException extends Exception
+public interface PositionChanger
 {
 
     /**
-     * Default constructor
+     * Change the given genotype
+     * @param p The position to change
+     * @throws VCF.Exceptions.VCFDataException If there is a problem with the
+     * data in the VCF
      */
-    public INIException()
-    {
-    }
-
-    /**
-     * Constructor that takes a message
-     * @param msg The message
-     */
-    public INIException(String msg)
-    {
-        super(msg);
-    }
-    
-    /**
-     * @param msg
-     * @param ex
-     */
-    public INIException(String msg, Throwable ex)
-    {
-        super(msg,ex);
-    }
+    public void change(Position p) throws VCFDataException;
 }

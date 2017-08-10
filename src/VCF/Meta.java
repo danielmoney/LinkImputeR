@@ -21,8 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Represents the meta information in a VCF
+ */
 public class Meta
 {
+
+    /**
+     * Constructor from the meta lines in a VCF
+     * @param lines The meta lines
+     */
     public Meta(List<String> lines)
     {
         this.lines = lines;
@@ -37,16 +45,61 @@ public class Meta
         }
     }
     
+    /**
+     * Tests whether the input format is included in the meta information
+     * @param format The format
+     * @return Whether the format is included in the meta information
+     */
     public boolean hasFormat(String format)
     {
         return formats.contains(format);
     }
     
+    /**
+     * Removes the given format from the meta information
+     * @param format The format to remove
+     */
+    public void removeFormat(String format)
+    {
+        formats.remove(format);
+        String matched = null;
+        for (String line: lines)
+        {
+            if (line.startsWith("##FORMAT=<ID=" + format))
+            {
+                matched = line;
+            }
+        }
+        if (matched != null)
+        {
+            lines.remove(matched);
+        }
+    }
+    
+    /**
+     * Adds a format to the meta information
+     * @param format The format's code
+     * @param line The full line to add
+     */
+    public void addFormat(String format, String line)
+    {
+        formats.add(format);
+        lines.add(line);
+    }
+    
+    /**
+     * Get the meta lines
+     * @return A list of meta lines
+     */
     public List<String> getLinesList()
     {
         return lines;
     }
     
+    /**
+     * Get the meta lines
+     * @return A stream of meta lines
+     */
     public Stream<String> getLinesStream()
     {
         return lines.stream();

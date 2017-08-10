@@ -141,6 +141,45 @@ public class Genotype
         geno.setInfo(StringUtils.overlay(info, value, start, end));
     }
     
+    /**
+     * Add data to the genotype.  It is up to the caller to ensure the appropiate
+     * format is also added to the position.
+     * @param value The value to add
+     */
+    public void addData(String value)
+    {
+        geno.setInfo(geno.getInfo() + ":" + value);
+    }
+    
+    /**
+     * Remove data for the given format.  It is up to the caller to ensure the
+     * appropiate format is removed from the position.
+     * @param name
+     * @throws VCFNoDataException
+     */
+    public void removeData(String name) throws VCFNoDataException
+    {
+        List<String> format = position.getFormat();
+        int pos = format.indexOf(name);
+        if (pos == -1)
+        {
+            throw new VCFNoDataException("No data field called " + name);
+        }
+
+        String info = geno.getInfo();
+        int start = 0;
+        if (pos > 0)
+        {
+            start = StringUtils.ordinalIndexOf(info, ":", pos);
+        }
+        int end = info.length();
+        if (pos < format.size() - 1)
+        {
+            end = StringUtils.ordinalIndexOf(info, ":", pos + 1);
+        }
+        geno.setInfo(StringUtils.overlay(info, "", start, end));
+    }
+    
     @Override
     public String toString()
     {

@@ -202,29 +202,38 @@ public class VCF
                     
                     Position p = new Position(pm,samples,data);
                     
-                    for (PositionChanger c: positionChangers)
-                    {
-                        c.change(p);
-                    }
-                    
-                    for (Genotype g: p.genotypeList())
-                    {
-                        for (GenotypeChanger c: genotypeChangers)
-                        {
-                            c.change(g);
-                        }
-                    }
-
-                    
-                    boolean allmatch = true;
+                    boolean preallmatch = true;
                     for (PositionFilter filter: filters)
                     {
-                        allmatch = allmatch && filter.test(p);
+                        preallmatch = preallmatch && filter.test(p);
                     }
-                    if (allmatch)
+                    if (preallmatch)
                     {
-                        positionList.add(pm);
-                        genotypeList.add(data);
+                    
+                        for (PositionChanger c: positionChangers)
+                        {
+                            c.change(p);
+                        }
+
+                        for (Genotype g: p.genotypeList())
+                        {
+                            for (GenotypeChanger c: genotypeChangers)
+                            {
+                                c.change(g);
+                            }
+                        }
+
+
+                        boolean allmatch = true;
+                        for (PositionFilter filter: filters)
+                        {
+                            allmatch = allmatch && filter.test(p);
+                        }
+                        if (allmatch)
+                        {
+                            positionList.add(pm);
+                            genotypeList.add(data);
+                        }
                     }
                 }
             }
@@ -241,11 +250,11 @@ public class VCF
         {
             if (lineNumber == 0)
             {
-                throw new VCFInputException("Porbleming reading VCF",e);
+                throw new VCFInputException("Probleming reading VCF",e);
             }
             else
             {
-                throw new VCFInputException("Porbleming reading VCF (line number " + lineNumber + ")",e);
+                throw new VCFInputException("Probleming reading VCF (line number " + lineNumber + ")",e);
             }
         }
     }

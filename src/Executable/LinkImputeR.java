@@ -559,7 +559,7 @@ public class LinkImputeR
         File save = (saveString == null) ? null : new File(saveString);
         
         String readsformat = config.getString("Input.readsformat",null);
-        if (readsformat.split(",").length > 2)
+        if ((readsformat != null) && (readsformat.split(",").length > 2))
         {
             throw new INIException("readsformat must be either a single format or two"
                     + "formats comma seperated (LinkImputeR currently only works on"

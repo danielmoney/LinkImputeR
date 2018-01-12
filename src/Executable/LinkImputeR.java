@@ -117,7 +117,7 @@ public class LinkImputeR
                         accuracy(c);
                         break;
                     case "-v":
-                        System.out.println("LinkImputeR version 1.1.1");
+                        System.out.println("LinkImputeR version 1.1.2");
                         break;
                     case "-h":
                         help();
@@ -897,7 +897,7 @@ public class LinkImputeR
             newFormat.append(f);
             newFormat.append(":");
         }
-        newFormat.append("OG");
+        newFormat.append("UG");
         newFormat.append(":");
         newFormat.append("IP");
         

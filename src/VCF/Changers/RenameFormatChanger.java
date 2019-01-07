@@ -24,7 +24,7 @@ public class RenameFormatChanger implements PositionChanger
     public void change(Position p) throws VCFNoDataException
     {
         List<String> format = p.meta().getFormat();
-        int index = format.indexOf(p);
+        int index = format.indexOf(oldName);
         if (index == -1)
         {
             throw new VCFNoDataException("No data field called " + oldName);

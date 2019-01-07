@@ -55,5 +55,5 @@ public class MinDepthMissingChanger implements GenotypeChanger
         }
     }
     
-    private int depth;
+    private final int depth;
 }

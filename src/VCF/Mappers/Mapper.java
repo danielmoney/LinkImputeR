@@ -35,19 +35,19 @@ public interface Mapper<M>
      * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
      * data in the VCF
      */
-    public M map(String v) throws VCFUnexpectedDataException;
+    M map(String v) throws VCFUnexpectedDataException;
 
     /**
      * Get an array of the returned type
      * @param size Size of the array
      * @return The array
      */
-    public M[] getArray(int size);
+    M[] getArray(int size);
 
     /**
      * Get a 2d array of the returned type
      * @param size Size of the major dimension
      * @return The array
      */
-    public M[][] get2DArray(int size);
+    M[][] get2DArray(int size);
 }

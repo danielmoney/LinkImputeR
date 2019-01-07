@@ -195,7 +195,7 @@ public class Genotype
         return new Genotype(geno.copy(), position, sample);
     }
     
-    private PositionMeta position;
-    private String sample;
-    private RawGenotype geno;
+    private final PositionMeta position;
+    private final String sample;
+    private final RawGenotype geno;
 }

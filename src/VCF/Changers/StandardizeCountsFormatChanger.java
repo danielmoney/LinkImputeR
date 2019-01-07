@@ -35,8 +35,8 @@ public class StandardizeCountsFormatChanger implements PositionChanger
             g.removeData(alt);
         }
         
-        format.remove(format.indexOf(ref));
-        format.remove(format.indexOf(alt));
+        format.remove(ref);
+        format.remove(alt);
     }
     
     private final String ref;

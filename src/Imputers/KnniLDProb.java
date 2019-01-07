@@ -128,7 +128,7 @@ public class KnniLDProb implements Imputer
         
         Correlation corr = new Pearson();
         
-        Set<Integer> ldcalc = list.stream().map(sgp -> sgp.getSNP()).collect(Collectors.toCollection(HashSet::new));
+        Set<Integer> ldcalc = list.stream().map(SingleGenotypePosition::getSNP).collect(Collectors.toCollection(HashSet::new));
         
         byte[][] transposed = Matrix.transpose(original);
         

@@ -17,6 +17,7 @@
 
 package Utils.Distribution;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -80,7 +81,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public Stream<ImmutablePair<V,Integer>> allCounts()
     {
-        return super.allCounts().sorted((v1,v2) -> v1.getLeft().compareTo(v2.getLeft()));
+        return super.allCounts().sorted(Comparator.comparing(ImmutablePair::getLeft));
     }
     
     /**
@@ -89,7 +90,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public Stream<ImmutablePair<V,Double>> allProportions()
     {
-        return super.allProportions().sorted((v1,v2) -> v1.getLeft().compareTo(v2.getLeft()));
+        return super.allProportions().sorted(Comparator.comparing(ImmutablePair::getLeft));
     }
     
     /**
@@ -99,7 +100,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public int countLessThan(V v)
     {
-        return allCounts().filter(p -> (p.getLeft().compareTo(v) < 0)).mapToInt(p -> p.getRight()).sum();
+        return allCounts().filter(p -> (p.getLeft().compareTo(v) < 0)).mapToInt(ImmutablePair::getRight).sum();
     }
     
     /**
@@ -109,7 +110,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public double proportionLessThan(V v)
     {
-        return allProportions().filter(p -> (p.getLeft().compareTo(v) < 0)).mapToDouble(p -> p.getRight()).sum();
+        return allProportions().filter(p -> (p.getLeft().compareTo(v) < 0)).mapToDouble(ImmutablePair::getRight).sum();
     }
 
     /**
@@ -119,7 +120,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public int countLessThanEqual(V v)
     {
-        return allCounts().filter(p -> (p.getLeft().compareTo(v) <= 0)).mapToInt(p -> p.getRight()).sum();
+        return allCounts().filter(p -> (p.getLeft().compareTo(v) <= 0)).mapToInt(ImmutablePair::getRight).sum();
     }
     
     /**
@@ -129,7 +130,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public double proportionLessThanEqual(V v)
     {
-        return allProportions().filter(p -> (p.getLeft().compareTo(v) <= 0)).mapToDouble(p -> p.getRight()).sum();
+        return allProportions().filter(p -> (p.getLeft().compareTo(v) <= 0)).mapToDouble(ImmutablePair::getRight).sum();
     }
 
     /**
@@ -139,7 +140,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public int countGreaterThan(V v)
     {
-        return allCounts().filter(p -> (p.getLeft().compareTo(v) > 0)).mapToInt(p -> p.getRight()).sum();
+        return allCounts().filter(p -> (p.getLeft().compareTo(v) > 0)).mapToInt(ImmutablePair::getRight).sum();
     }
 
     /**
@@ -149,7 +150,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */    
     public double proportionGreaterThan(V v)
     {
-        return allProportions().filter(p -> (p.getLeft().compareTo(v) > 0)).mapToDouble(p -> p.getRight()).sum();
+        return allProportions().filter(p -> (p.getLeft().compareTo(v) > 0)).mapToDouble(ImmutablePair::getRight).sum();
     }
 
     /**
@@ -159,7 +160,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */
     public int countGreaterThanEqual(V v)
     {
-        return allCounts().filter(p -> (p.getLeft().compareTo(v) >= 0)).mapToInt(p -> p.getRight()).sum();
+        return allCounts().filter(p -> (p.getLeft().compareTo(v) >= 0)).mapToInt(ImmutablePair::getRight).sum();
     }
     
     /**
@@ -169,7 +170,7 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
      */  
     public double proportionGreaterThanEqual(V v)
     {
-        return allProportions().filter(p -> (p.getLeft().compareTo(v) >= 0)).mapToDouble(p -> p.getRight()).sum();
+        return allProportions().filter(p -> (p.getLeft().compareTo(v) >= 0)).mapToDouble(ImmutablePair::getRight).sum();
     }
     
     /**
@@ -209,6 +210,6 @@ public class ComparableDistribution<V extends Comparable<V>> extends Distributio
         }
     }
     
-    private V min;
-    private V max;
+    private final V min;
+    private final V max;
 }

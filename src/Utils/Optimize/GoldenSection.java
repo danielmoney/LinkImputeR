@@ -95,8 +95,8 @@ public class GoldenSection
         return (a + b) / 2.0;
     }
     
-    private double tol;
-    private double ftol;
+    private final double tol;
+    private final double ftol;
     
     private static final double R = (Math.sqrt(5) - 1.0) / 2.0;
 }

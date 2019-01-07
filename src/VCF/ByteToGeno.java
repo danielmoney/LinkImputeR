@@ -53,5 +53,5 @@ public class ByteToGeno
         return map.get(b);
     }
     
-    private Map<Byte,String> map;
+    private final Map<Byte,String> map;
 }

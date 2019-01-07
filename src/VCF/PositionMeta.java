@@ -18,6 +18,7 @@
 package VCF;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,10 +57,7 @@ public class PositionMeta
         
         String[] formats = parts[8].split(":");
         format = new ArrayList<>();
-        for (String f: formats)
-        {
-            format.add(f);
-        }
+        format.addAll(Arrays.asList(formats));
     }
     
     /**
@@ -69,11 +67,10 @@ public class PositionMeta
      */
     public String toString()
     {
-        StringBuilder s = new StringBuilder();
-        s.append(chrom);
-        s.append(":");
-        s.append(position);
-        return s.toString();
+        String s = chrom +
+                ":" +
+                position;
+        return s;
     }
     
     /**
@@ -211,13 +208,13 @@ public class PositionMeta
         return position.hashCode();
     }
     
-    private String chrom;
-    private String position;
-    private String id;
-    private String ref;
-    private String[] alt;
-    private String qual;
-    private String filter;
-    private String info;
-    private ArrayList<String> format;
+    private final String chrom;
+    private final String position;
+    private final String id;
+    private final String ref;
+    private final String[] alt;
+    private final String qual;
+    private final String filter;
+    private final String info;
+    private final ArrayList<String> format;
 }

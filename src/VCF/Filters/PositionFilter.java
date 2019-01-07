@@ -18,8 +18,6 @@
 package VCF.Filters;
 
 import VCF.Exceptions.VCFDataException;
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Position;
 import VCF.VCF;
 

@@ -30,5 +30,5 @@ public interface SingleDoubleValue
      * @param v The input parameter
      * @return The value of the function
      */
-    public double value(double v);
+    double value(double v);
 }

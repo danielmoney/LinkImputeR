@@ -28,11 +28,11 @@ public interface Progress
     /**
      * Called to indicate another task is complete
      */
-    public void done();
+    void done();
 
     /**
      * Called to indicate multiple tasks are complete
      * @param number The number completed
      */
-    public void done(int number);
+    void done(int number);
 }

@@ -58,15 +58,12 @@ public class DistributionCollector<V> implements Collector<V,CountMap<V>,Distrib
     @Override
     public BiConsumer<CountMap<V>,V> accumulator()
     {
-        return (c, v) ->
-            {
-                c.add(v);
-            };
+        return CountMap::add;
     }
     
     @Override
     public Supplier<CountMap<V>> supplier()
     {
-        return CountMap<V>::new;
+        return CountMap::new;
     }
 }

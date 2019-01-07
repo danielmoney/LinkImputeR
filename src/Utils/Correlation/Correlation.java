@@ -67,8 +67,7 @@ public abstract class Correlation
     public Map<Integer, int[]> topn(byte[][] data, int n)
     {
         Progress progress = ProgressFactory.get(data.length * (data.length - 1) / 2);
-        
-;
+
         Map<Integer,TopQueue> tq = new HashMap<>();
         
         for (int i = 0; i < data.length; i++)
@@ -154,7 +153,7 @@ public abstract class Correlation
             tq.put(i,new TopQueue(n));
         }
         
-        list.stream().forEach(i ->
+        list.forEach(i ->
             {
             IntStream.range(0,data.length).parallel().filter(j -> (i != j)).forEach(j ->
                 {
@@ -193,7 +192,7 @@ public abstract class Correlation
             tq.put(i,new TopQueue(n));
         }
         
-        list.stream().forEach(i ->
+        list.forEach(i ->
             {
             IntStream.range(0,data.length).parallel().filter(j -> (i != j)).forEach(j ->
                 {

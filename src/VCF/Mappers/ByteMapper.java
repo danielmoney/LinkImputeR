@@ -34,5 +34,5 @@ public interface ByteMapper
      * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
      * data in the VCF
      */
-    public byte map(String v)  throws VCFUnexpectedDataException;
+    byte map(String v)  throws VCFUnexpectedDataException;
 }

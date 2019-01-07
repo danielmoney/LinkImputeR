@@ -22,7 +22,6 @@ import Callers.BinomialCaller;
 import Callers.Caller;
 import Exceptions.ProgrammerException;
 import VCF.Filters.BiallelicFilter;
-import VCF.Filters.HasDepthFilter;
 import VCF.Filters.MAFFilter;
 import VCF.Filters.ParalogHWFilter;
 import VCF.Filters.PositionFilter;

@@ -32,6 +32,7 @@ import VCF.VCF;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -92,7 +93,7 @@ public class Input
         out = (prettyString == null) ? null : new File(prettyString);
         
         String readsformatString = params.getString("readsformat",null);
-        readsformat = (readsformatString == null) ? null : readsformatString;
+        readsformat = readsformatString;
         
         maxdepth = params.getInt("maxdepth",100);
     }
@@ -120,10 +121,7 @@ public class Input
         }
         else
         {
-            for (String rf: readsformat.split(","))
-            {
-                requiredFields.add(rf);
-            }            
+            requiredFields.addAll(Arrays.asList(readsformat.split(",")));
         }
         ArrayList<PositionChanger> positionchangers = new ArrayList<>();
         if (readsformat != null)
@@ -230,9 +228,9 @@ public class Input
         }
     }
     
-    private int maxdepth;
-    private File in;
-    private List<PositionFilter> filters;
-    private File out;
-    private String readsformat;
+    private final int maxdepth;
+    private final File in;
+    private final List<PositionFilter> filters;
+    private final File out;
+    private final String readsformat;
 }

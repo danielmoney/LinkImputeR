@@ -115,7 +115,7 @@ public class Position
      */
     public String[] samples()
     {
-        return IntStream.range(0, samples.length).filter(i -> sVis[i]).mapToObj(i -> samples[i]).toArray(i -> new String[i]);
+        return IntStream.range(0, samples.length).filter(i -> sVis[i]).mapToObj(i -> samples[i]).toArray(String[]::new);
     }
     
     /**
@@ -150,8 +150,8 @@ public class Position
         return genos;
     }
     
-    String[] samples;
-    boolean[] sVis;
-    PositionMeta meta;
-    RawGenotype[] genos;
+    final String[] samples;
+    final boolean[] sVis;
+    final PositionMeta meta;
+    final RawGenotype[] genos;
 }

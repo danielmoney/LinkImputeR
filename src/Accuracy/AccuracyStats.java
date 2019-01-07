@@ -278,10 +278,10 @@ public class AccuracyStats
     }
     
     private int maxDepth;
-    private CorrectCount total;
-    private CorrectCountMap byDepth;
-    private CorrectCountMap byGeno;
-    private Map<Integer,CorrectCountMap> byDepthGeno;
+    private final CorrectCount total;
+    private final CorrectCountMap byDepth;
+    private final CorrectCountMap byGeno;
+    private final Map<Integer,CorrectCountMap> byDepthGeno;
     
     private class CorrectCount
     {
@@ -329,9 +329,9 @@ public class AccuracyStats
             scaledImputed.add((double) imputed - maf);
         }
         
-        List<Double> scaledOriginal;
-        List<Double> scaledImputed;
-        int[][] counts;
+        final List<Double> scaledOriginal;
+        final List<Double> scaledImputed;
+        final int[][] counts;
         int t;
     }
     
@@ -361,7 +361,7 @@ public class AccuracyStats
             return map.get(i);
         }
         
-        private Map<Integer,CorrectCount> map;
+        private final Map<Integer,CorrectCount> map;
     }
 }
 

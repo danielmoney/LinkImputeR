@@ -65,5 +65,5 @@ public class MultipleTest
         return bestd;
     }
     
-    private double interval;
+    private final double interval;
 }

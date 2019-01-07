@@ -42,15 +42,15 @@ public interface OptimizeCombiner<C extends Combiner>
      * @param masked A list of masked genotypes
      * @return The optimized combiner
      */
-    public C getOptimized(List<SingleGenotypeProbability> called,
-            List<SingleGenotypeProbability> imputed,
-            List<SingleGenotypeReads> reads,
-            List<SingleGenotypeCall> correct,
-            List<SingleGenotypeMasked> masked);
+    C getOptimized(List<SingleGenotypeProbability> called,
+                   List<SingleGenotypeProbability> imputed,
+                   List<SingleGenotypeReads> reads,
+                   List<SingleGenotypeCall> correct,
+                   List<SingleGenotypeMasked> masked);
     
     /**
      * Get the config for the optimizable combiner
      * @return The config
      */
-    public ImmutableNode getConfig();
+    ImmutableNode getConfig();
 }

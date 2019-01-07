@@ -57,8 +57,8 @@ public class SingleGenotypePosition
         return snp;
     }
     
-    private int sample;
-    private int snp;
+    private final int sample;
+    private final int snp;
     
     /**
      * Tests whether two positions represent the same genotype
@@ -84,14 +84,7 @@ public class SingleGenotypePosition
         {
             return false;
         }
-        if (IntStream.range(0, list1.size()).allMatch(i ->
-                  samePosition(list1.get(i),list2.get(i))))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return IntStream.range(0, list1.size()).allMatch(i ->
+                samePosition(list1.get(i), list2.get(i)));
     }
 }

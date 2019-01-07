@@ -46,5 +46,5 @@ public class SingleGenotypeProbability extends SingleGenotypePosition
         return prob;
     }
     
-    private double[] prob;
+    private final double[] prob;
 }

@@ -282,8 +282,8 @@ public class DepthMask
     }
     
     private int[][][] depths;
-    private Random r;
-    private List<SingleGenotypeMasked> list;
+    private final Random r;
+    private final List<SingleGenotypeMasked> list;
     
     /**
      * Represents the method to be used to select genotypes to be masked

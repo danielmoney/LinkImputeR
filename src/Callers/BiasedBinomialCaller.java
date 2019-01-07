@@ -19,8 +19,6 @@ package Callers;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
-import org.apache.commons.math3.distribution.BinomialDistribution;
-import org.apache.commons.math3.exception.NotPositiveException;
 
 /**
  * A biased binomial caller, that is one where each read is not equally likely
@@ -101,6 +99,6 @@ public class BiasedBinomialCaller extends Caller
         return config;
     }
     
-    double error;
-    double bias;
+    final double error;
+    final double bias;
 }

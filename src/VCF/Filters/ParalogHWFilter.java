@@ -20,13 +20,11 @@ package VCF.Filters;
 import Utils.Optimize.GoldenSection;
 import Utils.Optimize.SingleDoubleValue;
 import VCF.Exceptions.VCFDataException;
-import VCF.Exceptions.VCFNoDataException;
-import VCF.Exceptions.VCFUnexpectedDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
@@ -80,11 +78,10 @@ public class ParalogHWFilter extends PositionFilter
         double l1 = hw.value(optd);
         double test = 2 * (l1 - l0);
         double pr = 1.0 - cs.cumulativeProbability(test);
-        boolean t = (pr > significance);
-        return t;
+        return (pr > significance);
     }
 
-    private final double maf(Position p) throws VCFDataException
+    private double maf(Position p) throws VCFDataException
     {
         DepthMapper dm = new DepthMapper();
         
@@ -134,9 +131,9 @@ public class ParalogHWFilter extends PositionFilter
         return "HW(" + significance + ")";
     }
 
-    private double significance;
-    private ChiSquaredDistribution cs;
-    private double error;        
+    private final double significance;
+    private final ChiSquaredDistribution cs;
+    private final double error;
 
 
     private class HW implements SingleDoubleValue
@@ -172,14 +169,13 @@ public class ParalogHWFilter extends PositionFilter
             f[1] = 2 * (maf * (1 - maf) - d);
             f[2] = maf * maf + d;
 
-            return IntStream.range(0, partials.length).mapToDouble(i ->
-            {
-                double[] p = partials[i];
-                return Math.log(f[0] * p[0] + f[1] * p[1] + f[2] * p[2]);                
+            return Arrays.stream(partials).mapToDouble(partial -> {
+                double[] p = partial;
+                return Math.log(f[0] * p[0] + f[1] * p[1] + f[2] * p[2]);
             }).sum();
         }
 
-        private double maf;
-        private double[][] partials;
+        private final double maf;
+        private final double[][] partials;
     }
 }

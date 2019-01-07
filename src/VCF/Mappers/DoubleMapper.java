@@ -34,5 +34,5 @@ public interface DoubleMapper
      * @throws VCF.Exceptions.VCFUnexpectedDataException If there is unexpected
      * data in the VCF
      */
-    public double map(String v) throws VCFUnexpectedDataException;
+    double map(String v) throws VCFUnexpectedDataException;
 }

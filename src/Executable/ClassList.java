@@ -73,6 +73,6 @@ public class ClassList<X,Y>
         return map.containsKey(type);
     }
 
-    Map<String,Function<X,Y>> map;
+    final Map<String,Function<X,Y>> map;
 }
 

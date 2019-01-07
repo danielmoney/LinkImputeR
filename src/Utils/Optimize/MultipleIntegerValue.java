@@ -30,5 +30,5 @@ public interface MultipleIntegerValue
      * @param v The input parameters
      * @return The value of the function
      */
-    public double value(int[] v);
+    double value(int[] v);
 }

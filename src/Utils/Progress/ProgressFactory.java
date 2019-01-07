@@ -62,7 +62,7 @@ public class ProgressFactory
     /**
      * Represents the types of progress indicators
      */
-    public static enum ProgressType
+    public enum ProgressType
     {
 
         /**

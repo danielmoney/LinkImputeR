@@ -116,5 +116,5 @@ public class CountMap<V>
         return counts.entrySet();
     }
     
-    private HashMap<V,Integer> counts;
+    private final HashMap<V,Integer> counts;
 }

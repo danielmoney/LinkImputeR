@@ -92,6 +92,6 @@ public class SampleMissing extends SampleFilter
         return "SampleMiss(" + threshold + ")";
     }
     
-    private int minDepth;
-    private double threshold;
+    private final int minDepth;
+    private final double threshold;
 }

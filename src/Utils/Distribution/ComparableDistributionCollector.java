@@ -60,15 +60,12 @@ public class ComparableDistributionCollector<V extends Comparable<V>>
     @Override
     public BiConsumer<CountMap<V>,V> accumulator()
     {
-        return (c, v) ->
-            {
-                c.add(v);
-            };
+        return CountMap::add;
     }
 
     @Override
     public Supplier<CountMap<V>> supplier()
     {
-        return CountMap<V>::new;
+        return CountMap::new;
     }    
 }

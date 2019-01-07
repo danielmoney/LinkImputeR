@@ -123,7 +123,7 @@ public class TopQueue
         return Arrays.copyOf(values, n);
     }
    
-    private int top;
+    private final int top;
     private double min;
     private int[] entries;
     private double[] values;

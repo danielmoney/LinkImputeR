@@ -19,6 +19,7 @@ package VCF;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -52,7 +53,7 @@ public class Sample
      */
     public PositionMeta[] positions()
     {
-        return IntStream.range(0, positions.length).filter(i -> pVis[i]).mapToObj(i -> positions[i]).toArray(i -> new PositionMeta[i]);
+        return IntStream.range(0, positions.length).filter(i -> pVis[i]).mapToObj(i -> positions[i]).toArray((IntFunction<PositionMeta[]>) PositionMeta[]::new);
     }
     
     /**
@@ -82,8 +83,8 @@ public class Sample
         return list;
     }
     
-    String sample;
-    PositionMeta[] positions;
-    boolean[] pVis;
-    RawGenotype[] genos;
+    final String sample;
+    final PositionMeta[] positions;
+    final boolean[] pVis;
+    final RawGenotype[] genos;
 }

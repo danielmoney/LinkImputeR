@@ -38,12 +38,12 @@ public interface OptimizeImputer<I extends Imputer>
      * @param list List of masked sites and their genotype
      * @return An optimized imputer
      */
-    public I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list);
+    I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list);
 
  
     /**
      * Get the config for this case
      * @return The config
      */
-    public ImmutableNode getConfig();
+    ImmutableNode getConfig();
 }

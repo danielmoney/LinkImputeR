@@ -92,6 +92,6 @@ public class PositionMissing extends PositionFilter
         return "PositionMiss(" + threshold + ")";
     }
     
-    private int minDepth;
-    private double threshold;
+    private final int minDepth;
+    private final double threshold;
 }

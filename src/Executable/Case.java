@@ -282,11 +282,11 @@ public class Case
         return config.create();
     }
     
-    private CombinerOption combiner;
-    private ImputationOption imputer;
-    private Caller caller;
+    private final CombinerOption combiner;
+    private final ImputationOption imputer;
+    private final Caller caller;
     private PrintStats print;
-    private List<VCFFilter> filters;
-    private String name;
-    private String additional;
+    private final List<VCFFilter> filters;
+    private final String name;
+    private final String additional;
 }

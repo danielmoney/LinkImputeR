@@ -64,6 +64,6 @@ public class GenoToByte implements ByteMapper
         }
     }
 
-    private HashMap<String,Byte> map;
+    private final HashMap<String,Byte> map;
   
 }

@@ -46,5 +46,5 @@ public class SingleGenotypeReads extends SingleGenotypePosition
         return reads;
     }
     
-    private int[] reads;
+    private final int[] reads;
 }

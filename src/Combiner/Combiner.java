@@ -37,7 +37,7 @@ public interface Combiner
      * @param reads The read counts for each genotype
      * @return The called probabilities
      */
-    public double[][][] combine(double[][][] called, double[][][] imputed, int[][][] reads);
+    double[][][] combine(double[][][] called, double[][][] imputed, int[][][] reads);
 
     /**
      * Combines imputed and inferred genotypes for a list of genotypes
@@ -46,12 +46,12 @@ public interface Combiner
      * @param reads The read counts for each genotype
      * @return The called probabilities
      */
-    public List<SingleGenotypeProbability> combine(List<SingleGenotypeProbability> called,
-            List<SingleGenotypeProbability> imputed, List<SingleGenotypeReads> reads);
+    List<SingleGenotypeProbability> combine(List<SingleGenotypeProbability> called,
+                                            List<SingleGenotypeProbability> imputed, List<SingleGenotypeReads> reads);
     
     /**
      * Get the config for the caller
      * @return The config
      */
-    public ImmutableNode getConfig();
+    ImmutableNode getConfig();
 }

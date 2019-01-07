@@ -34,17 +34,17 @@ public interface VCFFilter
      * @throws VCF.Exceptions.VCFDataException If there is a problem with the
      * data in the VCF
      */
-    public void change(VCF vcf) throws VCFDataException;
+    void change(VCF vcf) throws VCFDataException;
     
     /**
      * Gets a string summary of this filter
      * @return The string
      */
-    public String getSummary();
+    String getSummary();
     
     /**
      * Get the config for this filter
      * @return The config
      */
-    public ImmutableNode getConfig();
+    ImmutableNode getConfig();
 }

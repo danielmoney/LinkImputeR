@@ -105,6 +105,6 @@ public class Meta
         return lines.stream();
     }
     
-    private List<String> lines;
-    private List<String> formats;
+    private final List<String> lines;
+    private final List<String> formats;
 }

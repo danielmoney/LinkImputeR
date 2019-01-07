@@ -26,10 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.stream.IntStream;
-
 import Utils.SingleGenotype.SingleGenotypeCall;
-import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
 import VCF.PositionMeta;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -379,12 +376,12 @@ public class PrintStats
         return config.create();
     }
     
-    private File pretty;
-    private File depth;
-    private File geno;
-    private File depthGeno;
-    private File eachMasked;
-    private boolean partial;
+    private final File pretty;
+    private final File depth;
+    private final File geno;
+    private final File depthGeno;
+    private final File eachMasked;
+    private final boolean partial;
     
     
     private final DecimalFormat dform = new DecimalFormat("0.0000");

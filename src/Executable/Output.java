@@ -192,8 +192,8 @@ public class Output
         return config.create();
     }
     
-    private boolean partial;
+    private final boolean partial;
     private File table;
-    private File control;
-    private File summary;
+    private final File control;
+    private final File summary;
 }

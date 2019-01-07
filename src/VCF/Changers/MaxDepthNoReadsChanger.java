@@ -58,5 +58,5 @@ public class MaxDepthNoReadsChanger implements GenotypeChanger
         
     }
     
-    private int depth;
+    private final int depth;
 }

@@ -64,6 +64,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.apache.commons.cli.*;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -460,16 +461,15 @@ public class LinkImputeR
                 List<SingleGenotypeCall> testCorrectCalls = p2c.call(caller.call(getOriginalReads(testMask.maskedList())));            
                 List<SingleGenotypeProbability> testCombinedProb = combiner.combine(testCalledProb, testImputedProb, testMaskedReads);
                 List<SingleGenotypeCall> testCombinedGeno = p2c.call(testCombinedProb);
-                
-                List<SingleGenotypeCall> testCorrect = testCorrectCalls;
-                AccuracyStats stats = AccuracyCalculator.accuracyStats(testCorrect, testCombinedGeno, testMask.maskedList());
-                AccuracyStats cstats = AccuracyCalculator.accuracyStats(testCorrect, testCalledGeno, testMask.maskedList());
-                AccuracyStats istats = AccuracyCalculator.accuracyStats(testCorrect, testImputedGeno, testMask.maskedList());
+
+                AccuracyStats stats = AccuracyCalculator.accuracyStats(testCorrectCalls, testCombinedGeno, testMask.maskedList());
+                AccuracyStats cstats = AccuracyCalculator.accuracyStats(testCorrectCalls, testCalledGeno, testMask.maskedList());
+                AccuracyStats istats = AccuracyCalculator.accuracyStats(testCorrectCalls, testImputedGeno, testMask.maskedList());
                 c.getPrintStats().writeStats(stats, cstats, istats);
                 writeSum(sum,c,vcf,stats,cstats,istats,partial);
                 writeTable(table,c,vcf,stats,cstats,istats,partial);
 
-                c.getPrintStats().writeEachMasked(testCorrect,testCombinedGeno,vcf.getSamples(),vcf.getPositions());
+                c.getPrintStats().writeEachMasked(testCorrectCalls,testCombinedGeno,vcf.getSamples(),vcf.getPositions());
           
                 //ADD IMPUTE CONFIG
                 outConfig.add(c.getImputeConfig(caller, imputer, combiner));
@@ -874,7 +874,7 @@ public class LinkImputeR
 
                 PrintStats print = new PrintStats(prettyStats,genoStats,depthStats,dgStats,eachMaskedFile,partial);
 
-                Case cas = new Case(name,filters,caller,imputer,combiner,print,"Depth(" + Integer.toString(depth) + ")");
+                Case cas = new Case(name,filters,caller,imputer,combiner,print,"Depth(" + depth + ")");
                 xml.add(cas.getConfig());
 
                 casenum++;
@@ -886,7 +886,7 @@ public class LinkImputeR
         File table;
         if (config.getString("Stats.level").equals("table"))
         {
-            table = new File(statsRoot + "table.dat");;
+            table = new File(statsRoot + "table.dat");
         }
         else
         {
@@ -979,7 +979,7 @@ public class LinkImputeR
         newFormat.append("IP");
         
         LinkedHashMap<String,String> genotypes = new LinkedHashMap<>();
-        Genotype[] o = original.genotypeStream().toArray(i -> new Genotype[i]);
+        Genotype[] o = original.genotypeStream().toArray((IntFunction<Genotype[]>) Genotype[]::new);
         
         for (int i = 0; i < o.length; i++)
         {
@@ -1012,17 +1012,16 @@ public class LinkImputeR
         String oldGeno = original.getData("GT");
         Genotype temp = original.copy();
         temp.replaceData("GT", b2g.map(newGeno));
-        StringBuilder newString = new StringBuilder();
-        newString.append(temp.getData());
-        newString.append(":");
-        newString.append(oldGeno);
-        newString.append(":");
-        newString.append(dform.format(probs[0]));
-        newString.append(",");
-        newString.append(dform.format(probs[1]));
-        newString.append(",");
-        newString.append(dform.format(probs[2]));
-        return newString.toString();
+        String newString = temp.getData() +
+                ":" +
+                oldGeno +
+                ":" +
+                dform.format(probs[0]) +
+                "," +
+                dform.format(probs[1]) +
+                "," +
+                dform.format(probs[2]);
+        return newString;
     }
     
     private static void writeSum(PrintWriter sum, Case c, VCF vcf, AccuracyStats stats, AccuracyStats cstats, AccuracyStats istats, boolean partial)

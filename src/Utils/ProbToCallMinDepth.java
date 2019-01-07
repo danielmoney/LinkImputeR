@@ -90,7 +90,7 @@ public class ProbToCallMinDepth
                 r[j] = callSingle(probs[i][j], readCounts[i][j]);
             }
             return r;
-        }).toArray(l -> new byte[l][]);
+        }).toArray(byte[][]::new);
     }
     
     private final double minDepth;

@@ -28,6 +28,7 @@ import Utils.ProbToCall;
 import Utils.ProbToCallMinDepth;
 import Utils.SingleGenotype.SingleGenotypeCall;
 import Utils.SingleGenotype.SingleGenotypeMasked;
+import Utils.SingleGenotype.SingleGenotypePosition;
 import Utils.SingleGenotype.SingleGenotypeProbability;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -86,7 +87,7 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
         
         Correlation corr = new Pearson();
         
-        Set<Integer> ldcalc = list.stream().map(sgp -> sgp.getSNP()).collect(Collectors.toCollection(HashSet::new));
+        Set<Integer> ldcalc = list.stream().map(SingleGenotypePosition::getSNP).collect(Collectors.toCollection(HashSet::new));
         
         byte[][] transposed = Matrix.transpose(original);
         
@@ -184,11 +185,11 @@ public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
             }
         }    
         
-        private byte[][] original;
-        private int[][] sim;
-        private ProbToCall p2c;
-        private List<SingleGenotypeProbability> maskedprobs;
-        private List<SingleGenotypeMasked> list;
-        private List<SingleGenotypeCall> correct;
+        private final byte[][] original;
+        private final int[][] sim;
+        private final ProbToCall p2c;
+        private final List<SingleGenotypeProbability> maskedprobs;
+        private final List<SingleGenotypeMasked> list;
+        private final List<SingleGenotypeCall> correct;
     }
 }

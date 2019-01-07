@@ -108,7 +108,7 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
     }
 
     private AccuracyMethod method;
-    private int maxDepth;
+    private final int maxDepth;
     
     private class Opt implements SingleDoubleValue
     {
@@ -148,13 +148,13 @@ public class MaxDepthCombinerOptimizedCalls implements OptimizeCombiner<MaxDepth
             }
         }    
     
-        private AccuracyMethod method;
-        private int maxDepth;
-        private ProbToCall p2c;
-        private List<SingleGenotypeMasked> masked;
-        private List<SingleGenotypeCall> correct;
-        private List<SingleGenotypeProbability> called;
-        private List<SingleGenotypeProbability> imputed;
-        private List<SingleGenotypeReads> reads;
+        private final AccuracyMethod method;
+        private final int maxDepth;
+        private final ProbToCall p2c;
+        private final List<SingleGenotypeMasked> masked;
+        private final List<SingleGenotypeCall> correct;
+        private final List<SingleGenotypeProbability> called;
+        private final List<SingleGenotypeProbability> imputed;
+        private final List<SingleGenotypeReads> reads;
     }
 }

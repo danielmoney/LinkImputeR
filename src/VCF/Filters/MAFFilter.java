@@ -131,9 +131,9 @@ public class MAFFilter extends PositionFilter
         return 2.0 * probs[0] + probs[1];
     }
 
-    private BinomialCaller caller;
-    private double error;
-    private int minDepth;
-    private int maxDepth;
-    private double maf;
+    private final BinomialCaller caller;
+    private final double error;
+    private final int minDepth;
+    private final int maxDepth;
+    private final double maf;
 }

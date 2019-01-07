@@ -130,8 +130,8 @@ public class Distribution<V>
         return new Distribution<>(c);
     }
     
-    int total;
-    Map<V,Double> proportion;
-    CountMap<V> counts;
+    final int total;
+    final Map<V,Double> proportion;
+    final CountMap<V> counts;
     List<ImmutablePair<V,Integer>> list;
 }

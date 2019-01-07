@@ -221,7 +221,7 @@ public class Log
     
     private static PrintWriter pw = null;
     private static Level loglevel;
-    private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss\t");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss\t");
     
     /**
      * Represents different levels of message output.  All levels also include

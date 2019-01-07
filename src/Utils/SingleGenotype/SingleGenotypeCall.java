@@ -46,5 +46,5 @@ public class SingleGenotypeCall extends SingleGenotypePosition
         return call;
     }
     
-    private byte call;
+    private final byte call;
 }

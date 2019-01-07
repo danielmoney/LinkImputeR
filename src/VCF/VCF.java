@@ -17,7 +17,6 @@
 
 package VCF;
 
-import Exceptions.ProgrammerException;
 import VCF.Changers.GenotypeChanger;
 import VCF.Changers.PositionChanger;
 import VCF.Exceptions.VCFDataException;
@@ -49,6 +48,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
@@ -180,6 +180,10 @@ public class VCF
                 }
                 else
                 {
+                    if (samples == null)
+                    {
+                        throw new VCFHeaderLineException("Data lines occur before header line");
+                    }
                     String[] parts = line.split("\t");
                     
                     if (parts.length < samples.length + 9)
@@ -243,6 +247,11 @@ public class VCF
             
             pVis = new boolean[positions.length];
             Arrays.fill(pVis, true);
+
+            if (samples == null)
+            {
+                throw new VCFHeaderLineException("No data line line in VCF");
+            }
             sVis = new boolean[samples.length];
             Arrays.fill(sVis, true);
         }
@@ -264,8 +273,9 @@ public class VCF
      * @param meta The meta data for the VCF
      * @param positions The positions for the VCF (which includes information
      * on samples and genotypes).
+     * @throws VCFDataException If there is a problem with the passed in list of positions
      */
-    public VCF(Meta meta, List<Position> positions)
+    public VCF(Meta meta, List<Position> positions) throws VCFDataException
     {
         this.meta = meta;
         samples = null;
@@ -281,8 +291,7 @@ public class VCF
             {
                 if (!Arrays.equals(samples, p.samples()))
                 {
-                    //NEEDS A PROPER EXCEPTION
-                    throw new ProgrammerException();
+                    throw new VCFDataException("A position does not have the same samples as a previous position");
                 }
             }
             positionsList.add(p.meta());
@@ -294,6 +303,11 @@ public class VCF
                     
         pVis = new boolean[this.positions.length];
         Arrays.fill(pVis, true);
+
+        if (samples == null)
+        {
+            throw new VCFDataException("No positions provided from which to initalise samples");
+        }
         sVis = new boolean[samples.length];
         Arrays.fill(sVis, true);
     }
@@ -359,7 +373,7 @@ public class VCF
     private Sample singleSample(int i)
     {
         return new Sample(samples[i], positions, pVis,
-                IntStream.range(0, genotypes.length).mapToObj(j -> genotypes[j][i]).toArray(size -> new RawGenotype[size]));
+                Arrays.stream(genotypes).map(genotype -> genotype[i]).toArray((IntFunction<RawGenotype[]>) RawGenotype[]::new));
     }
     
     /**
@@ -380,7 +394,7 @@ public class VCF
     {
         return IntStream.range(0, samples.length).filter(i -> sVis[i])
                 .mapToObj(i -> new Sample(samples[i], positions, pVis,
-                IntStream.range(0, genotypes.length).mapToObj(j -> genotypes[j][i]).toArray(size -> new RawGenotype[size])));
+                        Arrays.stream(genotypes).map(genotype -> genotype[i]).toArray((IntFunction<RawGenotype[]>) RawGenotype[]::new)));
     }
     
     /**
@@ -492,7 +506,7 @@ public class VCF
         {
             out = new PrintWriter(new BufferedWriter(new FileWriter(f)));
         }
-        meta.getLinesStream().forEach(m -> out.println(m));
+        meta.getLinesStream().forEach(out::println);
         
         out.print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT");
         Arrays.stream(getSamples()).forEach(s -> out.print("\t" + s));
@@ -793,7 +807,7 @@ public class VCF
     public String[] getSamples()
     {
         //return samples;
-        return IntStream.range(0, samples.length).filter(i -> sVis[i]).mapToObj(i -> samples[i]).toArray(i -> new String[i]);
+        return IntStream.range(0, samples.length).filter(i -> sVis[i]).mapToObj(i -> samples[i]).toArray(String[]::new);
     }
     
     /**
@@ -803,7 +817,7 @@ public class VCF
     public PositionMeta[] getPositions()
     {
         //return positions;
-        return IntStream.range(0, positions.length).filter(i -> pVis[i]).mapToObj(i -> positions[i]).toArray(i -> new PositionMeta[i]);
+        return IntStream.range(0, positions.length).filter(i -> pVis[i]).mapToObj(i -> positions[i]).toArray((IntFunction<PositionMeta[]>) PositionMeta[]::new);
     }
     
     /**
@@ -886,7 +900,7 @@ public class VCF
     // From https://stackoverflow.com/questions/30507653
     private static boolean isGZipped(File f) throws IOException
     {
-        int magic = 0;
+        int magic;
         RandomAccessFile raf = new RandomAccessFile(f, "r");
         magic = raf.read() & 0xff | ((raf.read() << 8) & 0xff00);
         raf.close();

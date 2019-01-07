@@ -36,7 +36,7 @@ public interface Imputer
      * @param readCounts Read counts for each genotype
      * @return Table of imputed genotype probabilities
      */
-    public double[][][] impute(double[][][] probs, int[][][] readCounts);
+    double[][][] impute(double[][][] probs, int[][][] readCounts);
 
     /**
      * Imputes a list of genotypes.  Used to calculate accuracy.  Need both
@@ -51,11 +51,11 @@ public interface Imputer
      * @param list List of genotypes to impute
      * @return List of imputed genotype probabilities
      */
-    public List<SingleGenotypeProbability> impute(double[][][] probs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, List<SingleGenotypeMasked> list);
+    List<SingleGenotypeProbability> impute(double[][][] probs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, List<SingleGenotypeMasked> list);
 
     /**
      * Get the config for the imputer
      * @return The config
      */
-    public ImmutableNode getConfig();
+    ImmutableNode getConfig();
 }

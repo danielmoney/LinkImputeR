@@ -133,7 +133,7 @@ public class DepthMaskFactory
     }
     
     private Method method;
-    private int number;
-    private int minDepth;
-    private int limitDist;
+    private final int number;
+    private final int minDepth;
+    private final int limitDist;
 }

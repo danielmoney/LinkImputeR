@@ -35,7 +35,7 @@ public class PositionMissing extends PositionFilter
     /**
      * Constructor
      * @param threshold The missing threshold
-     * @param minDepth The miminum number of reads required for a genotype to
+     * @param minDepth The minimum number of reads required for a genotype to
      * be considered present
      */
     public PositionMissing(double threshold, int minDepth)

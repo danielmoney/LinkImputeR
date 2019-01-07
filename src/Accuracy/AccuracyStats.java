@@ -123,7 +123,7 @@ public class AccuracyStats
     
     /**
      * Return the accuracy for a given depth (read count) and true genotype
-     * @param depth The dpeth to return the accuracy for
+     * @param depth The depth to return the accuracy for
      * @param geno The true genotype to return the accuracy for
      * @return The accuracy
      */
@@ -170,7 +170,7 @@ public class AccuracyStats
      * Return the number of genotypes used in the accuracy calculation that have
      * the give true genotype
      * @param geno The true genotype
-     * @return The number of gentypes
+     * @return The number of genotypes
      */
     public int genoTotal(byte geno)
     {
@@ -234,7 +234,7 @@ public class AccuracyStats
      * Return the number of genotypes that are correct that have
      * the give true genotype
      * @param geno The true genotype
-     * @return The number of gentypes
+     * @return The number of genotypes
      */
     public int genoCorrect(byte geno)
     {

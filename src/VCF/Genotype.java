@@ -142,7 +142,7 @@ public class Genotype
     }
     
     /**
-     * Add data to the genotype.  It is up to the caller to ensure the appropiate
+     * Add data to the genotype.  It is up to the caller to ensure the appropriate
      * format is also added to the position.
      * @param value The value to add
      */
@@ -153,9 +153,9 @@ public class Genotype
     
     /**
      * Remove data for the given format.  It is up to the caller to ensure the
-     * appropiate format is removed from the position.
-     * @param name
-     * @throws VCFNoDataException
+     * appropriate format is removed from the position.
+     * @param name The name of the format data to remove
+     * @throws VCFNoDataException If there is no data field with that name
      */
     public void removeData(String name) throws VCFNoDataException
     {

@@ -47,8 +47,9 @@ public class PrintStats
      * Constructor
      * @param pretty File to print pretty stats to
      * @param depth File to print depth stats to
-     * @param geno Fiile to print geno stats to
+     * @param geno File to print geno stats to
      * @param depthGeno File to print depth-geno stats to
+     * @param eachMasked File to print information for each masked sample / position to
      * @param partial Whether to print partial stats (i.e. for imputed and called
      * as well as for combined)
      */
@@ -104,7 +105,7 @@ public class PrintStats
     }
     
     /**
-     * Write stats to the appropiate files
+     * Write stats to the appropriate files
      * @param stats Accuracy stats for combined
      * @param cstats Accuracy stats for called
      * @param istats Accuracy stats for imputed
@@ -187,7 +188,7 @@ public class PrintStats
                 prettyWriter.println();
 
                 //TOTAL
-                prettyWriter.print("Overall corrrelation: " + dformat(stats.correlation()) + "\t(" + iformat(stats.total()) + ")");
+                prettyWriter.print("Overall correlation: " + dformat(stats.correlation()) + "\t(" + iformat(stats.total()) + ")");
                 if (partial)
                 {
                     prettyWriter.print("\t\t[" + dformat(cstats.correlation()) + "/" + dformat(istats.correlation()) + "]");
@@ -284,6 +285,14 @@ public class PrintStats
         }
     }
 
+    /**
+     * Writes data on each masked sample / snp if appropriate
+     * @param correct List of correct genotypes
+     * @param imputed List of imputed genotypes
+     * @param samples List of samples (sample names)
+     * @param positions List of positions (position meta data)
+     * @throws OutputException If there is an IO problem
+     */
     public void writeEachMasked(List<SingleGenotypeCall> correct, List<SingleGenotypeCall>  imputed,
                                 String[] samples, PositionMeta[] positions) throws OutputException
     {

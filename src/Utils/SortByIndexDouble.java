@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * Comparator to sort integer indicies based on the corresponding value in a
+ * Comparator to sort integer indices based on the corresponding value in a
  * double array.
  * @author Daniel Money
  */
@@ -29,7 +29,7 @@ public class SortByIndexDouble implements Comparator<Integer>
 {
     /**
      * Constructor.  Defaults to sorting in standard order.
-     * @param values The double array used to sort the indicies
+     * @param values The double array used to sort the indices
      */
     public SortByIndexDouble(double[] values)
     {
@@ -39,7 +39,7 @@ public class SortByIndexDouble implements Comparator<Integer>
     
     /**
      * Constructor.  Can sort in either standard or reverse order.
-     * @param values The double array used to sort the indicies
+     * @param values The double array used to sort the indices
      * @param reverse If true sorts in reverse order
      */
     public SortByIndexDouble(double[] values, boolean reverse)
@@ -51,7 +51,7 @@ public class SortByIndexDouble implements Comparator<Integer>
     /**
      * Overrides the default compare method and instead compares the ith and jth
      * element of the values array
-     * @param i The index of the first elelment to compare
+     * @param i The index of the first element to compare
      * @param j The index of the second element to compare
      * @return Standard comparison integer
      */
@@ -69,8 +69,8 @@ public class SortByIndexDouble implements Comparator<Integer>
     }
 
     /**
-     * Produce a sorted list of indicies for the entire array
-     * @return Sorted list of indicies
+     * Produce a sorted list of indices for the entire array
+     * @return Sorted list of indices
      */
     public Integer[] sort()
     {

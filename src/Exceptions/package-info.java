@@ -16,6 +16,6 @@
  */
 
 /**
- * Provides exeptions
+ * Provides exceptions
  */
 package Exceptions;

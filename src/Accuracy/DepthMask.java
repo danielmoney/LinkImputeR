@@ -41,7 +41,7 @@ public class DepthMask
      * Masks a given number of genotypes to a given depth
      * @param depths The original read counts
      * @param number The number of genotypes to mask
-     * @param minDepth Only mask genotypes with more than this reqad depth
+     * @param minDepth Only mask genotypes with more than this read depth
      * @param maskTo Mask to read depth
      * @param caller The genotype caller
      * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
@@ -56,7 +56,7 @@ public class DepthMask
      * Masks a given number of genotypes to a given depth
      * @param depths The original read counts
      * @param number The number of genotypes to mask
-     * @param minDepth Only mask genotypes with more than this reqad depth
+     * @param minDepth Only mask genotypes with more than this read depth
      * @param maskTo Mask to read depth
      * @param method The method to be used to mask genotypes
      * @param caller The genotype caller
@@ -72,7 +72,7 @@ public class DepthMask
      * Masks a given number of genotypes to a given depth
      * @param depths The original read counts
      * @param number The number of genotypes to mask
-     * @param minDepth Only mask genotypes with more than this reqad depth
+     * @param minDepth Only mask genotypes with more than this read depth
      * @param caller The genotype caller
      * @param maskToDistribution Mask to this distribution of read depths
      * @throws Exceptions.NotEnoughMaskableGenotypesException If there is not
@@ -232,7 +232,7 @@ public class DepthMask
     
     /**
      * Get an array of masked reads.  All reads are included, masked where
-     * appropiate and unmasked for the other
+     * appropriate and unmasked for the other
      * @return Array of masked read
      */
     public int[][][] maskedArray()

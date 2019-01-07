@@ -92,7 +92,7 @@ public class AccuracyCalculator
     
     /**
      * Calculates various statistics concerning the genotypes called correctly
-     * @param correct The correct egnotypes
+     * @param correct The correct genotypes
      * @param compareTo the genotypes to test
      * @param depths The depth (i.e. number of reads) used for each genotype
      * @return Accuracy statistics
@@ -123,7 +123,7 @@ public class AccuracyCalculator
     {
 
         /**
-         * Use perecent correct
+         * Use percent correct
          */
         CORRECT,
 

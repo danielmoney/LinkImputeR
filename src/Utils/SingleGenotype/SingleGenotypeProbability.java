@@ -39,7 +39,7 @@ public class SingleGenotypeProbability extends SingleGenotypePosition
     
     /**
      * Get the genotype probabilities
-     * @return The genotype probabilites
+     * @return The genotype probabilities
      */
     public double[] getProb()
     {

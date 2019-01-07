@@ -29,7 +29,7 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- * Reperesnts the imputer options to LinkImpute
+ * Represents the imputer options to LinkImpute
  * @author daniel
  */
 public class ImputationOption
@@ -77,8 +77,8 @@ public class ImputationOption
     }
  
     /**
-     * Gets an imputer.  If the imputer option was for one that was not optiized
-     * simply returns that.  Elses optimzes a imputer and returns the optimized
+     * Gets an imputer.  If the imputer option was for one that was not optimized
+     * simply returns that.  Else optimizes a imputer and returns the optimized
      * version of it.
      * @param original The original called genotype probabilities
      * @param readCounts The readcounts

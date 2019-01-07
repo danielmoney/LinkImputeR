@@ -18,7 +18,7 @@
 package Utils.Optimize;
 
 /**
- * Represents a funciton that can be optimized.  Takes multiple integers as input
+ * Represents a function that can be optimized.  Takes multiple integers as input
  * @author Daniel Money
  * @version 0.9
  */

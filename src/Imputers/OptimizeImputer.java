@@ -32,11 +32,11 @@ public interface OptimizeImputer<I extends Imputer>
 
     /**
      * Get an optimized version of the imputer
-     * @param callprobs Orginal called genotype probabilities
+     * @param callprobs Original called genotype probabilities
      * @param readCounts Read counts
      * @param maskedprob Masked genotype probabilities
      * @param list List of masked sites and their genotype
-     * @return An optmized imputer
+     * @return An optimized imputer
      */
     public I getOptimized(double[][][] callprobs, int[][][] readCounts, List<SingleGenotypeProbability> maskedprob, List<SingleGenotypeMasked> list);
 

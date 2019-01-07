@@ -92,15 +92,15 @@ public class VCF
     
     /**
      * Constructor from a file, filtering positions at read time and changing
-     * genotypes read in. By changng genotypes as they are read in any information
-     * contained in the genotype field that will not be used can be discared so
+     * genotypes read in. By changing genotypes as they are read in any information
+     * contained in the genotype field that will not be used can be discarded so
      * saving memory.
      * @param f The file
      * @param preFilters A list of filters to be applied before any changes are
      * applied (e.g. to filter out snps without the required data)
      * @param positionChangers List of changers to apply to the positions
      * @param genotypeChangers List of changers to apply to the genotypes
-     * @param filters The position filters to apply (after the changeers)
+     * @param filters The position filters to apply (after the changers)
      * @param requiredFormats A list of formats required to be in the VCF
      * @throws VCF.Exceptions.VCFException If there is a problem with the VCF file
      * or the data in it
@@ -162,7 +162,7 @@ public class VCF
                     if (!allFormats)
                     {
                         throw new VCFMissingFormatException(
-                                "The VCF is missing the following required fomats"
+                                "The VCF is missing the following required formats"
                                 + missingString.toString());
                     }
                     
@@ -250,11 +250,11 @@ public class VCF
         {
             if (lineNumber == 0)
             {
-                throw new VCFInputException("Probleming reading VCF",e);
+                throw new VCFInputException("Problem reading VCF",e);
             }
             else
             {
-                throw new VCFInputException("Probleming reading VCF (line number " + lineNumber + ")",e);
+                throw new VCFInputException("Problem reading VCF (line number " + lineNumber + ")",e);
             }
         }
     }
@@ -301,7 +301,7 @@ public class VCF
     /**
      * Gets a stream of genotypes.  Genotypes are returned by position
      * i.e. the genotypes for one position are returned before moving onto the
-     * next positon.
+     * next position.
      * @return The stream
      */
     public Stream<Genotype> genotypeStream()
@@ -312,7 +312,7 @@ public class VCF
     /**
      * Gets a stream of genotypes by position.
      * That is the genotypes for one position are returned before moving onto the
-     * next positon.
+     * next position.
      * @return The stream
      */
     public Stream<Genotype> genotypesByPositionStream()

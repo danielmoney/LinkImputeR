@@ -30,7 +30,7 @@ public class Matrix
     }
     
     /**
-     * Tranposes a matrix
+     * Transposes a matrix
      * @param o The original matrix
      * @return The transposed matrix
      */

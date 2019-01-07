@@ -30,7 +30,7 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- * Very simple logger.  Coudl not find a simple enough existing one!
+ * Very simple logger.  Could not find a simple enough existing one!
  * @author Daniel Money
  */
 public class Log
@@ -164,7 +164,7 @@ public class Log
     }
     
     /**
-     * Initalise a logger (logs to file)
+     * Initialise a logger (logs to file)
      * @param level Level to log
      * @param f File to log to
      * @throws IOException If there is a problem setting up the logger
@@ -224,7 +224,7 @@ public class Log
     private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss\t");
     
     /**
-     * Represents different levels of message output.  All levels also inlcude
+     * Represents different levels of message output.  All levels also include
      * lower levels.
      */
     public enum Level

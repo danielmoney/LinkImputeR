@@ -53,7 +53,7 @@ public class Distribution<V>
     /**
      * Get the proportion for n object.  That is count / total count
      * @param v The object
-     * @return The prortion
+     * @return The proportion
      */
     public double getProportion(V v)
     {

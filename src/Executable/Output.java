@@ -33,7 +33,7 @@ import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- * Represents the output optins to LinkImputeR
+ * Represents the output options to LinkImputeR
  * @author Daniel Money
  * @version 0.9
  */

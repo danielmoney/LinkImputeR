@@ -63,7 +63,7 @@ public class SingleGenotypePosition
     /**
      * Tests whether two positions represent the same genotype
      * @param pos1 First position
-     * @param pos2 Second positon
+     * @param pos2 Second position
      * @return Whether the two positions represent the same genotypes
      */
     public static boolean samePosition(SingleGenotypePosition pos1, SingleGenotypePosition pos2)

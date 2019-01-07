@@ -93,7 +93,7 @@ public class LinkImputeR
     
     /**
      * Main function
-     * @param args Command line arguements
+     * @param args Command line arguments
      * @throws Exception If an uncaught error occurs
      */
     public static void main(String[] args) throws Exception
@@ -259,7 +259,7 @@ public class LinkImputeR
             System.err.println("=====");
             System.err.println("ERROR");
             System.err.println("=====");
-            System.err.println("Well this is embarassing.  This shouldn't have happened.  "
+            System.err.println("Well this is embarrassing.  This shouldn't have happened.  "
                     + "Please contact the maintainer if you can not solve the error"
                     + "from the technical details.");
             System.err.println();
@@ -271,7 +271,7 @@ public class LinkImputeR
             System.err.println("=====");
             System.err.println("ERROR");
             System.err.println("=====");
-            System.err.println("Well this is embarassing.  This was not expected to have happened.  "
+            System.err.println("Well this is embarrassing.  This was not expected to have happened.  "
                     + "Please contact the maintainer if you can not solve the error"
                     + "from the technical details.");
             System.err.println();
@@ -520,7 +520,7 @@ public class LinkImputeR
         xml.add(new ImmutableNode.Builder().name("mode").value("accuracy").create());        
         
         String[] sdepths = config.getString("Global.depth").split(",");
-        int depths[] = new int[sdepths.length];
+        int[] depths = new int[sdepths.length];
         for (int i = 0; i < sdepths.length; i++)
         {
             try
@@ -623,7 +623,7 @@ public class LinkImputeR
         if ((readsformat != null) && (readsformat.split(",").length > 2))
         {
             throw new INIException("readsformat must be either a single format or two"
-                    + "formats comma seperated (LinkImputeR currently only works on"
+                    + "formats comma separated (LinkImputeR currently only works on"
                     + "biallelic SNPs)");
         }
         
@@ -821,7 +821,7 @@ public class LinkImputeR
                             }
                             break;
                         //NEED TO THINK ABOUT WHAT TO DO WITH SIGNIFICANCE!
-                        //PSSOBLY CHANGES IN CASE????
+                        //POSSIBLY CHANGES IN CASE????
                         /*case "hw":
                             f = new ParalogHWFilter(Double.parseDouble(opt),error);
                             for (List<VCFFilter> c: cases)
@@ -912,7 +912,7 @@ public class LinkImputeR
             case "brief":
                 level = Log.Level.BRIEF;
                 break;
-            case "detai":
+            case "detail":
                 level = Log.Level.DETAIL;
                 break;
             case "debug":
@@ -1136,7 +1136,7 @@ public class LinkImputeR
         sum.print("Name\tSamples\tPositions\tAccuracy\tCorrelation\tFilters\tAdditional");
         if (partial)
         {
-            sum.print("\tPartials (Accuracy)\tParials (Correlation)");
+            sum.print("\tPartials (Accuracy)\tPartials (Correlation)");
         }
         sum.println();
     }

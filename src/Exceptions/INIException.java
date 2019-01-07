@@ -40,11 +40,11 @@ public class INIException extends Exception
     }
     
     /**
-     * @param msg
-     * @param ex
+     * @param msg The message
+     * @param cause The cause
      */
-    public INIException(String msg, Throwable ex)
+    public INIException(String msg, Throwable cause)
     {
-        super(msg,ex);
+        super(msg,cause);
     }
 }

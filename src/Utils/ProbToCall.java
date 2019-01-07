@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Converts genotype probabilites to a called genotype
+ * Converts genotype probabilities to a called genotype
  * @author Daniel Money
  * @version 1.0
  */

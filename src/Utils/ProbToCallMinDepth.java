@@ -20,7 +20,7 @@ package Utils;
 import java.util.stream.IntStream;
 
 /**
- * Converts genotype probabilites to a called genotype
+ * Converts genotype probabilities to a called genotype
  * @author Daniel Money
  * @version 1.0
  */

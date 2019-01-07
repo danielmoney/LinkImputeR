@@ -72,7 +72,7 @@ public abstract class Caller
     /**
      * Call the selected genotypes
      * @param list The genotypes to call
-     * @return The proabbilities of each genotype
+     * @return The probabilities of each genotype
      */
     public List<SingleGenotypeProbability> call(List<SingleGenotypeReads> list)
     {

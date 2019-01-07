@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Represents a map of constructors so that a new object of the appropiate child
+ * Represents a map of constructors so that a new object of the appropriate child
  * class (given by a string) can be constructed.  All constructors must have the
  * same type of single input.  Not the best description - probably best to see
  * how it's used!

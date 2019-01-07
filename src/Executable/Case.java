@@ -50,7 +50,7 @@ public class Case
      * @param combiner The combiner options
      * @param print The stats printing options
      * @param additional Additional string to be used in output (currently
-     * used to show mimimum read depth)
+     * used to show minimum read depth)
      */
     public Case(String name, List<VCFFilter> filters, Caller caller, 
             ImputationOption imputer, CombinerOption combiner,
@@ -124,12 +124,12 @@ public class Case
      * an optimized version else return the imputer
      * @param original The called genotype probabilities
      * @param readCounts The read counts
-     * @param maskedprobs The masked genotype probabilites
+     * @param maskedprobs The masked genotype probabilities
      * @param list List of masked positions
      * @return The imputer
      */
-    public Imputer getImputer(double[][][] original, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs, 
-            List<SingleGenotypeMasked> list)
+    public Imputer getImputer(double[][][] original, int[][][] readCounts, List<SingleGenotypeProbability> maskedprobs,
+                              List<SingleGenotypeMasked> list)
     {
         return imputer.getImputer(original, readCounts, maskedprobs, list);
     }
@@ -151,7 +151,7 @@ public class Case
      * @param imputed The imputed genotype probabilities
      * @param reads The read counts
      * @param correct The correct genotypes
-     * @param masked A list of maksed genotypes
+     * @param masked A list of masked genotypes
      * @return The combiner
      */
     public Combiner getCombiner(List<SingleGenotypeProbability> called,
@@ -256,7 +256,7 @@ public class Case
     
     /**
      * Get the final imputation stage config for this case
-     * @param caller The caller to be used in the final impuation stage
+     * @param caller The caller to be used in the final imputation stage
      * @param imputer The optimized imputer to be used in the final imputation stage
      * @param combiner The optimized combiner to be used in the final imputation stage
      * @return The config

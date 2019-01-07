@@ -22,7 +22,7 @@ import VCF.VCF;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- * Represents a VCF filter (eith a position filter or a sample filter)
+ * Represents a VCF filter (either a position filter or a sample filter)
  * @author Daniel Money
  * @version 0.9
  */

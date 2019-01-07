@@ -44,7 +44,7 @@ public class SingleGenotypeMasked extends SingleGenotypePosition
     }
     
     /**
-     * Get the msked read counts
+     * Get the masked read counts
      * @return The masked read counts
      */
     public int[] getMasked()

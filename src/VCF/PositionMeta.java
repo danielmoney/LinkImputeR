@@ -29,7 +29,7 @@ public class PositionMeta
 {
 
     /**
-     * Constructor from a string representing the meta data (tab deliminted)
+     * Constructor from a string representing the meta data (tab delimited)
      * @param meta String representing the meta data
      */
     public PositionMeta(String meta)
@@ -190,7 +190,7 @@ public class PositionMeta
     
     /**
      * Are two positions equal - based only on chromosome and position
-     * @param o
+     * @param o The position to compare to
      * @return Whether the two positions are equal
      */
     public boolean equals(Object o)

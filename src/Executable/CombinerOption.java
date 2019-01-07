@@ -31,7 +31,7 @@ import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
- * Reperesnts the combiner options to LinkImpute
+ * Represents the combiner options to LinkImpute
  * @author daniel
  */
 public class CombinerOption
@@ -80,14 +80,14 @@ public class CombinerOption
     }
     
     /**
-     * Gets a combiner.  If the combiner option was for one that was not optiized
-     * simply returns that.  Elses optimzes a combiner and returns the optimized
+     * Gets a combiner.  If the combiner option was for one that was not optimized
+     * simply returns that.  Else optimizes a combiner and returns the optimized
      * version of it.
      * @param called The called genotype probabilities
      * @param imputed The imputed genotype probabilities
      * @param reads The reads
      * @param correct The correct genotypes
-     * @param masked A list of maksed genotypes
+     * @param masked A list of masked genotypes
      * @return A combiner
      */
     public Combiner getCombiner(

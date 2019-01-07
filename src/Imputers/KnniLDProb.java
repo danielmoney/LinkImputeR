@@ -210,7 +210,7 @@ public class KnniLDProb implements Imputer
             //Loop around samples in order of distance
             do
             {
-                // Only impute from samples that have a genotype for the crrent SNP
+                // Only impute from samples that have a genotype for the current SNP
                 if (original[indicies[i]][p] >= 0)
                 {
                     neighWeight[original[indicies[i]][p]] += 1.0 / dist[indicies[i]];

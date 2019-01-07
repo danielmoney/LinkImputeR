@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A simple convience class used to convert a byte genotype to a text string
+ * A simple convenience class used to convert a byte genotype to a text string
  * representing it
  * @author Daniel Money
  * @version 0.9

@@ -22,7 +22,7 @@ import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
- * Represents a distrubiton of comparable discrete objects.  Each object has a
+ * Represents a distribution of comparable discrete objects.  Each object has a
  * count associated with it
  * @author Daniel Money
  * @version 0.9

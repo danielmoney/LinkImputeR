@@ -56,7 +56,7 @@ public class Input
      * @param maxdepth The maximum read depth for a genotype.  Genotypes with
      * a higher read depth are set to have no reads and a missing genotype.
      * @param readsformat The formats to read read depths from.  If a single
-     * value then assumes the format contains comma seperated data for reference
+     * value then assumes the format contains comma separated data for reference
      * alt read depths.  If readsformat is itself comma seperated then assumes
      * the first item is the format containing the reference allele depth, the
      * second the alt allele depth.  If null defaults to the current VCF standard

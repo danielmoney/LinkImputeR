@@ -27,15 +27,15 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 /**
- * Caclulates correlations.  Mianly has utility functions that use functions of
- * implementing classes to caclulate multiple correlations.
+ * Calculates correlations.  Mainly has utility functions that use functions of
+ * implementing classes to calculate multiple correlations.
  * @author daniel
  */
 public abstract class Correlation
 {
     
     /**
-     * Caclaultes correlations between all pairs of arrays
+     * Calculates correlations between all pairs of arrays
      * @param data The data
      * @return A symmetric array of correlations
      */
@@ -138,8 +138,8 @@ public abstract class Correlation
     /**
      * Similar to topn except it only considers the given arrays
      * @param data The data
-     * @param n Return this number of top correlated arraysn
-     * @param list The positin of the arrays to consider
+     * @param n Return this number of top correlated arrays
+     * @param list The position of the arrays to consider
      * @return Map from the position of an array to the position of the n arrays
      * in the list most correlated with it
      */
@@ -175,8 +175,8 @@ public abstract class Correlation
     /**
      * Similar to limitedtopn except it returns correlations
      * @param data The data
-     * @param n Return this number of top correlated arraysn
-     * @param list The positin of the arrays to considert
+     * @param n Return this number of top correlated arrays
+     * @param list The position of the arrays to consider
      * @return Map from the position of an array to the correlation of the n arrays
      * in the list most correlated with it
      */

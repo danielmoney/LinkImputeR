@@ -22,7 +22,7 @@ import java.util.Arrays;
 /**
  * Queue that keeps only the entries with the top values
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class TopQueue
 {

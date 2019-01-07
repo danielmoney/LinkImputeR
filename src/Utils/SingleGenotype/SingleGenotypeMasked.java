@@ -22,7 +22,7 @@ import java.util.Arrays;
 /**
  * Represents a single masked genotype
  * @author Daniel Moneu
- * @version 0.9
+ * @version 1.1.3
  */
 public class SingleGenotypeMasked extends SingleGenotypePosition
 {

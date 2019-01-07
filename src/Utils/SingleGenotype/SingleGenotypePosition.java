@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 /**
  * Represents the position of a single genotype
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class SingleGenotypePosition
 {

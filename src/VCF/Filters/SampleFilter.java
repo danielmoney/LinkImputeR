@@ -24,7 +24,7 @@ import VCF.VCF;
 /**
  * Represents a sample filter
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public abstract class SampleFilter implements VCFFilter
 {

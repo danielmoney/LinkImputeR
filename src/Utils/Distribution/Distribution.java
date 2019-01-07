@@ -28,7 +28,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  * Represents a discrete distribution of objects.  Each object has a count
  * associated with it
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <V> The type of object
  */
 public class Distribution<V>

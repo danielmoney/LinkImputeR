@@ -22,7 +22,7 @@ import VCF.Exceptions.VCFUnexpectedDataException;
 /**
  * Maps from string to object
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <M> Type that is mapped to
  */
 public interface Mapper<M>

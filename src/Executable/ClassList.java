@@ -27,7 +27,7 @@ import java.util.function.Function;
  * same type of single input.  Not the best description - probably best to see
  * how it's used!
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <X> The type of the input to the constructor
  * @param <Y> The super class of the classes to be constructed
  */

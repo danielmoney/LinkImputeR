@@ -23,7 +23,7 @@ import VCF.Genotype;
 /**
  * Changes a genotype
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public interface GenotypeChanger
 {

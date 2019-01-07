@@ -21,7 +21,7 @@ package Utils.Optimize;
  * Optimizes the input to a function of type SingleDoubleValue
  * by testing multiple possible input values
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class MultipleTest
 {

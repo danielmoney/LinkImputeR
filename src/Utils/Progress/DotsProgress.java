@@ -20,7 +20,7 @@ package Utils.Progress;
 /**
  * Draws and updates a progress bar to standard out
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class DotsProgress implements Progress
 {

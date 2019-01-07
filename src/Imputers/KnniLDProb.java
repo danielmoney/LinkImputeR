@@ -43,7 +43,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Class to perform standard LD-kNNi imputation using probabilities
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class KnniLDProb implements Imputer
 {

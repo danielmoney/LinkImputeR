@@ -34,7 +34,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
  * Combines called and imputed genotype probabilities, only using called genotypes
  * above a given read depth
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class MaxDepthCombiner implements Combiner
 {

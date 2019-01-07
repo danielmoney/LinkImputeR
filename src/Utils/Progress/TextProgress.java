@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Shows progress as a simple tex output showing" number complete / total number"
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class TextProgress implements Progress
 {

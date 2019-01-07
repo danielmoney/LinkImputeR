@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Represents a single genotype in a VCF file
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class Genotype
 {

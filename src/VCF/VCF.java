@@ -58,7 +58,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * Represents the data from a VCF file
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class VCF
 {

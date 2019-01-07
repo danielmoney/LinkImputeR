@@ -24,7 +24,7 @@ import java.util.Map;
  * A simple convenience class used to convert a byte genotype to a text string
  * representing it
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class ByteToGeno
 {

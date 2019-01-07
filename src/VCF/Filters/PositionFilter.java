@@ -24,7 +24,7 @@ import VCF.VCF;
 /**
  * Represents a position filter
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public abstract class PositionFilter implements VCFFilter
 {

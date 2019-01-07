@@ -29,7 +29,7 @@ import java.util.stream.Collector;
  * Collector for use with streams that creates a Distribution from
  * a stream of objects
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <V> The type of objects
  */
 public class DistributionCollector<V> implements Collector<V,CountMap<V>,Distribution>

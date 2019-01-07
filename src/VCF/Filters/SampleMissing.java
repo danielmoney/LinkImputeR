@@ -27,7 +27,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Filters a sample based on a maximum allowed amount of missing genotypes
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class SampleMissing extends SampleFilter
 {

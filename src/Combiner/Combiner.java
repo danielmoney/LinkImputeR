@@ -25,7 +25,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Combines imputed and inferred genotypes to give a final called genotype
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public interface Combiner
 {

@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Keeps counts of an object
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <V> the type of the objects
  */
 public class CountMap<V>

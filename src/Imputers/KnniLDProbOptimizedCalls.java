@@ -43,7 +43,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
  * Represents a KnniLDProb imputer that can be optimized to maximise the number
  * of correctly called genotyped
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class KnniLDProbOptimizedCalls implements OptimizeImputer<KnniLDProb>
 {

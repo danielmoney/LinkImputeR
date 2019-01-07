@@ -20,7 +20,7 @@ package Utils.Progress;
 /**
  * Dummy progress indicator that shows nothing
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class SilentProgress implements Progress
 {

@@ -36,7 +36,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
  * Represent the LinkImputeR inputs for a single case (filters, caller,
  * imputer and combiner)
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class Case
 {

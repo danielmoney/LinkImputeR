@@ -27,7 +27,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Optimizes a combiner
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <C> The class of the optimized combiner
  */
 public interface OptimizeCombiner<C extends Combiner>

@@ -24,7 +24,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
  * A biased binomial caller, that is one where each read is not equally likely
  * in the case of a hetrozygote
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class BiasedBinomialCaller extends Caller
 {

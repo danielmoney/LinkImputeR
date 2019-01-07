@@ -30,7 +30,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode.Builder;
 /**
  * Filters positions based on minor allele frequency
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class MAFFilter extends PositionFilter
 {

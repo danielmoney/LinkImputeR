@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 /**
  * Creates a mask where reads for some genotypes are masked to a given depth
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class DepthMask
 {

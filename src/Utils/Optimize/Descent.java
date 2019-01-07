@@ -22,7 +22,7 @@ import java.util.Arrays;
 /**
  * Optimizes the input to a function of type MultipleIntegerValue using the descent method
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class Descent
 {

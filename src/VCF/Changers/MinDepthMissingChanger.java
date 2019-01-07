@@ -25,7 +25,7 @@ import VCF.Genotype;
  * Changes the genotype (the GT field) of genotype to unknown (./.) if the
  * total number of reads is less than a threshold
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class MinDepthMissingChanger implements GenotypeChanger
 {

@@ -24,7 +24,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Filters positions for biallelic positions
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class BiallelicFilter extends PositionFilter
 {

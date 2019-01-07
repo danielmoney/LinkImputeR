@@ -33,7 +33,7 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
  * Filters a position based on a Hardy-Weinburg test.  See the paper for full
  * details
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class ParalogHWFilter extends PositionFilter
 {

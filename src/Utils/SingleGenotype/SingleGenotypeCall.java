@@ -20,7 +20,7 @@ package Utils.SingleGenotype;
 /**
  * Represents a single genotype call
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class SingleGenotypeCall extends SingleGenotypePosition
 {

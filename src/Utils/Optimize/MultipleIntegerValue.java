@@ -20,7 +20,7 @@ package Utils.Optimize;
 /**
  * Represents a function that can be optimized.  Takes multiple integers as input
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public interface MultipleIntegerValue
 {

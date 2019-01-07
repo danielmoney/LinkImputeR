@@ -20,7 +20,7 @@ package Exceptions;
 /**
  * Represents an exception an end user should never see
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class ProgrammerException extends RuntimeException
 {

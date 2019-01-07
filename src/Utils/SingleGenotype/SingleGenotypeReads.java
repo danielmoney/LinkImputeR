@@ -20,7 +20,7 @@ package Utils.SingleGenotype;
 /**
  * Represents the reads for a single genotype
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class SingleGenotypeReads extends SingleGenotypePosition
 {

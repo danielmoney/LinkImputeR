@@ -26,7 +26,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  * Represents a distribution of comparable discrete objects.  Each object has a
  * count associated with it
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  * @param <V> The type of the comparable objects
  */
 public class ComparableDistribution<V extends Comparable<V>> extends Distribution<V>

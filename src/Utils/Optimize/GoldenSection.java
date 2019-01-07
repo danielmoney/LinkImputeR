@@ -20,7 +20,7 @@ package Utils.Optimize;
 /**
  * Optimizes the input to a function of type SingleDoubleValue using the Golden Section method
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class GoldenSection
 {

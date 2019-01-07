@@ -20,7 +20,7 @@ package Utils.Progress;
 /**
  * A means for indicating progress to the user
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public interface Progress
 {

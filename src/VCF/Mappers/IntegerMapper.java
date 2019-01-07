@@ -22,7 +22,7 @@ import VCF.Exceptions.VCFUnexpectedDataException;
 /**
  * Maps from a text string to an integer
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public interface IntegerMapper
 {

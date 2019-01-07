@@ -20,7 +20,7 @@ package Utils.Progress;
 /**
  * Factory for creating a progress indicator
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class ProgressFactory
 {

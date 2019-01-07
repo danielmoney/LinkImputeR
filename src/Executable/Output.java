@@ -35,7 +35,7 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 /**
  * Represents the output options to LinkImputeR
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class Output
 {

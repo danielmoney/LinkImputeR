@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 /**
  * Represents a sample in a VCF file
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class Sample
 {

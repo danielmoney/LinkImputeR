@@ -23,7 +23,7 @@ import VCF.Exceptions.VCFUnexpectedDataException;
 /**
  * Maps from a string representing read depths to an integer array of read depths
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class DepthMapper implements Mapper<int[]>
 {

@@ -26,7 +26,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
  * Extends XMLConfiguration so XML output is indented.  Copied from somewhere
  * on the internet.
  * @author Daniel Money
- * @version 0.9
+ * @version 1.1.3
  */
 public class ExtendedXMLConfiguration extends XMLConfiguration
 {

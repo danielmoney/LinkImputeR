@@ -25,6 +25,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import Utils.SingleGenotype.SingleGenotypeCall;
+import Utils.SingleGenotype.SingleGenotypeMasked;
+import Utils.SingleGenotype.SingleGenotypePosition;
+import VCF.PositionMeta;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
@@ -45,12 +52,13 @@ public class PrintStats
      * @param partial Whether to print partial stats (i.e. for imputed and called
      * as well as for combined)
      */
-    public PrintStats(File pretty, File depth, File geno, File depthGeno, boolean partial)
+    public PrintStats(File pretty, File depth, File geno, File depthGeno, File eachMasked, boolean partial)
     {
         this.pretty = pretty;
         this.depth = depth;
         this.geno = geno;
         this.depthGeno = depthGeno;
+        this.eachMasked = eachMasked;
         this.partial = partial;
     }
     
@@ -71,6 +79,9 @@ public class PrintStats
         
         String depthGenoString = params.getString("depthgeno",null);
         depthGeno = (depthGenoString == null) ? null : new File(depthGenoString);
+
+        String eachMaskedString = params.getString("eachmasked",null);
+        eachMasked = (eachMaskedString == null) ? null : new File(eachMaskedString);
         
         partial = params.getBoolean("partial",false);
     }
@@ -88,6 +99,7 @@ public class PrintStats
         depth = new File(root + "_depth.dat");
         geno = new File(root + "_geno.dat");
         depthGeno = new File(root + "_dg.dat");
+        eachMasked = new File(root + "_each.dat");
         this.partial = partial;
     }
     
@@ -271,6 +283,39 @@ public class PrintStats
             }
         }
     }
+
+    public void writeEachMasked(List<SingleGenotypeCall> correct, List<SingleGenotypeCall>  imputed,
+                                String[] samples, PositionMeta[] positions) throws OutputException
+    {
+        if (eachMasked != null)
+        {
+            try
+            {
+                if (!SingleGenotypePosition.samePositions(correct, imputed))
+                {
+                    //SHOULD DO SOMETHING PROPER HERE
+                    throw new RuntimeException();
+                }
+
+                PrintWriter eachMaskedWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(eachMasked)));
+                eachMaskedWriter.println("SNP\tSample\tTrue\tImputed");
+                for (int i = 0; i < correct.size(); i++)
+                {
+                    PositionMeta p = positions[correct.get(i).getSNP()];
+                    eachMaskedWriter.println(samples[correct.get(i).getSample()] + "\t" +
+                            p.getChrom() + ":" + p.getPosition() + "\t" +
+                            correct.get(i).getCall() + "\t" +
+                            imputed.get(i).getCall());
+                }
+                eachMaskedWriter.close();
+            }
+            catch (IOException ex)
+            {
+                throw new OutputException("Problem writing each masked data", ex);
+            }
+        }
+    }
     
     private String dformat(double d)
     {
@@ -313,6 +358,10 @@ public class PrintStats
         {
             config.addChild(new ImmutableNode.Builder().name("depthgeno").value(depthGeno.getAbsolutePath()).create());
         }
+        if (eachMasked != null)
+        {
+            config.addChild(new ImmutableNode.Builder().name("eachmasked").value(eachMasked.getAbsolutePath()).create());
+        }
         if (partial)
         {
             config.addChild(new ImmutableNode.Builder().name("partial").value("true").create());
@@ -325,6 +374,7 @@ public class PrintStats
     private File depth;
     private File geno;
     private File depthGeno;
+    private File eachMasked;
     private boolean partial;
     
     

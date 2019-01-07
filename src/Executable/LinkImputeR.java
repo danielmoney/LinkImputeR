@@ -467,7 +467,9 @@ public class LinkImputeR
                 AccuracyStats istats = AccuracyCalculator.accuracyStats(testCorrect, testImputedGeno, testMask.maskedList());
                 c.getPrintStats().writeStats(stats, cstats, istats);
                 writeSum(sum,c,vcf,stats,cstats,istats,partial);
-                writeTable(table,c,vcf,stats,cstats,istats,partial);        
+                writeTable(table,c,vcf,stats,cstats,istats,partial);
+
+                c.getPrintStats().writeEachMasked(testCorrect,testCombinedGeno,vcf.getSamples(),vcf.getPositions());
           
                 //ADD IMPUTE CONFIG
                 outConfig.add(c.getImputeConfig(caller, imputer, combiner));
@@ -700,6 +702,16 @@ public class LinkImputeR
         {
             throw new INIException("Stats partial must be convertible to a boolean.  Try \"yes\" or \"no\".");
         }
+
+        boolean eachMasked;
+        try
+        {
+            eachMasked = config.getBoolean("Stats.eachmasked",false);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Stats eachmasked must be convertible to a boolean.  Try \"yes\" or \"no\".");
+        }
         
         int casenum = 1;
         
@@ -836,6 +848,7 @@ public class LinkImputeR
                 File genoStats = null;
                 File depthStats = null;
                 File dgStats = null;
+                File eachMaskedFile = null;
 
                 switch (config.getString("Stats.level", "sum"))
                 {
@@ -854,7 +867,12 @@ public class LinkImputeR
                         throw new INIException("Stats level must be either \"sum\", \"pretty\" or \"table\".");
                 }
 
-                PrintStats print = new PrintStats(prettyStats,genoStats,depthStats,dgStats,partial);
+                if (eachMasked)
+                {
+                    eachMaskedFile = new File(statsRoot + "each_" + casenum + ".dat");
+                }
+
+                PrintStats print = new PrintStats(prettyStats,genoStats,depthStats,dgStats,eachMaskedFile,partial);
 
                 Case cas = new Case(name,filters,caller,imputer,combiner,print,"Depth(" + Integer.toString(depth) + ")");
                 xml.add(cas.getConfig());

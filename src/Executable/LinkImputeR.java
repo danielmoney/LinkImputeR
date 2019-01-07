@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.cli.*;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.INIConfiguration;
 import org.apache.commons.configuration2.XMLConfiguration;
@@ -99,57 +100,115 @@ public class LinkImputeR
     {
         try
         {
-            if (args.length == 0)
+            Options options = new Options();
+
+            OptionGroup all = new OptionGroup();
+            all.addOption(Option.builder("c").build());
+            all.addOption(Option.builder("s").build());
+            all.addOption(Option.builder("v").build());
+            all.addOption(Option.builder("h").build());
+            options.addOptionGroup(all);
+
+            CommandLineParser parser = new DefaultParser();
+            CommandLine commands = parser.parse(options,args);
+
+            String[] fileNames = commands.getArgs();
+
+            XMLConfiguration c;
+            boolean done = false;
+
+            if (commands.hasOption("c"))
+            {
+                if (fileNames.length == 2)
+                {
+                    c = convert(new File(fileNames[0]));
+                    writeXML(c, new File(fileNames[1]));
+                }
+                else
+                {
+                    System.out.println("An input and output file must be provided");
+                    System.out.println();
+                    help();
+                }
+                done = true;
+            }
+
+            if (commands.hasOption("s"))
+            {
+                if (fileNames.length == 1)
+                {
+                    c = convert(new File(fileNames[0]));
+                    accuracy(c);
+                }
+                else
+                {
+                    System.out.println("An input file must be provided");
+                    System.out.println();
+                    help();
+                }
+                done = true;
+            }
+
+            if (commands.hasOption("v"))
+            {
+                System.out.println("LinkImputeR version 1.1.2");
+                done = true;
+            }
+
+            if (commands.hasOption("h"))
             {
                 help();
+                done = true;
             }
-            else
+
+            if (!done)
             {
-                XMLConfiguration c;
-                switch (args[0])
+                if (fileNames.length == 3)
                 {
-                    case "-c":
-                        c = convert(new File(args[1]));
-                        writeXML(c,new File(args[2]));
-                        break;
-                    case "-s":
-                        c = convert(new File(args[1]));
-                        accuracy(c);
-                        break;
-                    case "-v":
-                        System.out.println("LinkImputeR version 1.1.2");
-                        break;
-                    case "-h":
-                        help();
-                        break;
-                    default:
-                        File xml = new File(args[0]);
+                    File xml = new File(fileNames[0]);
 
-                        FileBasedConfigurationBuilder<XMLConfiguration> builder = 
+                    FileBasedConfigurationBuilder<XMLConfiguration> builder =
                             new FileBasedConfigurationBuilder<>(XMLConfiguration.class)
-                            .configure(new Parameters().xml().setFile(xml));
+                                    .configure(new Parameters().xml().setFile(xml));
 
-                        XMLConfiguration config = builder.getConfiguration();
+                    XMLConfiguration config = builder.getConfiguration();
 
-                        switch (config.getString("mode"))
-                        {
-                            case "accuracy":
-                                accuracy(config);
-                                break;
-                            case "impute":
-                                if (args.length == 3)
-                                {
-                                    impute(config,args[1],new File(args[2]));
-                                }
-                                else
-                                {
-                                    impute(config,null,null);
-                                }
-                                break;
-                        }
-                        break;
+                    switch (config.getString("mode"))
+                    {
+                        case "accuracy":
+                            accuracy(config);
+                            break;
+                        case "impute":
+                            if (args.length == 3)
+                            {
+                                impute(config, args[1], new File(args[2]));
+                            }
+                            else
+                            {
+                                impute(config, null, null);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    System.out.println("An input file, case name and output file must be provided (in that order)");
+                    System.out.println();
+                    help();
                 }
             }
+        }
+        catch (UnrecognizedOptionException ex)
+        {
+            System.err.println("Unrecognised command line option (" + ex.getOption() + ")");
+            System.err.println();
+            help();
+        }
+        catch (AlreadySelectedException ex)
+        {
+            System.err.println("Only one option can be selected at a time");
+            System.err.println();
+            help();
         }
         catch (VCFException ex)
         {
@@ -439,7 +498,7 @@ public class LinkImputeR
     
     private static XMLConfiguration convert(File ini) throws INIException, VCFInputException
     {
-        FileBasedConfigurationBuilder<INIConfiguration> inibuilder = 
+        FileBasedConfigurationBuilder<INIConfiguration> inibuilder =
             new FileBasedConfigurationBuilder<>(INIConfiguration.class)
             .configure(new Parameters().fileBased().setFile(ini));
         
@@ -450,8 +509,8 @@ public class LinkImputeR
         }
         catch (ConfigurationException ex)
         {
-            throw new INIException("Theres a problem reading the ini file.  "
-                    + "Does it exist? Is it formatted correctly.",ex);
+            throw new INIException("There's a problem reading the ini file.  "
+                    + "Does it exist? Is it formatted correctly?",ex);
         }
         
         List<ImmutableNode> xml = new ArrayList<>();

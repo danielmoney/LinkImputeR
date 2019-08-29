@@ -99,6 +99,10 @@ public class BiasedBinomialCaller extends Caller
         return config;
     }
 
+    /***
+     * Get the eror rate used in the caller
+     * @return The error rate
+     */
     public double getError()
     {
         return error;

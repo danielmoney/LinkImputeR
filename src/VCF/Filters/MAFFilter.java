@@ -18,7 +18,6 @@
 
 package VCF.Filters;
 
-import Callers.BinomialCaller;
 import VCF.Exceptions.VCFDataException;
 import VCF.Position;
 import org.apache.commons.configuration2.HierarchicalConfiguration;

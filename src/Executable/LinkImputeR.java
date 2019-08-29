@@ -83,7 +83,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 /**
  * Main class
  * @author Daniel Money
- * @version 1.1.3
+ * @version 1.1.4
  */
 public class LinkImputeR
 {
@@ -152,7 +152,7 @@ public class LinkImputeR
 
             if (commands.hasOption("v"))
             {
-                System.out.println("LinkImputeR version 1.1.3");
+                System.out.println("LinkImputeR version 1.1.4");
                 done = true;
             }
 

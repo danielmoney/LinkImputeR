@@ -1,3 +1,20 @@
+/*
+ * This file is part of LinkImputeR.
+ *
+ * LinkImputeR is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * LinkImputeR is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with LinkImpute.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package VCF.Filters;
 
 import Callers.BinomialCaller;
@@ -6,8 +23,21 @@ import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Position;
 
+/**
+ * Calculates minor allele frequency
+ * @author Daniel Money
+ * @version 1.1.3
+ */
 public class MAFCalculator
 {
+    /**
+     * Constructor
+     * @param minDepth A genotype must have at least this number of reads to be
+     * used in the MAF calculation
+     * @param maxDepth A genotype must have less than (or equal) this number of
+     * reads to be used in the MAF calculation
+     * @param error The error rate to be used when calling genotypes
+     */
     public MAFCalculator(double error, int minDepth, int maxDepth)
     {
         this.minDepth = minDepth;
@@ -16,6 +46,12 @@ public class MAFCalculator
         dm = new DepthMapper();
     }
 
+    /**
+     * Calculates the minor allele frequency for a position
+     * @param p The position
+     * @return The minor allele frequency
+     * @throws VCFDataException Thrown if the "AD" data field is not present
+     */
     public double maf(Position p) throws VCFDataException
     {
         double t = 0.0;
@@ -54,16 +90,28 @@ public class MAFCalculator
         return 2.0 * probs[0] + probs[1];
     }
 
+    /**
+     * Gets the minimum depth used in the MAF calculation
+     * @return The minimum depth
+     */
     public int getMinDepth()
     {
         return minDepth;
     }
 
+    /**
+     * Gets the maximum depth used in the MAF calculation
+     * @return The maximum depth
+     */
     public int getMaxDepth()
     {
         return maxDepth;
     }
 
+    /**
+     * Gets the error used in the MAF calculation
+     * @return The error
+     */
     public double getError()
     {
         return caller.getError();

@@ -45,8 +45,9 @@ public class ParalogHWFilter extends PositionFilter
      */
     public ParalogHWFilter(double significance, double error)
     {
-        this.error = error;
         this.significance = significance;
+        this.error = error;
+        mafCalculator = new MAFCalculator(error,8,100);
         cs = new ChiSquaredDistribution(1);
     }
     
@@ -58,15 +59,16 @@ public class ParalogHWFilter extends PositionFilter
     {
         this.significance = params.getDouble("significance");
         this.error = params.getDouble("error");
+        mafCalculator = new MAFCalculator(error,8,100);
         cs = new ChiSquaredDistribution(1);
     }
     
     public boolean test(Position p) throws VCFDataException
     {
-        double maf = maf(p);
+        double maf = mafCalculator.maf(p);
         if (maf == 0.0)
         {
-            return false;
+             return false;
         }
         HW hw = new HW(p,maf,error);
         GoldenSection gs = new GoldenSection(0.0001,Double.MAX_VALUE);
@@ -81,37 +83,7 @@ public class ParalogHWFilter extends PositionFilter
         return (pr > significance);
     }
 
-    private double maf(Position p) throws VCFDataException
-    {
-        DepthMapper dm = new DepthMapper();
-        
-        double t = 0.0;
-        double c = 0.0;
-             
-        for (Genotype g: p.genotypeList())
-        {
-            int[] r = dm.map(g.getData("AD"));
-            int trc = r[0] + r[1];
-            if ((trc >= 8) && (trc <= 100))
-            {
-                t += r[1]/ (r[0] + r[1]);
-                c++;
-            }
-        }
-        
-        double d;
-        if (c > 0)
-        {
-            d = t/c;
-        }
-        else
-        {
-            d = 0.0;
-        }
 
-        return d;
-    }
-    
     public ImmutableNode getConfig()
     {        
         ImmutableNode Ierror = new ImmutableNode.Builder().name("error").value(error).create();
@@ -134,7 +106,7 @@ public class ParalogHWFilter extends PositionFilter
     private final double significance;
     private final ChiSquaredDistribution cs;
     private final double error;
-
+    private final MAFCalculator mafCalculator;
 
     private class HW implements SingleDoubleValue
     {

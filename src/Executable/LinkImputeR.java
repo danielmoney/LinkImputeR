@@ -835,6 +835,11 @@ public class LinkImputeR
                     }
                 }
                 cases = newcases;
+                //Catch the case where we have no case filters and add a case with no filters
+                if (cases.size() == 0)
+                {
+                    cases.add(new ArrayList<VCFFilter>());
+                }
             }
             
             ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth,am));

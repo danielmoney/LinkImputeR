@@ -305,7 +305,7 @@ public class PrintStats
 
                 PrintWriter eachMaskedWriter = new PrintWriter(new BufferedWriter(
                         new FileWriter(eachMasked)));
-                eachMaskedWriter.println("SNP\tSample\tTrue\tImputed");
+                eachMaskedWriter.println("Sample\tSNP\tTrue\tImputed");
                 for (int i = 0; i < correct.size(); i++)
                 {
                     PositionMeta p = positions[correct.get(i).getSNP()];

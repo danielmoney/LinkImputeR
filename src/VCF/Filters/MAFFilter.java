@@ -20,8 +20,6 @@ package VCF.Filters;
 
 import Callers.BinomialCaller;
 import VCF.Exceptions.VCFDataException;
-import VCF.Genotype;
-import VCF.Mappers.DepthMapper;
 import VCF.Position;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -48,10 +46,9 @@ public class MAFFilter extends PositionFilter
     {
         this.maf = maf;
         /* A read depth of zero breaks the filter so set it to one in this case */
-        this.minDepth = Math.max(1,minDepth);
-        this.maxDepth = maxDepth;
-        this.error = error;
-        caller = new BinomialCaller(error);
+        minDepth = Math.max(1,minDepth);
+
+        calculator = new MAFCalculator(error,minDepth,maxDepth);
     }
 
     /**
@@ -62,42 +59,15 @@ public class MAFFilter extends PositionFilter
     {
         this.maf = params.getDouble("maf");
         /* A read depth of zero breaks the filter so set it to one in this case */
-        this.minDepth = Math.max(1,params.getInt("mindepth"));
-        this.maxDepth = params.getInt("maxdepth");
-        this.error = params.getDouble("error");
-        caller = new BinomialCaller(error);
+        int minDepth = Math.max(1,params.getInt("mindepth"));
+        int maxDepth = params.getInt("maxdepth");
+        double error = params.getDouble("error");
+        calculator = new MAFCalculator(error,minDepth,maxDepth);
     }
 
     public boolean test(Position p) throws VCFDataException
     {
-        DepthMapper dm = new DepthMapper();
-        
-        double t = 0.0;
-        double c = 0.0;
-             
-        for (Genotype g: p.genotypeList())
-        {
-            int[] r = dm.map(g.getData("AD"));
-            int trc = r[0] + r[1];
-            if ((trc >= minDepth) && (trc <= maxDepth))
-            {
-                t += getDosage(r);
-                c++;
-            }
-        }
-        
-        double d;
-        if (c > 0)
-        {
-            d = t/c;
-        }
-        else
-        {
-            d = 0.0;
-        }
-        
-        //Convert average dose to allele freq
-        double m = d / 2.0;
+        double m = calculator.maf(p);
 
         return (Math.min(m,1.0-m) > maf);
     }
@@ -105,9 +75,9 @@ public class MAFFilter extends PositionFilter
     public ImmutableNode getConfig()
     {        
         ImmutableNode Imaf = new Builder().name("maf").value(maf).create();
-        ImmutableNode Imindepth = new Builder().name("mindepth").value(minDepth).create();
-        ImmutableNode Imaxdepth = new Builder().name("maxdepth").value(maxDepth).create();
-        ImmutableNode Ierror = new Builder().name("error").value(error).create();
+        ImmutableNode Imindepth = new Builder().name("mindepth").value(calculator.getMinDepth()).create();
+        ImmutableNode Imaxdepth = new Builder().name("maxdepth").value(calculator.getMaxDepth()).create();
+        ImmutableNode Ierror = new Builder().name("error").value(calculator.getError()).create();
         
         ImmutableNode config = new Builder().name("filter")
                 .addChild(Imaf)
@@ -124,16 +94,7 @@ public class MAFFilter extends PositionFilter
     {
         return "MAF(" + maf + ")";
     }
-    
-    private double getDosage(int[] r)
-    {
-        double[] probs = caller.callSingle(r);
-        return 2.0 * probs[0] + probs[1];
-    }
 
-    private final BinomialCaller caller;
-    private final double error;
-    private final int minDepth;
-    private final int maxDepth;
+    private final MAFCalculator calculator;
     private final double maf;
 }

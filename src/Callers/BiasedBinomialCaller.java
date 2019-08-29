@@ -98,7 +98,12 @@ public class BiasedBinomialCaller extends Caller
         
         return config;
     }
-    
+
+    public double getError()
+    {
+        return error;
+    }
+
     final double error;
     final double bias;
 }

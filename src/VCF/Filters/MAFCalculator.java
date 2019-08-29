@@ -54,6 +54,21 @@ public class MAFCalculator
         return 2.0 * probs[0] + probs[1];
     }
 
+    public int getMinDepth()
+    {
+        return minDepth;
+    }
+
+    public int getMaxDepth()
+    {
+        return maxDepth;
+    }
+
+    public double getError()
+    {
+        return caller.getError();
+    }
+
     private DepthMapper dm;
     private BinomialCaller caller;
     private int minDepth;

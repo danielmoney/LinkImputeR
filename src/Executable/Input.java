@@ -210,7 +210,13 @@ public class Input
         if (out != null)
         {
             ImmutableNode Iin = new ImmutableNode.Builder().name("filename").value(out).create();
-            return new ImmutableNode.Builder().name("input").addChild(Iin).create();
+            ImmutableNode.Builder config = new ImmutableNode.Builder().name("input")
+                    .addChild(Iin);
+
+            ImmutableNode Imax = new ImmutableNode.Builder().name("maxdepth").value(maxdepth).create();
+            config.addChild(Imax);
+
+            return config.create();
         }
         else
         {
@@ -223,6 +229,9 @@ public class Input
             {
                 config.addChild(filter.getConfig());
             }
+
+            ImmutableNode Imax = new ImmutableNode.Builder().name("maxdepth").value(maxdepth).create();
+            config.addChild(Imax);
             
             return config.create();
         }

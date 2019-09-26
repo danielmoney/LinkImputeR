@@ -27,10 +27,7 @@ import Callers.BinomialCaller;
 import Callers.Caller;
 import Combiner.Combiner;
 import Combiner.MaxDepthCombinerOptimizedCalls;
-import Exceptions.AlgorithmException;
-import Exceptions.INIException;
-import Exceptions.OutputException;
-import Exceptions.ProgrammerException;
+import Exceptions.*;
 import Imputers.Imputer;
 import Imputers.KnniLDProbOptimizedCalls;
 import Utils.Log;
@@ -172,7 +169,16 @@ public class LinkImputeR
                             new FileBasedConfigurationBuilder<>(XMLConfiguration.class)
                                     .configure(new Parameters().xml().setFile(xml));
 
-                    XMLConfiguration config = builder.getConfiguration();
+                    XMLConfiguration config;
+                    try
+                    {
+                        config = builder.getConfiguration();
+                    }
+                    catch (ConfigurationException ex)
+                    {
+                        throw new XMLException("There's a problem reading the xml file.  "
+                                + "Does it exist? Is it formatted correctly?",ex);
+                    }
 
                     switch (config.getString("mode"))
                     {

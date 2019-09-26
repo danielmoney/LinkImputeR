@@ -239,6 +239,17 @@ public class LinkImputeR
             System.err.println("Technical details follow:");
             throw ex;
         }
+        catch (XMLException ex)
+        {
+            System.err.println("=====");
+            System.err.println("ERROR");
+            System.err.println("=====");
+            System.err.println("There's a problem with the xml file");
+            System.err.println(ex.getMessage());
+            System.err.println();
+            System.err.println("Technical details follow:");
+            throw ex;
+        }
         catch (OutputException ex)
         {
             System.err.println("=====");

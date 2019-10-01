@@ -207,7 +207,7 @@ public class VCF
                     Position p = new Position(pm,samples,data);
                     
                     boolean preallmatch = true;
-                    for (PositionFilter filter: filters)
+                    for (PositionFilter filter: preFilters)
                     {
                         preallmatch = preallmatch && filter.test(p);
                     }

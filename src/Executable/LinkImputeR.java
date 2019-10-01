@@ -42,12 +42,7 @@ import VCF.ByteToGeno;
 import VCF.Exceptions.VCFException;
 import VCF.Exceptions.VCFInputException;
 import VCF.Exceptions.VCFNoDataException;
-import VCF.Filters.MAFFilter;
-import VCF.Filters.ParalogHWFilter;
-import VCF.Filters.PositionFilter;
-import VCF.Filters.PositionMissing;
-import VCF.Filters.SampleMissing;
-import VCF.Filters.VCFFilter;
+import VCF.Filters.*;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
 import VCF.Meta;
@@ -579,6 +574,7 @@ public class LinkImputeR
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
         {
+                double sig;
                 switch (i.getRootElementName())
                 {
                     //ADD FILTERS
@@ -598,8 +594,7 @@ public class LinkImputeR
                         }
                         inputfilters.add(new MAFFilter(maf,8,100,error));
                         break;
-                    case "hw":
-                        double sig;
+                    case "exacthw":
                         try
                         {
                             sig = i.getDouble(null);
@@ -610,10 +605,37 @@ public class LinkImputeR
                         }
                         if ((sig <= 0) | (sig >= 1.0))
                         {
-                            throw new INIException("Parameter for the HWS filter must be between 0 and 1");
+                            throw new INIException("Parameter for the HW filter must be between 0 and 1");
+                        }
+//                        inputfilters.add(new ParalogHWFilter(sig/numSnps,error));
+                        inputfilters.add(new ExactHWFilter(minDepth,sig/numSnps,error));
+                        break;
+                    case "oldhw":
+                        try
+                        {
+                            sig = i.getDouble(null);
+                        }
+                        catch (ConversionException ex)
+                        {
+                            throw new INIException("Parameter for the HW Filter must be a number");
+                        }
+                        if ((sig <= 0) | (sig >= 1.0))
+                        {
+                            throw new INIException("Parameter for the HW filter must be between 0 and 1");
                         }
                         inputfilters.add(new ParalogHWFilter(sig/numSnps,error));
                         break;
+                    case "hw":
+                        System.err.println("The previous Hardy Weinberg equilibrium filter appeared to be overly\n" +
+                                "conservative and so it's use is no longer reccommend.\n\n" +
+                                "The test proposed by Wigginton et al (citation below) has been implemented\n" +
+                                "and it is reccommended this is used instead.  To use this new filter use the\n" +
+                                "parameter name \"exacthw\" instead of \"hw\".\n\n" +
+                                "If you still wish to use the old filter please use the filter name \"oldhw\".\n\n" +
+                                "Wigginton, J.E, Cutler D.J., Abecasis, G.R. (2005) \n" +
+                                "A Note on Exact Tests of Hardy-Weinberg Equilibrium\n" +
+                                "AJHG 76:887-893.\n\n");
+                        throw new INIException("hw is no longer supported as a filter.");
                     case "positionmissing":
                         double missing;
                         try

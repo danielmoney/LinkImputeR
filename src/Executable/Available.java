@@ -94,5 +94,7 @@ class Available
         // Callers
         callers.add("Binomial",BinomialCaller::new);
         callers.add("BiasedBinomial",BiasedBinomialCaller::new);
+        callers.add("LogBinomial",BinomialCaller::new);
+        callers.add("LogBiasedBinomial",BiasedBinomialCaller::new);
     }
 }

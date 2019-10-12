@@ -23,8 +23,7 @@ import Accuracy.AccuracyStats;
 import Accuracy.DepthMask;
 import Accuracy.DepthMask.Method;
 import Accuracy.DepthMaskFactory;
-import Callers.BinomialCaller;
-import Callers.Caller;
+import Callers.*;
 import Combiner.Combiner;
 import Combiner.MaxDepthCombinerOptimizedCalls;
 import Exceptions.*;
@@ -59,6 +58,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.IntFunction;
@@ -394,30 +394,30 @@ public class LinkImputeR
         Log.brief("Started");
         List<ImmutableNode> outConfig = new ArrayList<>();
         outConfig.add(new ImmutableNode.Builder().name("mode").value("impute").create());
-        
+
         Input input = new Input(config.configurationAt("input"));
         VCF vcf = input.getVCF();
         outConfig.add(input.getImputeConfig());
-        
+
         Log.brief("Done read in and filter");
-                           
+
         DepthMaskFactory dmf = new DepthMaskFactory(config.configurationAt("mask"));
-        
+
         Output output = new Output(config.configurationAt("output"));
         PrintWriter sum = output.getSummaryWriter();
         PrintWriter table = output.getTableWriter();
         boolean partial = output.getPartial();
-        writeSumHeader(sum,partial);        
-        
+        writeSumHeader(sum,partial);
+
         for (HierarchicalConfiguration<ImmutableNode> caseConfig: config.configurationsAt("case"))
         {
             Case c = new Case(caseConfig);
             Log.brief(c.getName() + ": Starting");
-            
+
             Log.detail(c.getName() + ": Applying filters...");
             //FILTER
             c.applyFilters(vcf);
-            
+
             if ((vcf.numberPositions() > 0) && (vcf.numberSamples()) > 0)
             {
                 Log.detail(c.getName() + ": Getting reads...");
@@ -432,50 +432,50 @@ public class LinkImputeR
 
                 Log.detail(c.getName() + ": Calling...");
                 ProbToCall p2c = new ProbToCall();
-                //CALL            
-                List<SingleGenotypeProbability> calledProb = 
+                //CALL
+                List<SingleGenotypeProbability> calledProb =
                     caller.call(maskedReads);
 
                 Log.detail(c.getName() + ": Imputing...");
                 //IMPUTE
                 double[][][] origProb = caller.call(readCounts);
-                Imputer imputer = c.getImputer(origProb,readCounts,calledProb,mask.maskedList());            
+                Imputer imputer = c.getImputer(origProb,readCounts,calledProb,mask.maskedList());
 
-                
+
                 Log.detail(c.getName() + ": Combining...");
 
                 DepthMask validateMask = dmf.getDepthMask(readCounts,mask.maskedPositions(),caller);
                 List<SingleGenotypeReads> validateMaskedReads = getMaskedReads(validateMask.maskedList());
 
-                List<SingleGenotypeProbability> validateCalledProb = 
+                List<SingleGenotypeProbability> validateCalledProb =
                     caller.call(validateMaskedReads);
 
-                List<SingleGenotypeProbability> validateImputedProb = 
+                List<SingleGenotypeProbability> validateImputedProb =
                     imputer.impute(origProb,readCounts,validateCalledProb,validateMask.maskedList());
 
 
                 //COMBINE
-                List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));            
+                List<SingleGenotypeCall> validateCorrectCalls = p2c.call(caller.call(getOriginalReads(validateMask.maskedList())));
                 Combiner combiner = c.getCombiner(validateCalledProb, validateImputedProb, validateMaskedReads, validateCorrectCalls, validateMask.maskedList());
-                    
+
                 Log.detail(c.getName() + ": Creating Stats...");
                 //STATS
-                
+
                 List<SingleGenotypePosition> ignoredPositions = new ArrayList<>();
                 ignoredPositions.addAll(mask.maskedPositions());
                 ignoredPositions.addAll(validateMask.maskedPositions());
                 DepthMask testMask = dmf.getDepthMask(readCounts,ignoredPositions,caller);
                 List<SingleGenotypeReads> testMaskedReads = getMaskedReads(testMask.maskedList());
-                
-                List<SingleGenotypeProbability> testCalledProb = 
+
+                List<SingleGenotypeProbability> testCalledProb =
                     caller.call(testMaskedReads);
                 List<SingleGenotypeCall> testCalledGeno = p2c.call(testCalledProb);
-                
-                List<SingleGenotypeProbability> testImputedProb = 
+
+                List<SingleGenotypeProbability> testImputedProb =
                     imputer.impute(origProb,readCounts,testCalledProb,testMask.maskedList());
                 List<SingleGenotypeCall> testImputedGeno = p2c.call(testImputedProb);
-                
-                List<SingleGenotypeCall> testCorrectCalls = p2c.call(caller.call(getOriginalReads(testMask.maskedList())));            
+
+                List<SingleGenotypeCall> testCorrectCalls = p2c.call(caller.call(getOriginalReads(testMask.maskedList())));
                 List<SingleGenotypeProbability> testCombinedProb = combiner.combine(testCalledProb, testImputedProb, testMaskedReads);
                 List<SingleGenotypeCall> testCombinedGeno = p2c.call(testCombinedProb);
 
@@ -487,7 +487,7 @@ public class LinkImputeR
                 writeTable(table,c,vcf,stats,cstats,istats,partial);
 
                 c.getPrintStats().writeEachMasked(testCorrectCalls,testCombinedGeno,vcf.getSamples(),vcf.getPositions());
-          
+
                 //ADD IMPUTE CONFIG
                 outConfig.add(c.getImputeConfig(caller, imputer, combiner));
 
@@ -499,10 +499,10 @@ public class LinkImputeR
                 writeSumError(sum,c,partial);
                 Log.brief(c.getName() + ": Done");
             }
-            
+
 
         }
-        
+
         //WRITE CONFIG
         output.writeControl(outConfig);
         sum.close();
@@ -510,7 +510,7 @@ public class LinkImputeR
         {
             table.close();
         }
-        
+
         String time = DurationFormatUtils.formatDuration(System.currentTimeMillis() - start, "dd:HH:mm:ss");
         Log.brief("All done\t("+time+")");
     }
@@ -707,8 +707,20 @@ public class LinkImputeR
             default:
                 throw new INIException("accuractymethod must be either \"correlation\" or \"correct\".");
         }
-        
-        Caller caller = new BinomialCaller(error);
+
+        String callerMethod = config.getString("Global.caller","logbinomial");
+        Caller caller;
+        switch (callerMethod)
+        {
+            case "binomial":
+                caller = new BinomialCaller(error);
+                break;
+            case "logbinomial":
+                caller = new LogBinomialCaller(error);
+                break;
+            default:
+                throw new INIException("caller must be either \"binomial\" or \"logbinomial\".");
+        }
         String statsRoot = config.getString("Stats.root");
         boolean partial;
         try

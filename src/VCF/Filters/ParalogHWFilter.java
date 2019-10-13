@@ -17,6 +17,7 @@
 
 package VCF.Filters;
 
+import Utils.MAFCalculator;
 import Utils.Optimize.GoldenSection;
 import Utils.Optimize.SingleDoubleValue;
 import VCF.Exceptions.VCFDataException;

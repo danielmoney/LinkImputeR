@@ -18,6 +18,7 @@
 
 package VCF.Filters;
 
+import Utils.MAFCalculator;
 import VCF.Exceptions.VCFDataException;
 import VCF.Position;
 import org.apache.commons.configuration2.HierarchicalConfiguration;

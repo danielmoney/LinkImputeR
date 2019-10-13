@@ -15,7 +15,7 @@
  * along with LinkImpute.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package VCF.Filters;
+package Utils;
 
 import Callers.BinomialCaller;
 import VCF.Exceptions.VCFDataException;

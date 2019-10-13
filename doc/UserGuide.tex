@@ -1,0 +1,261 @@
+\documentclass[10pt]{report}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{ifthen}
+\usepackage{textcomp}
+\restylefloat{table}
+\setlength\parindent{0pt}
+\renewcommand*\thesection{\arabic{section}}
+\setlength\parskip{1em}
+
+\title{LinkImputeR - User Guide}
+\author{Daniel Money}
+\date{October 2019}
+
+\newcommand{\cvarticle}[6]{\textsc{#1} (#6) #2 \textit{#3} \textbf{#4}\ifthenelse{\equal{#4}{}}{}{:}#5\\}
+
+\begin{document}
+\setcounter{tocdepth}{1}
+\maketitle
+\tableofcontents
+
+\section{Change log}
+
+\textbf{Version 0.9} \textit{May 2016} Beta release.
+
+\textbf{Version 0.9.1} \textit{August 2016} No longer crashes if no SNPs or samples pass filters - sensible messages given instead.
+
+\textbf{Version 0.9.2} \textit{December 2016}
+\begin{itemize}
+    \item Fixed bug if a read depth of zero is selected.
+    \item Loosened allowed missing data representation in VCF files.
+\end{itemize}
+
+\textbf{Version 1.0} \textit{May 2017} Incorporate various changes in response to reviewers of the manuscript.
+\begin{itemize}
+	\item Genotype sampling is now done without replacement.
+	\item Separate sets of masked genotypes are used for optimizing the imputation parameters, optimizing the combination parameter and reporting final accuracy.
+	\item Option to use correlation instead of proportion correct.
+	\item Correlation is now reported as well as proportion correct.
+	\item Change to how Minor Allele Frequency is calculated.
+	\item Option for a max read depth for genotypes above which the genotype is set to unknown.
+	\item Two different genotypes sampling methods added for masking.
+\end{itemize}
+
+\textbf{Version 1.1} \textit{August 2017} Much improved error handling, handling gzipped input/output and other minor changes.
+
+\textbf{Version 1.1.1} \textit{August 2017} Options to deal with different ways of specifying read counts (since this was only defined in later VCF standards).
+
+\textbf{Version 1.1.2} \textit{August 2017} Minor bug fixes.
+
+\textbf{Version 1.1.3} \textit{January 2019}
+\begin{itemize}
+    \item Improved error handling if command line is specified incorrectly.
+    \item Added option to output file containing true and imputed genotyped for every masked sample/position combination.
+    \item Removed reliance on lib directory (now just the single jar is needed).
+\end{itemize}
+
+\textbf{Version 1.1.4} \textit{August 2019}
+\begin{itemize}
+    \item Fixed bug in HW filter.
+    \item Fixed bug where LinkImputeR would do nothing if no case filters were supplied.
+\end{itemize}
+
+\textbf{Version 1.1.5} \textit{September 2019}
+\begin{itemize}
+    \item Fixed bug where max read depth would not be passed to the imputation stage.
+    \item Nicer error message of there is a problem with the xml file.
+\end{itemize}
+
+\textbf{Version 1.1.6} \textit{October 2019}
+\begin{itemize}
+    \item Fixed bug that caused crash when a heterozygous genotype had a high number of reads (greater than about 1000)
+    \item Removed hard coded maximum depth from various places
+\end{itemize}
+
+%\textbf{Version 1.2} \textit{October 2019} Implement the exact HW test as a filter.  It is recommended that this is used instead of the old HW filter.  Consequently the old filter option for the ini file (\emph{hw}) is deprecated.
+
+
+\section{License}
+
+LinkImputeR is licensed under GPL v3 (see gpl.txt for more information).
+
+\section{Citation}
+
+If you use LinkImputeR please cite us.  The citation will be given here once the manuscript has been accepted.
+
+
+\section{Installation}
+
+LinkImputeR has been implemented in Java 8 and is distributed as an executable jar file.  It is available from \url{http://www.cultivatingdiversity.org/software}.
+
+To check if java is installed on your system type \texttt{java -version} at the command prompt.  This will display the version of java installed.  If an error message is displayed, or the version listed is less than 1.8 (Java 8 is called 1.8 when using the version command) you can download and install java (version $>=$ 8) from the Oracle website (\url{http://www.java.com/en/download/index.jsp}).  If you are having trouble getting versions of Java $>=$ 8 running on a Mac please see our suggestions at the end of this document.
+
+Once java is installed simply download the LinkImputeR zip file, uncompress and untar it.  To do this on a linux-style command line (including Mac) use the command \texttt{tar -xvzf LinkImputeR.tar.gz}.  Windows users will have to use an external program such as 7zip.  Once uncompressed and and untarred follow the commands outlined in section \ref{sec:command}.
+
+\section{Input Data}
+
+LinkImputeR takes a standard VCF file as input.  Genotype fields should have, as a minimum, an AD field for read counts and a DP field for total read depth.  In this version the GT field (for genotype) is also needed.  LinkImputeR filters input data for biallelic SNPs before performing any other steps.  The input file can be gzipped and this should be detected automatically.
+
+\section{Running LinkImputeR (Simple)}
+In a simple case running LinkImputeR will consist of four steps:
+\begin{enumerate}
+\item Create a control file in ini format.  The control file includes information on input and output files and the filters to be tested.  Full details are in section \ref{sec:ini}.
+\item Run LinkImputeR in accuracy mode.  This produces data set size and accuracy statistics for each set of filters to be tested.  Full details are in section \ref{sec:command}
+\item Look at the accuracy results and decide which filters you wish to use for the final imputation.  Full details are in section \ref{sec:accres}.
+\item Perform the final imputation.  Full details are in section \ref{sec:command}
+\end{enumerate}
+
+\section{Control File (Simple)}
+\label{sec:ini}
+This is a standard ini file.  Section headings are in square brackets.  Within each section parameters and their values are separated by an equal sign.  Each section heading or parameter / value pair should be on a separate line.  Each section is described below.  An example file is included with LinkImputeR and is called \texttt{accuracy.ini}.  All file names can be relative or absolute.  Optional parameters are marked with a *.
+
+\subsection{Input}
+This section is where the input file and an (optional) intermediate save file is given. (The intermediate save file is in this section as it is the input for the imputation stage of LinkImputeR).
+\begin{description}
+\item[\emph{filename}] The filename of the input.
+\item[\emph{save}*] If this parameter is included a vcf file will be outputted with this name after the filters in the InputFilters section have been applied.  If the file name ends in .gz then the file will be gzipped.
+\item[\emph{maxdepth}*] Max read depth allowed for a genotype.  Genotypes with a greater read depth are set to totally missing (i.e. no reads / no genotype). Defaults to 100.
+\item[\emph{readsformat}*] This paramater should be included if read information is included in the VCF in a non standard way.  There are two options.  If a single format is given then this is assumed to include comma separated read depths.  If two formats are given comma separated then it is assumed the first format is for the reference allele read count, the second for the alternate allele read count.  For example setting this to \texttt{RO,AO} would mean that reference allele counts are in RO and alternative allele counts are in AO.  If either option is used then both the save file vcf (see above) and any final imputed vcf will have had their read count information standardized to be in an AD field.
+\end{description}
+
+\subsection{InputFilters}
+These filters are applied before any accuracy run is performed and hence are only performed once no matter how many other filter cases are being tested.  In the case of filters also included under CaseFilters it is worthwhile including the least stringent of the cases here (in the case of positionmissing the least stringent of the missing cases in CaseFilters) as this will improve performance.
+\begin{description}
+\item[\emph{maf}*] Minor Allele Frequency filter.  Value is the minimum MAF for the SNP to be included.
+\item[\emph{positionmissing}*] Position Missing filter. Value is the maximum missingness allowed per SNP.
+\item[\emph{hw}*]Hardy-Weinberg filter. Parameter is p-value below which SNPs are discarded.
+%\item[\emph{exacthw}*] Exact Hardy-Weinberg filter per Wigginton, J.E, Cutler D.J., Abecasis, G.R. (2005) \emph{A Note on Exact Tests of Hardy-Weinberg Equilibrium}, AJHG 76:887-893.  Parameter is p-value below which SNPs are discarded.  Its use is recommended over the old HW filter previously used in LinkImputeR (see below if you do wihs to use the old filter).
+%\item[\emph{oldhw}*] The old Hardy-Weinburg filter previously used in LinkImputeR.  Use of \emph{exaxthw} (above) is recommended instead as this filter is likely overly conservative.  Parameter is p-value below which SNPs are discarded.
+\end{description}
+
+\subsection{CaseFilters}
+This section lists the different filters to be tested, for example you may wish to test multiple MAF filters with differing values for the allowed MAF.  For each filter the different values to be tested for that filter are separated by commas (this is best illustrated by looking at the example ini file).  The test cases then consist of every possible combination of the different filters.
+\begin{description}
+\item[\emph{maf}*] Minor Allele Frequency filter.  Value is the minimum MAF for the SNP to be included.
+\item[\emph{missing}*] Missing filter.  Value is the maximum missingness allowed per SNP and sample.
+\end{description}
+
+\subsection{Global}
+Here are included two global parameters that can effect multiple filters.
+\begin{description}
+\item[\emph{depth}*] The minimum depth used to call a genotype for use in the filters.
+\item[\emph{error}*] The read error rate.  Defaults to 0.01.
+\end{description}
+
+\subsection{Accuracy}
+This section defines how the accuracy results should be calculated.
+\begin{description}
+\item[\emph{maskmethod}*] The method used to mask.  Options are \texttt{all}, \texttt{bysnp}, \texttt{bysample}.  \texttt{all} picks genotypes to mask at random across all snps with a depth of greater or equal to 30 reads.  \texttt{bysnp} first picks a snp at random then picks a genotype with sufficient depth from that snp.  \texttt{bysample} is similar except it operates on samples rather than snps.  Default is \texttt{all}.
+\item[\emph{accuracymethod}*] The method used to calculate accuracy.  Options are \texttt{correct} and \texttt{correlation}.  \texttt{correct} uses the propotion of imputed genotypes that are the same as the true genotype while \texttt{correlation} uses the correlation between imputed and true genotypes.  Default is \texttt{correct}.
+\item[\emph{numbermasked}*] The number of genotypes to mask.  Default is 10 000.
+\item[\emph{mindepth}*] The minimum read depth required for a genotype to be considered for masking.  Default is 30.
+\end{description}
+
+\subsection{Stats}
+This section defines how the accuracy results should be outputted.
+\begin{description}
+\item[\emph{root}] The root directory to which accuracy statistics should be saved.
+\item[\emph{level}] How much output should be written.  Options are \texttt{sum}, \texttt{pretty} and \texttt{table}.  \texttt{sum} will just produce a summary file, \texttt{pretty} will output extra files including information in a easy human readable way and \texttt{table} will also output the same information in a tab-delimited format.
+\item[\emph{eachmasked}*] Whether to output a file containing the true and imputed genotype for each sample / position masked.  Valid values are \texttt{yes} and \texttt{no}.  Default is no.
+\end{description}
+
+\subsection{Output}
+Where should the output be written
+\begin{description}
+\item[\emph{control}] The file name of the output control file which will be used in the imputation stage of LinkImputeR.
+\end{description}
+
+\subsection{Log}
+This section controls logging
+\begin{description}
+\item[\emph{file}*] The file name of the log file.
+\item[\emph{level}*] How much should be logged.  Options are, in order of increasing output, \texttt{critical} (default), \texttt{brief}, \texttt{detail} and \texttt{debug}.
+\end{description}
+
+\section{Command Line (Simple)}
+\label{sec:command}
+
+LinkImputeR is a command line tool.  In the simple run case you will run two commands, one to produce accuracy statistics and one to do the actual imputation.  To perform the accuracy calculation the command is:
+
+\texttt{java -jar LinkImputeR.jar -s INIFILE}
+
+where \texttt{INIFILE} is the name of the ini control file.  An example is:
+
+\texttt{java -jar LinkImputeR.jar -s accuracy.ini}
+
+And then to perform the actual imputation:
+\texttt{java -jar LinkImputeR.jar CONTROL CASE OUTPUT}
+
+where \texttt{CONTROL} is the name of the control file you asked to be created in the ini file, \texttt{CASE} is the name of the case you want to do imputation for and \texttt{OUTPUT} is the name of the imputed vcf file.  \texttt{CASE} will have to be in quotes since the default case names include spaces.  If \texttt{OUTPUT} ends in .gz then the file will be gzipped.  An example command line is:
+
+\texttt{java -jar LinkImputeR.jar impute.xml \textquotesingle Case 2\textquotesingle~output.vcf}
+
+LinkImputeR can use a significant amount of memory on a large dataset.  If you encounter an out of memory error consider increasing the amount of memory available to Java by using the \texttt{-Xmx} java option.  This is a java option not a LinkImputeR option so needs to be included between \texttt{java} and \texttt{-jar}.  An example usage would be \texttt{-Xmx6G} where 6G means make 6GB of memory available.  There should be no space between the 6 and the G.  For example (where \texttt{...} is the rest of the command as above):
+\begin{quote}
+\texttt{java -Xmx6G -jar LinkImputeR.jar ...}
+\end{quote}
+
+\section{Accuracy Results}
+\label{sec:accres}
+The following files are produced in the stats directory.
+
+\texttt{sum.dat} includes information on each case run, the number of SNPs, the number of samples and accuracy.
+
+\texttt{table.dat} contains information on the case name, number of snps, number of samples, accuracy (in that order) in tab-delimited format.
+
+The following files are produced for every case.  The relevant case number can be found in \texttt{sum.dat}.
+
+\texttt{pretty\_\textit{casenumber}.dat} is a summary of accuracy by depth, by ``real'' genotype and by total read depth \& ``real'' genotype in human readable format.
+
+\texttt{geno\_\textit{casenumber}.dat} contains information on the accuracy by ``real'' genotype in tab deliminted format.
+
+\texttt{depth\_\textit{casenumber}.dat} contains information on the accuracy by total read depth in tab deliminted format.
+
+\texttt{dg\_\textit{casenumber}.dat} contains information on the accuracy by ``real'' genotype and total read depth in tab deliminted format.
+
+\texttt{each\_\textit{casenumber}.dat} contains the true and imputed genotyped for each sample / position masked.
+
+\section{Outputs}
+
+Running LinkImputeR in imputation mode will produce an output vcf file.  This file will be similar to the input file except the GT field will now contain the imputed genotypes.  The unimputed genotypes (i.e. those previously in the GT field) will now be in a new UG field.  Finally imputation genotype probabilities will be in a new IP field.  Appropriate changes are also made to the VCF meta data.
+
+\section{Running LinkImputeR (Advanced)}
+
+LinkImputeR actually uses XML files as input - the simple input described above is converted into XML before further processing.  To run LimkImputeR with an XML file run LinkImputeR with just the XML file name without any flags, e.g.:
+
+\begin{quote}
+\texttt{java -Xmx6G -jar LinkImputeR.jar \textit{filename}}
+\end{quote}
+
+To produce the XML file that is the equivalent to a simple input file (as described above) run (no calculations will be performed):
+
+\begin{quote}
+\texttt{java -Xmx6G -jar LinkImputeR.jar -c \textit{ini\_filename} \textit{xml\_filename}}
+\end{quote}
+
+Looking at the XML files generated by LinkImputeR should provide a lot of information on these files.  If further information is required please contact the author.
+
+\section{Contact}
+LinkImputeR is maintained by Daniel Money who can be contacted at \\\texttt{\href{mailto:info@cultivatingdiversity.org}{info@cultivatingdiversity.org}}.
+
+\clearpage
+\section{Java and Macs}
+
+Getting a version of java greater than 6 to run properly on some older Macs is known to be problematic.  We found that the easiest way to do so is to start by downloading and installing the JDK (not the JRE).  Next you need to edit your \texttt{.profile} which should be in your home directory and which you should create if it doesn't exist.  For example to edit the file in \texttt{vim} you could type:
+\begin{quote}
+\texttt{vim \textasciitilde/.profile}
+\end{quote}
+
+You should then add the following line to to file (replacing 1.8 with 1.7 depending on which version you have installed):
+\begin{quote}
+\texttt{export JAVA\_HOME=\`{}/usr/libexec/java\_home -v 1.8\`{}}
+\end{quote}
+
+Your \texttt{.profile} is processed automatically whenever you start a terminal session so this should allow you to run the new version of java whenever you start a new session.  To run the correct version of Java in the current session without restarting it you need to process your \texttt{.profile} manually by typing:
+\begin{quote}
+\texttt{source \textasciitilde/profile}
+\end{quote}
+
+This problem is with Java on Macs rather than LinkImputeR itself.  This means we will probably be unable to offer support for your specific setup if the above does not work for you.  Instead we suggest that you browse the extensive discussion of this problem on the internet.
+\end{document}

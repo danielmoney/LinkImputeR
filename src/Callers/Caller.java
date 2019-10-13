@@ -38,11 +38,9 @@ public abstract class Caller
     /**
      * Call a single genotype
      * @param reads Array of size two with the reads for the two alleles
-     * @param sample The index of the sample of the genotype in the genotype table
-     * @param snp The index of tht snp of the genotypes in the genotype table
      * @return The probability of each genotype (size 3 - genotype 0, 1, 2)
      */
-    public abstract double[] callSingle(int[] reads, int sample, int snp);
+    public abstract double[] callSingle(int[] reads);
     
     /**
      * Calls genotypes for every genotype
@@ -61,7 +59,7 @@ public abstract class Caller
                 int[][] d = reads[i];
                 double[][] p = new double[d.length][];
                 probs[i] = p;
-                IntStream.range(0,d.length).forEach(j -> p[j] = callSingle(reads[i][j], i , j));
+                IntStream.range(0,d.length).forEach(j -> p[j] = callSingle(reads[i][j]));
                 progress.done();
             }
         );
@@ -80,7 +78,7 @@ public abstract class Caller
         return list.stream().parallel().map(sgr ->
         {
             SingleGenotypeProbability sgp = new SingleGenotypeProbability(
-                sgr.getSample(), sgr.getSNP(), callSingle(sgr.getReads(), sgr.getSample(), sgr.getSNP()));
+                sgr.getSample(), sgr.getSNP(), callSingle(sgr.getReads()));
             progress.done();
             return sgp;
         }).collect(Collectors.toCollection(ArrayList::new));

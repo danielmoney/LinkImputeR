@@ -60,11 +60,6 @@ public class LogBiasedBinomialCaller extends Caller
         log1mbias = Math.log(1.0-bias);
     }
     
-    public double[] callSingle(int[] depths, int i, int j)
-    {
-        return callSingle(depths);
-    }
-    
     /**
      * Calls a genotype based on reads
      * @param d The reads

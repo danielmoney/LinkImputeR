@@ -50,11 +50,6 @@ public class BiasedBinomialCaller extends Caller
         bias = params.getInt("bias");
     }
     
-    public double[] callSingle(int[] depths, int i, int j)
-    {
-        return callSingle(depths);
-    }
-    
     /**
      * Calls a genotype based on reads
      * @param d The reads

@@ -196,7 +196,7 @@ public class DepthMask
     {
         double d = IntStream.range(0, depths.length)
                 .filter(i -> (depths[i][snp][0] + depths[i][snp][1]) >= 8)
-                .mapToDouble(i -> getDosage(depths[i][snp],caller,snp,i)).average().orElse(0.0);
+                .mapToDouble(i -> getDosage(depths[i][snp],caller)).average().orElse(0.0);
         
         //Convert average dose to allele freq
         double m = d / 2.0;
@@ -204,9 +204,9 @@ public class DepthMask
         return Math.min(m,1.0-m);
     }
     
-    private double getDosage(int[] r, Caller caller, int snp, int sample)
+    private double getDosage(int[] r, Caller caller)
     {
-        double[] probs = caller.callSingle(r,snp,sample);
+        double[] probs = caller.callSingle(r);
         return 2.0 * probs[0] + probs[1];
     }
         

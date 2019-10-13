@@ -575,6 +575,16 @@ public class LinkImputeR
         
         File input = new File(config.getString("Input.filename"));
         List<PositionFilter> inputfilters = new ArrayList<>();
+
+        int maxInDepth;
+        try
+        {
+            maxInDepth = config.getInt("Input.maxdepth",100);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Parameter values for the maxdepth option must be an integer.");
+        }
         
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
@@ -596,7 +606,7 @@ public class LinkImputeR
                         {
                             throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                         }
-                        inputfilters.add(new MAFFilter(maf,8,100,error));
+                        inputfilters.add(new MAFFilter(maf,8,maxInDepth,error));
                         break;
                     case "hw":
                         double sig;
@@ -642,16 +652,6 @@ public class LinkImputeR
             throw new INIException("readsformat must be either a single format or two"
                     + "formats comma separated (LinkImputeR currently only works on"
                     + "biallelic SNPs)");
-        }
-        
-        int maxInDepth;
-        try
-        {
-            maxInDepth = config.getInt("Input.maxdepth",100);
-        }
-        catch (ConversionException ex)
-        {
-            throw new INIException("Parameter values for the maxdepth option must be an integer.");
         }
         
         Input o = new Input(input, inputfilters, save, maxInDepth, readsformat);        
@@ -772,7 +772,7 @@ public class LinkImputeR
                             {
                                 throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                             }
-                            f = new MAFFilter(maf,8,100,error);
+                            f = new MAFFilter(maf,8,maxInDepth,error);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);

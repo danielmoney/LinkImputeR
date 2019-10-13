@@ -33,11 +33,11 @@ public class MAFCalculator
 {
     /**
      * Constructor
+     * @param caller The caller to be used in calculating the MAF
      * @param minDepth A genotype must have at least this number of reads to be
      * used in the MAF calculation
      * @param maxDepth A genotype must have less than (or equal) this number of
      * reads to be used in the MAF calculation
-     * @param error The error rate to be used when calling genotypes
      */
     public MAFCalculator(Caller caller, int minDepth, int maxDepth)
     {
@@ -47,6 +47,12 @@ public class MAFCalculator
         dm = new DepthMapper();
     }
 
+    /**
+     * Constructor with maxdepth is set to maximum integer value
+     * @param caller The caller to be used in calculating the MAF
+     * @param minDepth A genotype must have at least this number of reads to be
+     * used in the MAF calculation
+     */
     public MAFCalculator(Caller caller, int minDepth)
     {
         this(caller,minDepth,Integer.MAX_VALUE);
@@ -90,6 +96,11 @@ public class MAFCalculator
         return m;
     }
 
+    /**
+     * Calculates the minor allele frequency for a set of read counts
+     * @param reads Set of read counts (second dimension of size two to represent the two allele read counts)
+     * @return The minor allele frequency
+     */
     public double maf(int[][] reads)
     {
         double t = 0.0;
@@ -145,19 +156,14 @@ public class MAFCalculator
         return maxDepth;
     }
 
+    /**
+     * Gets the caller used in the MAF calculation
+     * @return The caller
+     */
     public Caller getCaller()
     {
         return caller;
     }
-
-    /**
-     * Gets the error used in the MAF calculation
-     * @return The error
-     */
-//    public double getError()
-//    {
-//        return caller.getError();
-//    }
 
     private DepthMapper dm;
     private Caller caller;

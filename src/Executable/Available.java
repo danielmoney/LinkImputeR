@@ -32,13 +32,22 @@ import VCF.Filters.VCFFilter;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
+/**
+ * Class that gets the appropiate object for filters and callers given the configuration describing the filter
+ * or caller
+ */
 public class Available
 {
     private Available()
     {
         
     }
-    
+
+    /**
+     * Returns the VCF filter for the given configuration
+     * @param config The configuration
+     * @return The VCF filter
+     */
     public static VCFFilter getFilter(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (pf.has(config.getString("[@name]")))
@@ -50,10 +59,15 @@ public class Available
             return sf.get(config.getString("[@name]"), config);
         }
         
-        //SHOULD PROBABLY THROW EXCEPTION!
+        //SHOULD PROBABLY THROW BETTER EXCEPTION!
         throw new ProgrammerException();
     }
-    
+
+    /**
+     * Returns the Position filter for the given configuration
+     * @param config The configuration
+     * @return The Position filter
+     */
     public static PositionFilter getPositionFilter(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (pf.has(config.getString("[@name]")))
@@ -61,10 +75,15 @@ public class Available
             return pf.get(config.getString("[@name]"), config);
         }
         
-        //SHOULD PROBABLY THROW EXCEPTION!
+        //SHOULD PROBABLY THROW BETTER EXCEPTION!
         throw new ProgrammerException();
     }
-    
+
+    /**
+     * Returns the caller for the given configuration
+     * @param config The configuration
+     * @return The caller
+     */
     public static Caller getCaller(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (callers.has(config.getString("[@name]")))
@@ -72,7 +91,7 @@ public class Available
             return callers.get(config.getString("[@name]"), config);
         }
         
-        //SHOULD PROBABLY THROW EXCEPTION!
+        //SHOULD PROBABLY THROW BETTER EXCEPTION!
         throw new ProgrammerException();
     }
     

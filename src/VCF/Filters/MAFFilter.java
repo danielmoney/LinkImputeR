@@ -18,6 +18,8 @@
 
 package VCF.Filters;
 
+import Callers.Caller;
+import Executable.Available;
 import Utils.MAFCalculator;
 import VCF.Exceptions.VCFDataException;
 import VCF.Position;
@@ -42,13 +44,13 @@ public class MAFFilter extends PositionFilter
      * reads to be used in the MAF calculation
      * @param error The error rate to be used when calling genotypes
      */
-    public MAFFilter(double maf, int minDepth, int maxDepth, double error)
+    public MAFFilter(double maf, int minDepth, int maxDepth, Caller caller)
     {
         this.maf = maf;
         /* A read depth of zero breaks the filter so set it to one in this case */
         minDepth = Math.max(1,minDepth);
 
-        calculator = new MAFCalculator(error,minDepth,maxDepth);
+        calculator = new MAFCalculator(caller,minDepth,maxDepth);
     }
 
     /**
@@ -61,8 +63,8 @@ public class MAFFilter extends PositionFilter
         /* A read depth of zero breaks the filter so set it to one in this case */
         int minDepth = Math.max(1,params.getInt("mindepth"));
         int maxDepth = params.getInt("maxdepth");
-        double error = params.getDouble("error");
-        calculator = new MAFCalculator(error,minDepth,maxDepth);
+        Caller caller = Available.getCaller(params.configurationAt("caller"));
+        calculator = new MAFCalculator(caller,minDepth,maxDepth);
     }
 
     public boolean test(Position p) throws VCFDataException
@@ -77,13 +79,13 @@ public class MAFFilter extends PositionFilter
         ImmutableNode Imaf = new Builder().name("maf").value(maf).create();
         ImmutableNode Imindepth = new Builder().name("mindepth").value(calculator.getMinDepth()).create();
         ImmutableNode Imaxdepth = new Builder().name("maxdepth").value(calculator.getMaxDepth()).create();
-        ImmutableNode Ierror = new Builder().name("error").value(calculator.getError()).create();
+        ImmutableNode Icaller = calculator.getCaller().getConfig();
         
         ImmutableNode config = new Builder().name("filter")
                 .addChild(Imaf)
                 .addChild(Imindepth)
                 .addChild(Imaxdepth)
-                .addChild(Ierror)
+                .addChild(Icaller)
                 .addAttribute("name", "MAF")
                 .create();
         

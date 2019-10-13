@@ -32,14 +32,14 @@ import VCF.Filters.VCFFilter;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
-class Available
+public class Available
 {
     private Available()
     {
         
     }
     
-    static VCFFilter getFilter(HierarchicalConfiguration<ImmutableNode> config)
+    public static VCFFilter getFilter(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (pf.has(config.getString("[@name]")))
         {
@@ -54,7 +54,7 @@ class Available
         throw new ProgrammerException();
     }
     
-    static PositionFilter getPositionFilter(HierarchicalConfiguration<ImmutableNode> config)
+    public static PositionFilter getPositionFilter(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (pf.has(config.getString("[@name]")))
         {
@@ -65,7 +65,7 @@ class Available
         throw new ProgrammerException();
     }
     
-    static Caller getCaller(HierarchicalConfiguration<ImmutableNode> config)
+    public static Caller getCaller(HierarchicalConfiguration<ImmutableNode> config)
     {
         if (callers.has(config.getString("[@name]")))
         {

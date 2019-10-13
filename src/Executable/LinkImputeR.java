@@ -585,6 +585,20 @@ public class LinkImputeR
         {
             throw new INIException("Parameter values for the maxdepth option must be an integer.");
         }
+
+        String callerMethod = config.getString("Global.caller","logbinomial");
+        Caller caller;
+        switch (callerMethod)
+        {
+            case "binomial":
+                caller = new BinomialCaller(error);
+                break;
+            case "logbinomial":
+                caller = new LogBinomialCaller(error);
+                break;
+            default:
+                throw new INIException("caller must be either \"binomial\" or \"logbinomial\".");
+        }
         
         int numSnps = VCF.numberPositionsFromFile(input);
         for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("InputFilters"))
@@ -606,7 +620,7 @@ public class LinkImputeR
                         {
                             throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                         }
-                        inputfilters.add(new MAFFilter(maf,8,maxInDepth,error));
+                        inputfilters.add(new MAFFilter(maf,8,maxInDepth,caller));
                         break;
                     case "hw":
                         double sig;
@@ -708,19 +722,6 @@ public class LinkImputeR
                 throw new INIException("accuractymethod must be either \"correlation\" or \"correct\".");
         }
 
-        String callerMethod = config.getString("Global.caller","logbinomial");
-        Caller caller;
-        switch (callerMethod)
-        {
-            case "binomial":
-                caller = new BinomialCaller(error);
-                break;
-            case "logbinomial":
-                caller = new LogBinomialCaller(error);
-                break;
-            default:
-                throw new INIException("caller must be either \"binomial\" or \"logbinomial\".");
-        }
         String statsRoot = config.getString("Stats.root");
         boolean partial;
         try
@@ -772,7 +773,7 @@ public class LinkImputeR
                             {
                                 throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                             }
-                            f = new MAFFilter(maf,8,maxInDepth,error);
+                            f = new MAFFilter(maf,8,maxInDepth,caller);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);

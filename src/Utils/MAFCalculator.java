@@ -18,6 +18,7 @@
 package Utils;
 
 import Callers.BinomialCaller;
+import Callers.Caller;
 import VCF.Exceptions.VCFDataException;
 import VCF.Genotype;
 import VCF.Mappers.DepthMapper;
@@ -38,11 +39,11 @@ public class MAFCalculator
      * reads to be used in the MAF calculation
      * @param error The error rate to be used when calling genotypes
      */
-    public MAFCalculator(double error, int minDepth, int maxDepth)
+    public MAFCalculator(Caller caller, int minDepth, int maxDepth)
     {
         this.minDepth = minDepth;
         this.maxDepth = maxDepth;
-        caller = new BinomialCaller(error);
+        this.caller = caller;
         dm = new DepthMapper();
     }
 
@@ -108,17 +109,22 @@ public class MAFCalculator
         return maxDepth;
     }
 
+    public Caller getCaller()
+    {
+        return caller;
+    }
+
     /**
      * Gets the error used in the MAF calculation
      * @return The error
      */
-    public double getError()
-    {
-        return caller.getError();
-    }
+//    public double getError()
+//    {
+//        return caller.getError();
+//    }
 
     private DepthMapper dm;
-    private BinomialCaller caller;
+    private Caller caller;
     private int minDepth;
     private int maxDepth;
 }

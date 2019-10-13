@@ -17,6 +17,7 @@
 
 package VCF.Filters;
 
+import Callers.BinomialCaller;
 import Utils.MAFCalculator;
 import Utils.Optimize.GoldenSection;
 import Utils.Optimize.SingleDoubleValue;
@@ -48,7 +49,7 @@ public class ParalogHWFilter extends PositionFilter
     {
         this.significance = significance;
         this.error = error;
-        mafCalculator = new MAFCalculator(error,8,100);
+        mafCalculator = new MAFCalculator(new BinomialCaller(error),8,100);
         cs = new ChiSquaredDistribution(1);
     }
     
@@ -60,7 +61,7 @@ public class ParalogHWFilter extends PositionFilter
     {
         this.significance = params.getDouble("significance");
         this.error = params.getDouble("error");
-        mafCalculator = new MAFCalculator(error,8,100);
+        mafCalculator = new MAFCalculator(new BinomialCaller(error),8,100);
         cs = new ChiSquaredDistribution(1);
     }
     

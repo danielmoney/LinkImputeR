@@ -20,6 +20,7 @@ package Accuracy;
 import Callers.Caller;
 import Exceptions.NotEnoughMaskableGenotypesException;
 import Utils.Distribution.ComparableDistribution;
+import Utils.MAFCalculator;
 import Utils.SingleGenotype.SingleGenotypeMasked;
 import Utils.SingleGenotype.SingleGenotypePosition;
 import java.util.ArrayList;
@@ -177,39 +178,30 @@ public class DepthMask
                 }
                 break;
         }
-        
+
+        MAFCalculator mafCalc = new MAFCalculator(caller,minDepth,100);
         
         for (SingleGenotypePosition random: selectedList)
         {
-            int i = random.getSample();
-            int j = random.getSNP();
+            int sample = random.getSample();
+            int snp = random.getSNP();
+
+//            double maf = calculateMaf(depths, j, caller);
+
+            int[][] d = new int[depths.length][];
+            for (int i = 0; i < depths.length; i++)
+            {
+                d[i] = depths[i][snp];
+            }
+
+            double maf = mafCalc.maf(d);
             
-            double maf = calculateMaf(depths, j, caller);
-            
-            list.add(new SingleGenotypeMasked(i,j,depths[i][j],mask(depths[i][j],maskTo.sample()),maf));
+            list.add(new SingleGenotypeMasked(sample,snp,depths[sample][snp],mask(depths[sample][snp],maskTo.sample()),maf));
         }
         
         this.depths = depths;
     }
-    
-    private double calculateMaf(int[][][] depths, int snp, Caller caller)
-    {
-        double d = IntStream.range(0, depths.length)
-                .filter(i -> (depths[i][snp][0] + depths[i][snp][1]) >= 8)
-                .mapToDouble(i -> getDosage(depths[i][snp],caller)).average().orElse(0.0);
-        
-        //Convert average dose to allele freq
-        double m = d / 2.0;
 
-        return Math.min(m,1.0-m);
-    }
-    
-    private double getDosage(int[] r, Caller caller)
-    {
-        double[] probs = caller.callSingle(r);
-        return 2.0 * probs[0] + probs[1];
-    }
-        
     private int[] mask(int[] orig, int maskTo)
     {
         int reads = reads(orig);

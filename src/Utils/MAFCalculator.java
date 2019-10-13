@@ -85,6 +85,37 @@ public class MAFCalculator
         return m;
     }
 
+    public double maf(int[][] reads)
+    {
+        double t = 0.0;
+        double c = 0.0;
+
+        for (int[] r: reads)
+        {
+            int trc = r[0] + r[1];
+            if ((trc >= minDepth) && (trc <= maxDepth))
+            {
+                t += getDosage(r);
+                c++;
+            }
+        }
+
+        double d;
+        if (c > 0)
+        {
+            d = t/c;
+        }
+        else
+        {
+            d = 0.0;
+        }
+
+        //Convert average dose to allele freq
+        double m = d / 2.0;
+
+        return m;
+    }
+
     private double getDosage(int[] r)
     {
         double[] probs = caller.callSingle(r);

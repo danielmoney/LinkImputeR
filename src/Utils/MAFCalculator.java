@@ -47,6 +47,11 @@ public class MAFCalculator
         dm = new DepthMapper();
     }
 
+    public MAFCalculator(Caller caller, int minDepth)
+    {
+        this(caller,minDepth,Integer.MAX_VALUE);
+    }
+
     /**
      * Calculates the minor allele frequency for a position
      * @param p The position

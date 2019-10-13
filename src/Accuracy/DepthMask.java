@@ -179,14 +179,12 @@ public class DepthMask
                 break;
         }
 
-        MAFCalculator mafCalc = new MAFCalculator(caller,minDepth,100);
+        MAFCalculator mafCalc = new MAFCalculator(caller,minDepth);
         
         for (SingleGenotypePosition random: selectedList)
         {
             int sample = random.getSample();
             int snp = random.getSNP();
-
-//            double maf = calculateMaf(depths, j, caller);
 
             int[][] d = new int[depths.length][];
             for (int i = 0; i < depths.length; i++)

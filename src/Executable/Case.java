@@ -84,8 +84,11 @@ public class Case
         imputer = new ImputationOption(params.configurationAt("imputation"));
         
         combiner = new CombinerOption(params.configurationAt("combiner"));        
-        
-        print = new PrintStats(params.configurationAt("stats"));
+
+        if (params.configurationsAt("stats") .size()== 1)
+        {
+            print = new PrintStats(params.configurationAt("stats"));
+        }
 
         additional = params.getString("additional", "");
     }

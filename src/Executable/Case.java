@@ -85,13 +85,8 @@ public class Case
         
         combiner = new CombinerOption(params.configurationAt("combiner"));        
         
-        //THIS IS ONE HELL OF A FUDGE ANDS SHOULD BE FIXED!
-        if (params.containsKey("stats.pretty") || params.containsKey("stats.depth")
-                || params.containsKey("stats.geno") || params.containsKey("stats.depthgeno"))
-        {
-            print = new PrintStats(params.configurationAt("stats"));
-        }
-        
+        print = new PrintStats(params.configurationAt("stats"));
+
         additional = params.getString("additional", "");
     }
             

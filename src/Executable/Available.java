@@ -21,14 +21,7 @@ import Callers.BiasedBinomialCaller;
 import Callers.BinomialCaller;
 import Callers.Caller;
 import Exceptions.ProgrammerException;
-import VCF.Filters.BiallelicFilter;
-import VCF.Filters.MAFFilter;
-import VCF.Filters.ParalogHWFilter;
-import VCF.Filters.PositionFilter;
-import VCF.Filters.PositionMissing;
-import VCF.Filters.SampleFilter;
-import VCF.Filters.SampleMissing;
-import VCF.Filters.VCFFilter;
+import VCF.Filters.*;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 
@@ -104,6 +97,7 @@ public class Available
         // Position Filters
         pf.add("MAF",MAFFilter::new);
         pf.add("ParalogHW",ParalogHWFilter::new);
+        pf.add("ExactHW", ExactHWFilter::new);
         pf.add("PositionMissing",PositionMissing::new);
         pf.add("BiallelicGap",BiallelicFilter::new);
         

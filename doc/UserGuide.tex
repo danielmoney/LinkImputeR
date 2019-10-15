@@ -74,7 +74,7 @@
     \item Fixed bug that caused crash when certain stats options were chosen.
 \end{itemize}
 
-%\textbf{Version 1.2} \textit{October 2019} Implement the exact HW test as a filter.  It is recommended that this is used instead of the old HW filter.  Consequently the old filter option for the ini file (\emph{hw}) is deprecated.
+\textbf{Version 1.2} \textit{October 2019} Implement the exact HW test as a filter.  It is recommended that this is used instead of the old HW filter.  Consequently the old filter option for the ini file (\emph{hw}) is deprecated.
 
 
 \section{License}
@@ -125,9 +125,8 @@ These filters are applied before any accuracy run is performed and hence are onl
 \begin{description}
 \item[\emph{maf}*] Minor Allele Frequency filter.  Value is the minimum MAF for the SNP to be included.
 \item[\emph{positionmissing}*] Position Missing filter. Value is the maximum missingness allowed per SNP.
-\item[\emph{hw}*]Hardy-Weinberg filter. Parameter is p-value below which SNPs are discarded.
-%\item[\emph{exacthw}*] Exact Hardy-Weinberg filter per Wigginton, J.E, Cutler D.J., Abecasis, G.R. (2005) \emph{A Note on Exact Tests of Hardy-Weinberg Equilibrium}, AJHG 76:887-893.  Parameter is p-value below which SNPs are discarded.  Its use is recommended over the old HW filter previously used in LinkImputeR (see below if you do wihs to use the old filter).
-%\item[\emph{oldhw}*] The old Hardy-Weinburg filter previously used in LinkImputeR.  Use of \emph{exaxthw} (above) is recommended instead as this filter is likely overly conservative.  Parameter is p-value below which SNPs are discarded.
+\item[\emph{exacthw}*] Exact Hardy-Weinberg filter per Wigginton, J.E, Cutler D.J., Abecasis, G.R. (2005) \emph{A Note on Exact Tests of Hardy-Weinberg Equilibrium}, AJHG 76:887-893.  Parameter is p-value below which SNPs are discarded.  Its use is recommended over the old HW filter previously used in LinkImputeR (see below if you do wihs to use the old filter).
+\item[\emph{oldhw}*] The old Hardy-Weinburg filter previously used in LinkImputeR.  Use of \emph{exaxthw} (above) is recommended instead as this filter is likely overly conservative.  Parameter is p-value below which SNPs are discarded.
 \end{description}
 
 \subsection{CaseFilters}

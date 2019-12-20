@@ -581,6 +581,16 @@ public class LinkImputeR
             throw new INIException("Parameter values for the maxdepth option must be an integer.");
         }
 
+        int minInDepth;
+        try
+        {
+            minInDepth = config.getInt("Input.mindepth",minDepth);
+        }
+        catch (ConversionException ex)
+        {
+            throw new INIException("Parameter values for the mindepth option must be an integer.");
+        }
+
         String callerMethod = config.getString("Global.caller","logbinomial");
         Caller caller;
         switch (callerMethod)
@@ -616,7 +626,7 @@ public class LinkImputeR
                         {
                             throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                         }
-                        inputfilters.add(new MAFFilter(maf,8,maxInDepth,caller));
+                        inputfilters.add(new MAFFilter(maf,minInDepth,maxInDepth,caller));
                         break;
                     case "exacthw":
                         try
@@ -632,7 +642,7 @@ public class LinkImputeR
                             throw new INIException("Parameter for the HW filter must be between 0 and 1");
                         }
 //                        inputfilters.add(new ParalogHWFilter(sig/numSnps,error));
-                        inputfilters.add(new ExactHWFilter(minDepth,sig/numSnps,error));
+                        inputfilters.add(new ExactHWFilter(minInDepth,sig/numSnps,error));
                         break;
                     case "oldhw":
                         try
@@ -795,7 +805,7 @@ public class LinkImputeR
                             {
                                 throw new INIException("Parameter for the MAF filter must be between 0 and 0.5");
                             }
-                            f = new MAFFilter(maf,8,maxInDepth,caller);
+                            f = new MAFFilter(maf,depth,maxInDepth,caller);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);

@@ -797,7 +797,10 @@ public class LinkImputeR
         {
             List<List<VCFFilter>> cases = new ArrayList<>();        
             cases.add(new ArrayList<>());
-            
+
+            boolean sFilterUsed = false;
+            boolean pFilterUsed = false;
+
             for (HierarchicalConfiguration<ImmutableNode> i : config.childConfigurationsAt("CaseFilters"))
             {
                 List<List<VCFFilter>> newcases = new ArrayList<>();
@@ -828,6 +831,7 @@ public class LinkImputeR
                                 nc.add(f);
                                 newcases.add(nc);
                             }
+                            pFilterUsed = true;
                             break;
                         case "missing":
                             double missing;
@@ -853,6 +857,8 @@ public class LinkImputeR
                                 nc.add(fs);
                                 newcases.add(nc);
                             }
+                            pFilterUsed = true;
+                            sFilterUsed = true;
                             break;
                         case "samplemissing":
                             double smissing;
@@ -875,6 +881,7 @@ public class LinkImputeR
                                 nc.add(f);
                                 newcases.add(nc);
                             }
+                            sFilterUsed = true;
                             break;
                         case "positionmissing":
                             double pmissing;
@@ -897,6 +904,7 @@ public class LinkImputeR
                                 nc.add(f);
                                 newcases.add(nc);
                             }
+                            pFilterUsed = true;
                             break;
                         case "mincalled":
                             int minCalled;
@@ -921,6 +929,8 @@ public class LinkImputeR
                                 nc.add(fs);
                                 newcases.add(nc);
                             }
+                            sFilterUsed = true;
+                            pFilterUsed = true;
                             break;
                         case "samplemincalled":
                             int sminCalled;
@@ -943,6 +953,7 @@ public class LinkImputeR
                                 nc.add(f);
                                 newcases.add(nc);
                             }
+                            sFilterUsed = true;
                             break;
                         case "positionmincalled":
                             int pminCalled;
@@ -965,6 +976,7 @@ public class LinkImputeR
                                 nc.add(f);
                                 newcases.add(nc);
                             }
+                            pFilterUsed = true;
                             break;
                         //NEED TO THINK ABOUT WHAT TO DO WITH SIGNIFICANCE!
                         //POSSIBLY CHANGES IN CASE????
@@ -987,7 +999,23 @@ public class LinkImputeR
             {
                 cases.add(new ArrayList<VCFFilter>());
             }
-            
+            // If we haven't used any position filters add one by default to make sure we have at least one called
+            // genotype per position
+            if (!pFilterUsed)
+            {
+                for (List<VCFFilter> c: cases)
+                {
+                    c.add(new PositionMinCalled(1,depth));
+                }
+            }
+            // And similarly for samples
+            if (!sFilterUsed)
+            {
+                for (List<VCFFilter> c: cases)
+                {
+                    c.add(new SampleMinCalled(1,depth));
+                }
+            }
             
             ImputationOption imputer = new ImputationOption(new KnniLDProbOptimizedCalls(depth,am));
             CombinerOption combiner = new CombinerOption(new MaxDepthCombinerOptimizedCalls(depth,am));

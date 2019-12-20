@@ -100,9 +100,11 @@ public class Available
         pf.add("ExactHW", ExactHWFilter::new);
         pf.add("PositionMissing",PositionMissing::new);
         pf.add("BiallelicGap",BiallelicFilter::new);
+        pf.add("PositionMinCalled",PositionMinCalled::new);
         
         // Sample Filters
         sf.add("SampleMissing",SampleMissing::new);
+        sf.add("SampleMinCalled",SampleMinCalled::new);
         
         // Callers
         callers.add("Binomial",BinomialCaller::new);

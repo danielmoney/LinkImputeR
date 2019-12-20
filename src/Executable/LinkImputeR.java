@@ -684,7 +684,23 @@ public class LinkImputeR
                         {
                             throw new INIException("Parameter for the Position Missing filter must be between 0 and 1");
                         }
-                        inputfilters.add(new PositionMissing(i.getDouble(null),minDepth));
+                        inputfilters.add(new PositionMissing(missing,minDepth));
+                        break;
+                    case "positionmincalled":
+                        int minCalled;
+                        try
+                        {
+                            minCalled = i.getInt(null);
+                        }
+                        catch (ConversionException ex)
+                        {
+                            throw new INIException("Parameter for the Position Min Called filter must be an integer");
+                        }
+                        if (minCalled <= 0)
+                        {
+                            throw new INIException("Parameter for the Position Min Called filter must be greater than 0");
+                        }
+                        inputfilters.add(new PositionMinCalled(minCalled,minDepth));
                         break;
                 }
         }
@@ -875,6 +891,74 @@ public class LinkImputeR
                                 throw new INIException("Parameter for the Missing filter must be between 0 and 1");
                             }
                             f = new PositionMissing(pmissing,depth);
+                            for (List<VCFFilter> c: cases)
+                            {
+                                List<VCFFilter> nc = new ArrayList<>(c);
+                                nc.add(f);
+                                newcases.add(nc);
+                            }
+                            break;
+                        case "mincalled":
+                            int minCalled;
+                            try
+                            {
+                                minCalled = i.getInt(null);
+                            }
+                            catch (ConversionException ex)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be an integer");
+                            }
+                            if (minCalled <= 0)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be greater than 0");
+                            }
+                            fp = new PositionMinCalled(minCalled,minDepth);
+                            fs = new SampleMinCalled(minCalled,minDepth);
+                            for (List<VCFFilter> c: cases)
+                            {
+                                List<VCFFilter> nc = new ArrayList<>(c);
+                                nc.add(fp);
+                                nc.add(fs);
+                                newcases.add(nc);
+                            }
+                            break;
+                        case "samplemincalled":
+                            int sminCalled;
+                            try
+                            {
+                                sminCalled = i.getInt(null);
+                            }
+                            catch (ConversionException ex)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be an integer");
+                            }
+                            if (sminCalled <= 0)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be greater than 0");
+                            }
+                            f = new SampleMinCalled(sminCalled,minDepth);
+                            for (List<VCFFilter> c: cases)
+                            {
+                                List<VCFFilter> nc = new ArrayList<>(c);
+                                nc.add(f);
+                                newcases.add(nc);
+                            }
+                            break;
+                        case "positionmincalled":
+                            int pminCalled;
+                            try
+                            {
+                                pminCalled = i.getInt(null);
+                            }
+                            catch (ConversionException ex)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be an integer");
+                            }
+                            if (pminCalled <= 0)
+                            {
+                                throw new INIException("Parameter for the Min Called filter must be greater than 0");
+                            }
+                            f = new PositionMinCalled(pminCalled,minDepth);
                             for (List<VCFFilter> c: cases)
                             {
                                 List<VCFFilter> nc = new ArrayList<>(c);

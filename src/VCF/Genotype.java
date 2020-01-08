@@ -137,6 +137,10 @@ public class Genotype
         if (pos < format.size() - 1)
         {
             end = StringUtils.ordinalIndexOf(info, ":", pos + 1);
+            if (end == -1)
+            {
+                throw new VCFNoDataException("Data field " + name + " is not present for this genotype");
+            }
         }
         geno.setInfo(StringUtils.overlay(info, value, start, end));
     }

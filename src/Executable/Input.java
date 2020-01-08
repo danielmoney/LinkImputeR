@@ -18,11 +18,7 @@
 package Executable;
 
 import Exceptions.OutputException;
-import VCF.Changers.GenotypeChanger;
-import VCF.Changers.MaxDepthNoReadsChanger;
-import VCF.Changers.PositionChanger;
-import VCF.Changers.RenameFormatChanger;
-import VCF.Changers.StandardizeCountsFormatChanger;
+import VCF.Changers.*;
 import VCF.Exceptions.VCFException;
 import VCF.Filters.BiallelicFilter;
 import VCF.Filters.HasDepthFilter;
@@ -109,6 +105,7 @@ public class Input
     public VCF getVCF() throws VCFException, OutputException
     {
         List<GenotypeChanger> genotypechangers = new ArrayList<>();
+        genotypechangers.add(new ExplicitTrailingFields());
         genotypechangers.add(new MaxDepthNoReadsChanger(maxdepth));
         List<PositionFilter> prefilters = new ArrayList<>();
         prefilters.add(new HasDepthFilter());

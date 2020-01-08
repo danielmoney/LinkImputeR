@@ -78,6 +78,14 @@
 
 \textbf{Version 1.2.1} \textit{October 2019} Merge changes from version 1.1.6
 
+\textbf{Version 1.2.2} \textit{December 2019}
+\begin{itemize}
+    \item Removed hard coded min depth from MAF filter.
+    \item Add option to use custom min depth for input MAF / Exact HW filters else the minimum of the given depths is used.
+    \item Added new filters that filter on a minimum number of called genotypes per sample or position.
+    \item Automatically include one of the above filters if no other sample / position filter is used so as to ensure each sample / position has at least once called genotype.
+\end{itemize}
+
 
 \section{License}
 
@@ -119,6 +127,7 @@ This section is where the input file and an (optional) intermediate save file is
 \item[\emph{filename}] The filename of the input.
 \item[\emph{save}*] If this parameter is included a vcf file will be outputted with this name after the filters in the InputFilters section have been applied.  If the file name ends in .gz then the file will be gzipped.
 \item[\emph{maxdepth}*] Max read depth allowed for a genotype.  Genotypes with a greater read depth are set to totally missing (i.e. no reads / no genotype). Defaults to 100.
+\item[\emph{mindepth}*] This parameter is ONLY used by the input MAF and Exact HW filters and gives the minimum read depth for a genotype to be called and used in these calculations.  If not supplied it defaults to the minimum value given in the depth parameter in the Global section (see below).
 \item[\emph{readsformat}*] This paramater should be included if read information is included in the VCF in a non standard way.  There are two options.  If a single format is given then this is assumed to include comma separated read depths.  If two formats are given comma separated then it is assumed the first format is for the reference allele read count, the second for the alternate allele read count.  For example setting this to \texttt{RO,AO} would mean that reference allele counts are in RO and alternative allele counts are in AO.  If either option is used then both the save file vcf (see above) and any final imputed vcf will have had their read count information standardized to be in an AD field.
 \end{description}
 
@@ -127,6 +136,7 @@ These filters are applied before any accuracy run is performed and hence are onl
 \begin{description}
 \item[\emph{maf}*] Minor Allele Frequency filter.  Value is the minimum MAF for the SNP to be included.
 \item[\emph{positionmissing}*] Position Missing filter. Value is the maximum missingness allowed per SNP.
+\item[\emph{positionmincalled}*] Position Minimum Called filter.  Value is the minimum number of called genotypes allowed per SNP.
 \item[\emph{exacthw}*] Exact Hardy-Weinberg filter per Wigginton, J.E, Cutler D.J., Abecasis, G.R. (2005) \emph{A Note on Exact Tests of Hardy-Weinberg Equilibrium}, AJHG 76:887-893.  Parameter is p-value below which SNPs are discarded.  Its use is recommended over the old HW filter previously used in LinkImputeR (see below if you do wihs to use the old filter).
 \item[\emph{oldhw}*] The old Hardy-Weinburg filter previously used in LinkImputeR.  Use of \emph{exaxthw} (above) is recommended instead as this filter is likely overly conservative.  Parameter is p-value below which SNPs are discarded.
 \end{description}
@@ -136,12 +146,13 @@ This section lists the different filters to be tested, for example you may wish 
 \begin{description}
 \item[\emph{maf}*] Minor Allele Frequency filter.  Value is the minimum MAF for the SNP to be included.
 \item[\emph{missing}*] Missing filter.  Value is the maximum missingness allowed per SNP and sample.
+\item[\emph{mincalled}*] Minimum Called filter.  Value is the minimum number of called genotypes allowed per SNP and sample.
 \end{description}
 
 \subsection{Global}
 Here are included two global parameters that can effect multiple filters.
 \begin{description}
-\item[\emph{depth}*] The minimum depth used to call a genotype for use in the filters.
+\item[\emph{depth}] The minimum depth used to call a genotype for use in the filters.
 \item[\emph{error}*] The read error rate.  Defaults to 0.01.
 \end{description}
 

@@ -52,10 +52,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import org.apache.commons.cli.*;
@@ -1384,7 +1382,7 @@ public class LinkImputeR
         System.out.println("\tjava -jar LinkImputeR.jar -h");
     }
     
-    private final static DecimalFormat dform = new DecimalFormat("0.000");
+    private final static DecimalFormat dform = new DecimalFormat("0.000", new DecimalFormatSymbols(Locale.US));
     private final static DecimalFormat dforms = new DecimalFormat("0.0000");
     private final static ByteToGeno b2g = new ByteToGeno();
 }

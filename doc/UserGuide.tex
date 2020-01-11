@@ -10,7 +10,7 @@
 
 \title{LinkImputeR - User Guide}
 \author{Daniel Money}
-\date{October 2019}
+\date{January 2020}
 
 \newcommand{\cvarticle}[6]{\textsc{#1} (#6) #2 \textit{#3} \textbf{#4}\ifthenelse{\equal{#4}{}}{}{:}#5\\}
 
@@ -83,8 +83,15 @@
     \item Removed hard coded min depth from MAF filter.
     \item Add option to use custom min depth for input MAF / Exact HW filters else the minimum of the given depths is used.
     \item Added new filters that filter on a minimum number of called genotypes per sample or position.
-    \item Automatically include one of the above filters if no other sample / position filter is used so as to ensure each sample / position has at least once called genotype.
+    \item Automatically include one of the above filters if no other sample / position filter is used so as to ensure each sample / position has at least one called genotype.
 \end{itemize}
+
+\textbf{Version 1.2.3} \textit{January 2020}
+\begin{itemize}
+    \item Fix bug where LinkImputeR was not dealing properly with genotypes that did not have all fields present (the VCF specification allows trailing fields to be omitted).
+    \item Ignore localization when outputting decimals to the VCF since the VCF specification mandates \texttt{.} as the decimal separator.
+\end{itemize}
+
 
 
 \section{License}

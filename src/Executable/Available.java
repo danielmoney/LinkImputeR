@@ -17,9 +17,7 @@
 
 package Executable;
 
-import Callers.BiasedBinomialCaller;
-import Callers.BinomialCaller;
-import Callers.Caller;
+import Callers.*;
 import Exceptions.ProgrammerException;
 import VCF.Filters.*;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -109,7 +107,7 @@ public class Available
         // Callers
         callers.add("Binomial",BinomialCaller::new);
         callers.add("BiasedBinomial",BiasedBinomialCaller::new);
-        callers.add("LogBinomial",BinomialCaller::new);
-        callers.add("LogBiasedBinomial",BiasedBinomialCaller::new);
+        callers.add("LogBinomial", LogBinomialCaller::new);
+        callers.add("LogBiasedBinomial", LogBiasedBinomialCaller::new);
     }
 }

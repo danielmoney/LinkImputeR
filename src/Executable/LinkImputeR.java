@@ -639,8 +639,7 @@ public class LinkImputeR
                         {
                             throw new INIException("Parameter for the HW filter must be between 0 and 1");
                         }
-//                        inputfilters.add(new ParalogHWFilter(sig/numSnps,error));
-                        inputfilters.add(new ExactHWFilter(minInDepth,sig/numSnps,error));
+                        inputfilters.add(new ExactHWFilter(minInDepth,sig/numSnps,caller));
                         break;
                     case "oldhw":
                         try

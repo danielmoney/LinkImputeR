@@ -1,6 +1,8 @@
 package VCF.Filters;
 
 import Callers.BinomialCaller;
+import Callers.Caller;
+import Executable.Available;
 import Utils.ProbToCallMinDepth;
 import VCF.Exceptions.VCFDataException;
 import VCF.Genotype;
@@ -14,13 +16,12 @@ import java.util.Arrays;
 
 public class ExactHWFilter extends PositionFilter
 {
-    public ExactHWFilter(int minDepth, double significance, double error)
+    public ExactHWFilter(int minDepth, double significance, Caller caller)
     {
         this.minDepth = minDepth;
         this.significance = significance;
-        this.error = error;
         dm = new DepthMapper();
-        caller = new BinomialCaller(error);
+        this.caller = caller;
         p2c = new ProbToCallMinDepth(minDepth);
     }
 
@@ -32,9 +33,8 @@ public class ExactHWFilter extends PositionFilter
     {
         this.minDepth = params.getInt("minDepth");
         this.significance = params.getDouble("significance");
-        this.error = params.getDouble("error");
         dm = new DepthMapper();
-        caller = new BinomialCaller(error);
+        caller = Available.getCaller(params.configurationAt("caller"));
         p2c = new ProbToCallMinDepth(minDepth);
     }
 
@@ -67,12 +67,12 @@ public class ExactHWFilter extends PositionFilter
     {
         ImmutableNode Idepth = new ImmutableNode.Builder().name("minDepth").value(minDepth).create();
         ImmutableNode Isignificance = new ImmutableNode.Builder().name("significance").value(significance).create();
-        ImmutableNode Ierror = new ImmutableNode.Builder().name("error").value(error).create();
+        ImmutableNode Icaller = caller.getConfig();
 
         ImmutableNode config = new ImmutableNode.Builder().name("filter")
                 .addChild(Idepth)
                 .addChild(Isignificance)
-                .addChild(Ierror)
+                .addChild(Icaller)
                 .addAttribute("name", "ExactHW")
                 .create();
 
@@ -81,8 +81,7 @@ public class ExactHWFilter extends PositionFilter
 
     private DepthMapper dm;
     private ProbToCallMinDepth p2c;
-    private BinomialCaller caller;
+    private Caller caller;
     private int minDepth;
     private double significance;
-    private double error;
 }

@@ -210,6 +210,10 @@ public class LinkImputeR
             System.err.println();
             help();
         }
+        catch (InvalidCaseNameException ex)
+        {
+            System.err.println("'" + ex.getCasename() + "' is not a valid case name.  Check sum.dat for valid case names.");
+        }
         catch (VCFException ex)
         {
             System.err.println("=====");
@@ -295,15 +299,8 @@ public class LinkImputeR
         }
     }
     
-    private static void impute(XMLConfiguration config, String casename, File output) throws VCFException, OutputException
+    private static void impute(XMLConfiguration config, String casename, File output) throws VCFException, OutputException, InvalidCaseNameException
     {
-        long start = System.currentTimeMillis();
-        Log.initialise(Level.DEBUG);
-        Log.brief("Started " + casename);
-        Input input = new Input(config.configurationAt("input"));
-        VCF vcf = input.getVCF();
-        Log.debug("Data read in");
-        
         if (casename == null)
         {
             casename = config.getString("input.case");
@@ -312,12 +309,22 @@ public class LinkImputeR
         {
             output = new File(config.getString("output.filename"));
         }
-      
+
+        boolean invalidCase = true;
         for (HierarchicalConfiguration<ImmutableNode> caseConfig: config.configurationsAt("case"))
         {
             Case c = new Case(caseConfig);
             if (c.getName().equals(casename))
-            {            
+            {
+                long start = System.currentTimeMillis();
+                Log.initialise(Level.DEBUG);
+                Log.brief("Started " + casename);
+                Input input = new Input(config.configurationAt("input"));
+                VCF vcf = input.getVCF();
+                Log.debug("Data read in");
+
+                invalidCase = false;
+
                 //FILTER
                 c.applyFilters(vcf);
                 Log.debug("Filters applied");
@@ -374,10 +381,14 @@ public class LinkImputeR
                     throw new OutputException("Problem writing the imputed VCF");
                 }
                 Log.debug("Output written");
+                String time = DurationFormatUtils.formatDuration(System.currentTimeMillis() - start, "dd:HH:mm:ss");
+                Log.brief("All done\t("+time+")");
             }
         }
-        String time = DurationFormatUtils.formatDuration(System.currentTimeMillis() - start, "dd:HH:mm:ss");
-        Log.brief("All done\t("+time+")");
+        if (invalidCase)
+        {
+            throw new InvalidCaseNameException(casename);
+        }
     }
     
     private static void accuracy(XMLConfiguration config) throws VCFException, OutputException, AlgorithmException
